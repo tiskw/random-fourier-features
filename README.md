@@ -32,7 +32,7 @@ Results of these methods are logged and log files are stored in etc/ directory.
 In my computing environment (CPU: Intl Core i5 5250U, RAM: 4GB), I got the following results:
 
 |Method|Training time (sec)|Prediction time (us)|Score (%)|
-|----|----|----|
+|:---|:---|:---|:---|
 |Kernel SVM|709.5 sec|19556 us|94.8 %|
 |SVM w/ RFF|102.2 sec|12.2 us|94.8 %|
 
