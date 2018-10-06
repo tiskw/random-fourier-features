@@ -1,8 +1,9 @@
 Random Fourier Features
 ====
 
-Python implementation of random fourier features for support vector machine.
-Now it only has a module for classification (RandomFourierFeatures.SVC), however I will provide other SVM functions soon.
+Python implementation of random fourier features for support vector machines.
+Now it only has a module for classification (RandomFourierFeatures.SVC),
+however I will provide other SVM functions soon.
 Also, I'm preparing for C/C++ implementation of random fourier features.
 
 ## Requirement
@@ -40,11 +41,11 @@ Prediction time on SVM w/ RFF is amazingly fast!
 
 ## Licence
 
-MIT Licence (https://opensource.org/licenses/mit-license.php)
+[MIT Licence](https://opensource.org/licenses/mit-license.php)
 
 ## Reference
 
-A. Rahimi and B. Recht, "Random Features for Large-Scale Kernel Machines", NIPS, 2007.
+[1] A. Rahimi and B. Recht, "Random Features for Large-Scale Kernel Machines", NIPS, 2007.
 [PDF](https://papers.nips.cc/paper/3182-random-features-for-large-scale-kernel-machines.pdf)
 
 ## Author
