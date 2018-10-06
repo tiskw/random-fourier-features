@@ -1,0 +1,6 @@
+Loading training data: 0.514313 [s]
+Loading test data: 0.086982 [s]
+Calculate PCA matrix: 1.518713 [s]
+Kernel SVM learning time: 709.528200 [s]
+Kernel SVM prediction time for 1 image: 19556.586719 [us]
+Score = 94.46 [%]

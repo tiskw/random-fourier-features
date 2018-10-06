@@ -10,13 +10,31 @@ Also, I'm preparing for C/C++ implementation of random fourier features.
 - Python 3.6.6
 - Numpy 1.13.3
 - scikit-learn 0.19.1
-- Matplotlib 2.1.1
 
 ## Usage
 
-Run sample python script:
+Before running sample code, you need to download and convert MNIST data by the following command:
 
-    $ python3 sample.py
+    $ cd data
+    $ python3 convert_mnist_to_npy.py
+
+Original MNIST data will be downloaded automatically and converted to .npy file.
+After generating MNIST .npy files, run sample script by the following command:
+
+    $ cd source
+    $ ./run.sh
+
+This script run both of kernel SVM and SVM with RFF for MNIST data.
+Results of these methods are logged and log files are stored in etc/ directory.
+
+## Results
+
+In my computing environment (CPU: Intl Core i5 5250U, RAM: 4GB), I got the following results:
+
+|Method|Training time (sec)|Prediction time (us)|Score (%)|
+|:---|:---|:---|
+|Kernel SVM|709.5 sec|19556 us|94.8 %|
+|SVM w/ RFF|102.2 sec|12.2 us|94.8 %|
 
 ## Licence
 

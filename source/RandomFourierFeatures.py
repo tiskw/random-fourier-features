@@ -7,7 +7,7 @@
 import numpy as np
 import sklearn.svm
 
-__version__ = "0.0.0"
+__version__ = "0.1"
 
 def seed(seed):
 # {{{
@@ -29,22 +29,23 @@ def features(Xs, Ws):
 class SVC:
 # {{{
 
-    def __init__(self, dim_output):
+    def __init__(self, dim_output, std = 0.1, **args):
         self.dim = dim_output
-        self.svm = sklearn.svm.SVC(kernel = "linear")
+        self.std = std
+        self.svm = sklearn.svm.LinearSVC(**args)
 
     def conv(self, Xs):
         return features(Xs, self.Ws)
 
-    def fit(self, Xs, ys):
-        self.Ws = np.random.randn(Xs.shape[1], self.dim)
-        return self.svm.fit(self.conv(Xs), ys)
+    def fit(self, Xs, ys, **args):
+        self.Ws = self.std * np.random.randn(Xs.shape[1], self.dim)
+        return self.svm.fit(self.conv(Xs), ys, **args)
 
-    def predict(self, Xs):
-        return self.svm.predict(self.conv(Xs))
+    def predict(self, Xs, **args):
+        return self.svm.predict(self.conv(Xs), **args)
 
-    def score(self, Xs, ys):
-        return self.svm.score(self.conv(Xs), ys)
+    def score(self, Xs, ys, **args):
+        return self.svm.score(self.conv(Xs), ys, **args)
 
 # }}}
 
