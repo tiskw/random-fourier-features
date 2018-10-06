@@ -36,6 +36,8 @@ In my computing environment (CPU: Intl Core i5 5250U, RAM: 4GB), I got the follo
 |Kernel SVM|709.5 sec|19556 us|94.8 %|
 |SVM w/ RFF|102.2 sec|12.2 us|94.8 %|
 
+Prediction time on SVM w/ RFF is amazingly fast!
+
 ## Licence
 
 MIT Licence (https://opensource.org/licenses/mit-license.php)
