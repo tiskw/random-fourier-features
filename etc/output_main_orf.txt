@@ -1,0 +1,6 @@
+Loading training data: 0.501441 [s]
+Loading test data: 0.084908 [s]
+Calculate PCA matrix: 1.485316 [s]
+RFF SVM learning time: 138.192287 [s]
+RFF SVM prediction time for 1 image: 21.441174 [us]
+Score = 93.42 [%]

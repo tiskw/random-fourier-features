@@ -1,21 +1,21 @@
 # Python script
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : Oct  6, 2018
+# Date  : Oct 10, 2018
 #################################### SOURCE START ###################################
 
 import Utils as utils
 import Timer as timer
-import RandomFourierFeatures as rff
+import PyRFF as pyrff
 
 if __name__ == "__main__":
 # {{{
 
     ### Fix seed for random fourier feature calclation
-    rff.seed(111)
+    pyrff.seed(111)
 
     ### Create classifier instance
-    svc = rff.SVC(dim_output = 100, std = 0.06)
+    svc = pyrff.rff.SVC(dim_output = 128, std = 0.06)
 
     ### Load training data
     with timer.Timer("Loading training data: "):

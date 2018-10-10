@@ -1,18 +1,21 @@
 # Python script
 #
-# Author: 
-# Date  : Oct  6, 2018
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
+# Date  : Oct 10, 2018
 #################################### SOURCE START ###################################
 
 import Utils as utils
 import Timer as timer
-import sklearn.svm
+import PyRFF as pyrff
 
 if __name__ == "__main__":
 # {{{
 
+    ### Fix seed for random fourier feature calclation
+    pyrff.seed(111)
+
     ### Create classifier instance
-    svc = sklearn.svm.SVC()
+    svc = pyrff.orf.SVC(dim_output = 128, std = 0.06)
 
     ### Load training data
     with timer.Timer("Loading training data: "):
@@ -29,11 +32,11 @@ if __name__ == "__main__":
         T = utils.mat_transform_pca(Xs_train, dim = 256)
 
     ### Train SVM w/ random fourier features
-    with timer.Timer("Kernel SVM learning time: "):
+    with timer.Timer("RFF SVM learning time: "):
         svc.fit(Xs_train.dot(T), ys_train)
 
     ### Calculate score for test data
-    with timer.Timer("Kernel SVM prediction time for 1 image: ", unit = "us", devide_by = ys_test.shape[0]):
+    with timer.Timer("RFF SVM prediction time for 1 image: ", unit = "us", devide_by = ys_test.shape[0]):
         score = 100 * svc.score(Xs_test.dot(T), ys_test)
     print("Score = %.2f [%%]" % score)
 
