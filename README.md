@@ -55,7 +55,7 @@ However, accuracy is same as usual kernel SVM and, moreover, prediction time is 
 </p>
 
 <p align="center">
-![Accuracy for each epochs in SVM with batch RFF](./etc/output_main_rff_batch_plot.png)
+  <img src="./etc/output_main_rff_batch_plot.png" alt="Accuracy for each epochs in SVM with batch RFF" />
 </p>
 
 ## Licence
