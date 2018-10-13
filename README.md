@@ -32,13 +32,11 @@ Results of these methods are logged and log files are stored in etc/ directory.
 
 In my computing environment (CPU: Intl Core i5 5250U, RAM: 4GB), I got the following results:
 
-<center>
 |Method|Training time (sec)|Prediction time (us)|Score (%)|
 |:---:|:---:|:---:|:---:|
 |Kernel SVM|214.2 sec|5837.4 us|96.3 %|
 |SVM w/ RFF <br> d = 128|136.6 sec|21.3 us|93.4 %|
 |SVM w/ ORF <br> d = 128|138.2 sec|21.4 us|93.4 %|
-</center>
 
 Learning time on RFF and ORF is faster than kernel SVM, moreover, prediction time of RFF and ORF is amazingly faster.
 On the otherhand, accuracy of RFF and ORF is lower than kernel SVM.
@@ -49,14 +47,9 @@ I implemented a code for RFF SVM with batch learning and evaluate its accuracy o
 I've got the following results. Learning time is even longer than kernel SVM.
 However, accuracy is same as kernel SVM and, moreover, prediction time is much faster than kernel SVM.
 
-<table><tr>
-  <th>Method</th><th>Training time (sec)</th><th>Prediction time (us)</th><th>Score (%)</th>
-</tr><tr>
-  <td>SVM w/ batch RFF <br/> d = 1024</td>
-  <td>2062.2 sec</td>
-  <td>108.6 us</td>
-  <td>96.4 %</td>
-</tr></table>
+|Method|Training time (sec)|Prediction time (us)|Score (%)|
+|:---:|:---:|:---:|:---:|
+|SVM w/ batch RFF <br> d = 1024|2062.2 sec|108.6 us|96.4 %|
 
 <p align="center">
   <img src="./etc/output_main_rff_batch_plot.png" alt="Accuracy for each epochs in SVM with batch RFF" />
