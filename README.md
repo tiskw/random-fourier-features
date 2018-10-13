@@ -32,24 +32,13 @@ Results of these methods are logged and log files are stored in etc/ directory.
 
 In my computing environment (CPU: Intl Core i5 5250U, RAM: 4GB), I got the following results:
 
-<table align="center"><tr>
-  <th>Method</th><th>Training time (sec)</th><th>Prediction time (us)</th><th>Score (%)</th>
-</tr><tr>
-  <td>Kernel SVM</td>
-  <td>214.2 sec</td>
-  <td>5837.4 us</td>
-  <td>96.3 %</td>
-</tr><tr>
-  <td>SVM w/ RFF <br/> d = 128</td>
-  <td>136.6 sec</td>
-  <td>21.3 us</td>
-  <td>93.4 %</td>
-</tr><tr>
-  <td>SVM w/ ORF <br> d = 128</td>
-  <td>138.2 sec</td>
-  <td>21.4 us</td>
-  <td>93.4 %</td>
-</tr></table>
+<center>
+|Method|Training time (sec)|Prediction time (us)|Score (%)|
+|:---:|:---:|:---:|:---:|
+|Kernel SVM|214.2 sec|5837.4 us|96.3 %|
+|SVM w/ RFF <br> d = 128|136.6 sec|21.3 us|93.4 %|
+|SVM w/ ORF <br> d = 128|138.2 sec|21.4 us|93.4 %|
+</center>
 
 Learning time on RFF and ORF is faster than kernel SVM, moreover, prediction time of RFF and ORF is amazingly faster.
 On the otherhand, accuracy of RFF and ORF is lower than kernel SVM.
