@@ -1,7 +1,9 @@
+#!/usr/bin/env python3
+#
 # Python script
 #
 # Author: 
-# Date  : Oct  6, 2018
+# Date  : Oct 20, 2018
 #################################### SOURCE START ###################################
 
 import numpy as np

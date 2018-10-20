@@ -1,7 +1,9 @@
+#!/usr/bin/env python3
+#
 # Python script
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : Oct 10, 2018
+# Date  : Oct 20, 2018
 #################################### SOURCE START ###################################
 
 import Utils as utils
@@ -15,7 +17,7 @@ if __name__ == "__main__":
     pyrff.seed(111)
 
     ### Create classifier instance
-    svc = pyrff.orf.SVC(dim_output = 128, std = 0.06)
+    svc = pyrff.RFFSVC(dim_output = 128, std = 0.06)
 
     ### Load training data
     with timer.Timer("Loading training data: "):
@@ -31,7 +33,7 @@ if __name__ == "__main__":
     with timer.Timer("Calculate PCA matrix: "):
         T = utils.mat_transform_pca(Xs_train, dim = 256)
 
-    ### Train SVM w/ random fourier features
+    ### Train SVM with random fourier features
     with timer.Timer("RFF SVM learning time: "):
         svc.fit(Xs_train.dot(T), ys_train)
 
