@@ -48,7 +48,7 @@ The following is a sample usage of RFF regression class:
 The following figure shows a regression results for the function y = sin(x^2) with RFF where dimension of RFF is 16.
 
 <p align="center">
-  <img src="./etc/output_main_reg_rff_plot.png" width="320" height="240" alt="Regression results for function y = sin(x^2) with RFF" />
+  <img src="./etc/output_main_reg_rff_plot.png" width="480" height="320" alt="Regression results for function y = sin(x^2) with RFF" />
 </p>
 
 ## Results of Support Vector Classification with RFF and ORF
@@ -75,7 +75,7 @@ However, accuracy is same as kernel SVM and, moreover, prediction time is much f
 |SVM w/ batch RFF <br> d = 1024|2062.2 sec|108.6 us|96.4 %|
 
 <p align="center">
-  <img src="./etc/output_main_svm_rff_batch_plot.png" width="320" height="240" alt="Accuracy for each epochs in SVM with batch RFF" />
+  <img src="./etc/output_main_svm_rff_batch_plot.png" width="480" height="320" alt="Accuracy for each epochs in SVM with batch RFF" />
 </p>
 
 ## Licence
