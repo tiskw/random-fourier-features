@@ -39,7 +39,8 @@ However, accuracy is same as kernel SVM and, moreover, prediction time is much f
 | SVM w/ batch RFF <br> d = 1024 | 2062.2 sec          | 108.6 us            | 96.4 %    |
 
 <p align="center">
-  <img src="./etc/output_main_svm_rff_batch_plot.png" width="480" height="320" alt="Accuracy for each epochs in SVM with batch RFF" />
+  <img src="figure_rff_batch_svc_for_mnist.png" width="480" height="320" alt="Accuracy for each epochs in SVM with batch RFF" />
 </p>
+
 
 
