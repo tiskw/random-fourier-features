@@ -1,8 +1,8 @@
-Random Fourier Features: Sample RFF Batch SVC for MNIST
+Random Fourier Features: RFF and ORF for MNIST dataset
 ====
 
 
-This python script provide an example for RFF Batch SVC with MNIST dataset.
+This python script provide an example for RFF/ORF SVC with MNIST dataset.
 Our module for random fourier features (PyRFFF.py) needs scikit-learn as a backend of SVM solver therefore you need to install scikit-learn.
 
 
@@ -33,13 +33,11 @@ After generating MNIST .npy files, run sample script by the following command:
 
 In my computing environment (CPU: Intl Core i5 5250U, RAM: 4GB), I've got the following results:
 
-<center>
-|Method                 |Training time (sec)|Prediction time (us)|Score (%)|
-|:---------------------:|:-----------------:|:------------------:|:-------:|
-|Kernel SVM             |214.2 sec          |5837.4 us           |96.3 %   |
-|SVM w/ RFF <br> d = 128|136.6 sec          |21.3 us             |93.4 %   |
-|SVM w/ ORF <br> d = 128|138.2 sec          |21.4 us             |93.4 %   |
-</center>
+| Method                  | Training time (sec) | Prediction time (us) | Score (%) |
+| :---------------------: | :-----------------: | :------------------: | :-------: |
+| Kernel SVM              | 214.2 sec           | 5837.4 us            | 96.3 %    |
+| SVM w/ RFF <br> d = 128 | 136.6 sec           | 21.3 us              | 93.4 %    |
+| SVM w/ ORF <br> d = 128 | 138.2 sec           | 21.4 us              | 93.4 %    |
 
 Learning time on RFF and ORF is faster than kernel SVM,
 moreover, prediction time of RFF and ORF is amazingly faster.
