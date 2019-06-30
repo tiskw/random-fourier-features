@@ -36,6 +36,19 @@ For example, the following Python code is a sample usage of RFF regression class
 
 See example/ directory for more detailed examples.
 
+## MNIST using RFF and SVM
+
+I tried MNIST which is a famous benchmark dataset for classification task using SVM with RFF,
+and I've got a better performance and much faster inference speed than kernel SVM.
+The following table gives a brief comparison of kernel SVM and SVM with RFF.
+See [this README.md](https://github.com/tiskw/RandomFourierFeatures/blob/master/examples/rff_and_orf_svc_for_mnist/README.md) for mode details.
+
+| Method                   | Inference time (us) | Score (%) |
+| :---------------------:  | :-----------------: | :-------: |
+| Kernel SVM               | 4644.9 us           | 96.3 %    |
+| SVM w/ RFF <br> d = 512  | 39.0 us             | 96.5 %    |
+| SVM w/ RFF <br> d = 1024 | 96.1 us             | 97.5 %    |
+
 
 ## Licence
 
