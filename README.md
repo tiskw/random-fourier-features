@@ -36,7 +36,6 @@ For example, the following Python code is a sample usage of RFF regression class
 
 See example/ directory for more detailed examples.
 
-
 ## MNIST using RFF and SVM
 
 I tried MNIST which is a famous benchmark dataset for classification task using SVM with RFF,
