@@ -40,7 +40,7 @@ In my computing environment (CPU: Intl Core i5 5250U, RAM: 4GB), I've got the fo
 | SVM w/ RFF <br> d = 512  | 126.6 sec           | 39.0 us             | 96.5 %    |
 | SVM w/ RFF <br> d = 1024 | 226.7 sec           | 96.1 us             | 97.5 %    |
 
-Where score means test accuracy of MNIST dataset.
+Where score means test accuracy of MNIST dataset and inference time means inference time for one image.
 
 Commonly used techniques like data normalization and dimention reduction using PCA is also used in the above analysis.
 See comments in the Python script for details.
