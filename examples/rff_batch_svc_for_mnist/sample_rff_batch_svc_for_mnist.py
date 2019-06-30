@@ -12,9 +12,9 @@ import os
 ### Add path to PyRFF.py
 ### The followings are not necessary if you copied PyRFF.py to the current directory
 ### or other directory which is included in the Python path
-current_dir = os.path.dirname(__file__)
-module_path = os.path.join(current_dir, "../../source")
-sys.path.append(module_path)
+# current_dir = os.path.dirname(__file__)
+# module_path = os.path.join(current_dir, "../../source")
+# sys.path.append(module_path)
 
 import time
 import traceback
@@ -65,7 +65,7 @@ def main():
     pyrff.seed(111)
 
     ### Create classifier instance
-    svc = pyrff.RFFBatchSVC(dim = 1024, std = 0.1, num_epochs = 5, num_batches = 10, alpha = 0.05)
+    svc = pyrff.RFFBatchSVC(dim = 1280, std = 0.10, num_epochs = 10, num_batches = 10, alpha = 0.05)
 
     ### Load training data
     with Timer("Loading training data: "):
@@ -83,7 +83,7 @@ def main():
 
     ### Train SVM with batch random fourier features
     with Timer("Batch RFF SVM learning time: "):
-        svc.fit(Xs_train.dot(T), ys_train, test = (Xs_test.dot(T), ys_test), max_iter = 1E6)
+        svc.fit(Xs_train.dot(T), ys_train, test = (Xs_test.dot(T), ys_test), max_iter = 1E6, tol = 1.0E-2)
 
     ### Calculate score for test data
     with Timer("RFF SVM prediction time for 1 image: ", unit = "us", devide_by = ys_test.shape[0]):

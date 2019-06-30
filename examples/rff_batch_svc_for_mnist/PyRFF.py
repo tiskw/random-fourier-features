@@ -120,10 +120,10 @@ class RFFBatchSVC:
         np.random.shuffle(X)
         return (data_all[:, :-1], np.ravel(data_all[:, -1]))
 
-    def train_batch(self, X, y, test, **args):
+    def train_batch(self, X, y, test):
 
         ### Create classifier instance
-        svc = RFFSVC(self.dim, self.std, self.W, **args)
+        svc = RFFSVC(self.dim, self.std, self.W, **self.args)
 
         ### Train SVM w/ random fourier features
         svc.fit(X, y)
@@ -141,6 +141,8 @@ class RFFBatchSVC:
 
     def fit(self, X, y, test = None, **args):
 
+        self.args = args
+
         ### Calculate batch size
         batch_size = X.shape[0] // self.n_batch
 
@@ -150,15 +152,16 @@ class RFFBatchSVC:
             for batch in range(self.n_batch):
                 index_bgn = batch_size * (batch + 0)
                 index_end = batch_size * (batch + 1)
-                self.train_batch(X[index_bgn:index_end, :], y[index_bgn:index_end], test, **args)
+                self.train_batch(X[index_bgn:index_end, :], y[index_bgn:index_end], test)
                 if test is not None:
                     print("Epoch = %d, Batch = %d, Accuracy = %.2f [%%]" % (epoch, batch, 100.0 * self.score(test[0], test[1])))
 
         return self
 
     def predict(self, X):
-        svc = rff.SVC(self.dim, self.std, self.W)
-        return np.argmax(np.dot(svc.conv(X), self.coef.T) + self.icpt, axis = 1)
+        num = X.shape[0]
+        svc = RFFSVC(self.dim, self.std, self.W, **self.args)
+        return np.argmax(np.dot(svc.conv(X), self.coef.T) + np.tile(self.icpt.T, (num, 1)), axis = 1)
 
     def score(self, X, y):
         pred  = self.predict(X)

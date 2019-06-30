@@ -18,8 +18,9 @@ sys.path.append(module_path)
 
 import time
 import traceback
-import numpy as np
-import PyRFF as pyrff
+import numpy   as np
+import sklearn as skl
+import PyRFF   as pyrff
 
 
 ### Load train/test image data
@@ -61,14 +62,16 @@ class Timer:
 ### Main procedure
 def main():
 
+    print("Program starts:", sys.argv)
+
     ### Fix seed for random fourier feature calclation
     pyrff.seed(111)
 
     ### Create classifier instance
     if   len(sys.argv) < 2      : exit("Error: First argument must be 'kernel', 'rff' or 'orf'.")
-    elif sys.argv[1] == "kernel": svc = sklearn.svm.SVC()
-    elif sys.argv[1] == "rff"   : svc = pyrff.RFFSVC(dim_output = 128, std = 0.06)
-    elif sys.argv[1] == "orf"   : svc = pyrff.ORFSVC(dim_output = 128, std = 0.06)
+    elif sys.argv[1] == "kernel": svc = skl.svm.SVC(kernel = "rbf", gamma = "auto")
+    elif sys.argv[1] == "rff"   : svc = pyrff.RFFSVC(dim_output = int(1024), std = float(0.05), tol = 1.0E-3)
+    elif sys.argv[1] == "orf"   : svc = pyrff.ORFSVC(dim_output = int(1024), std = float(0.05), tol = 1.0E-3)
     else                        : exit("Error: First argument must be 'kernel', 'rff' or 'orf'.")
 
     ### Load training data
@@ -86,11 +89,11 @@ def main():
         T = mat_transform_pca(Xs_train, dim = 256)
 
     ### Train SVM with orthogonal random features
-    with Timer("ORF SVM learning time: "):
+    with Timer("SVM learning: "):
         svc.fit(Xs_train.dot(T), ys_train)
 
     ### Calculate score for test data
-    with Timer("ORF SVM prediction time for 1 image: ", unit = "us", devide_by = ys_test.shape[0]):
+    with Timer("SVM prediction time for 1 image: ", unit = "us", devide_by = ys_test.shape[0]):
         score = 100 * svc.score(Xs_test.dot(T), ys_test)
     print("Score = %.2f [%%]" % score)
 
