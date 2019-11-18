@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 #
-# Python script
+# Python script for running 
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : Jan 29, 2019
+# Date  : Nov 16, 2019
 #################################### SOURCE START ###################################
 
 import sys

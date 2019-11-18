@@ -1,9 +1,8 @@
 Random Fourier Features
 ====
 
-
-Python module of random fourier features (RFF) and orthogonal random features (ORF) for regression and support vector machines [1, 2].
-Features of this RFF/ORF module is that interfaces of the module is quite close to the scikit-learn.
+Python module of random fourier features (RFF) for regression and support vector machines [1].
+Features of this RFF module is that interfaces of the module is quite close to the scikit-learn.
 Also, this module needs scikit-learn as a backend of SVM solver.
 
 Now this module only has a module for classification (RandomFourierFeatures.SVC),
