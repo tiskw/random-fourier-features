@@ -40,7 +40,7 @@ See example/ directory for more detailed examples.
 I tried MNIST which is a famous benchmark dataset for classification task using SVM with RFF,
 and I've got a better performance and much faster inference speed than kernel SVM.
 The following table gives a brief comparison of kernel SVM and SVM with RFF.
-See [this README.md](https://github.com/tiskw/RandomFourierFeatures/blob/master/examples/rff_and_orf_svc_for_mnist/README.md) for mode details.
+See [the example of RFFSVC mofule](https://github.com/tiskw/RandomFourierFeatures/blob/master/examples/rff_svc_for_mnist/README.md) for mode details.
 
 | Method                   | Inference time (us) | Score (%) |
 | :---------------------:  | :-----------------: | :-------: |
