@@ -1,7 +1,10 @@
-# Python script
+#!/usr/bin/env python3
+#
+# This Python script generate a figure which shows a trade off relationship
+# between inference time and test accuracy on MNIST dataset.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : Jun 30, 2019
+# Date  : Nov 16, 2019
 #################################### SOURCE START ###################################
 
 import numpy             as np
@@ -22,13 +25,22 @@ SCORES_RFF = np.array([[  64,  36.795353,   9.378099, 89.39],
                        [1408, 247.876134, 156.303930, 97.35],
                        [1536, 271.724527, 198.049259, 97.24]])
 
-mpl.figure()
-mpl.plot(SCORES_RFF[:, 2], SCORES_RFF[:, 3], "-o")
-mpl.grid()
-mpl.title("Performance of SVM with RFF")
-mpl.xlabel("Inference time [us]")
-mpl.ylabel("Test accuracy on MNIST [%]")
-mpl.savefig("figure_rff_and_orf_svc_for_mnist.png")
+fig = mpl.figure()
+axs = fig.add_subplot(111)
+
+axs.grid()
+axs.set_title("Performance of SVM with RFF")
+axs.set_xlabel("Inference time [us]")
+axs.set_ylabel("Test accuracy on MNIST [%]")
+axs.set_xlim(0, 225)
+axs.set_ylim(88, 98)
+
+for dim, _, x, y in SCORES_RFF:
+    axs.plot(x, y, "o", label = "d=%d" % dim)
+
+axs.legend()
+fig.savefig("figure_rff_svc_for_mnist.png")
 
 #################################### SOURCE FINISH ##################################
+# vim: expandtab tabstop=4 shiftwidth=4 fdm=marker
 # Ganerated by grasp version 0.0

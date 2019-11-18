@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 #
-# Python script
+# Python script for downloading MNIST dataset and convert them to
+# .npy format which is easy to read, train and test for a Python script.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : Sep 16, 2019
+# Date  : Nov 16, 2019
 #################################### SOURCE START ###################################
 
 import os
@@ -12,29 +13,34 @@ import numpy as np
 
 BYTE_ORDER = "big"
 
+
+### Run 'wget' command if the target file does not exist.
 def download_MNIST(filepath):
-# {{{
 
-    if not os.path.exists(filepath):
-        print("File '%s' not exists. Downloading..." % filepath)
-        url = "http://yann.lecun.com/exdb/mnist/%s" % filepath
-        cmd = "wget %s ." % url
-        os.system(cmd)
+    if os.path.exists(filepath):
+        print("File '%s' already exists. Skip it." % filepath)
+        return
 
-# }}}
+    url = "http://yann.lecun.com/exdb/mnist/%s" % filepath
+    cmd = "wget %s ." % url
+    os.system(cmd)
 
+
+### Convert MNIST image data to npy format.
 def convert_image_data(filepath_input, filepath_output):
-# {{{
 
+    ### Skip the following procedure if the output file exists.
     if os.path.exists(filepath_output):
         print("File '%s' already exists. Skip it." % filepath_output)
         return
 
     print("Convert: %s -> %s" % (filepath_input, filepath_output))
 
+    ### Unzip downloaded file.
     with gzip.open(filepath_input, "rb") as ifp:
         data = ifp.read()
 
+    ### Parse header information.
     identifier = int.from_bytes(data[ 0: 4], BYTE_ORDER)
     num_images = int.from_bytes(data[ 4: 8], BYTE_ORDER)
     image_rows = int.from_bytes(data[ 8:12], BYTE_ORDER)
@@ -54,20 +60,22 @@ def convert_image_data(filepath_input, filepath_output):
 
     np.save(filepath_output, images)
 
-# }}}
 
+### Convert MNIST label data to npy format.
 def convert_label_data(filepath_input, filepath_output):
-# {{{
 
+    ### Skip the following procedure if the output file exists.
     if os.path.exists(filepath_output):
         print("File '%s' already exists. Skip it." % filepath_output)
         return
 
     print("Convert: %s -> %s" % (filepath_input, filepath_output))
 
+    ### Unzip downloaded file.
     with gzip.open(filepath_input, "rb") as ifp:
         data = ifp.read()
 
+    ### Parse header information.
     identifier = int.from_bytes(data[ 0: 4], BYTE_ORDER)
     num_images = int.from_bytes(data[ 4: 8], BYTE_ORDER)
 
@@ -78,24 +86,22 @@ def convert_label_data(filepath_input, filepath_output):
 
     np.save(filepath_output, labels)
 
-# }}}
 
 if __name__  == "__main__":
-# {{{
 
-    ### Download
+    ### Download MNIST.
     download_MNIST("train-images-idx3-ubyte.gz")
     download_MNIST("train-labels-idx1-ubyte.gz")
     download_MNIST("t10k-images-idx3-ubyte.gz")
     download_MNIST("t10k-labels-idx1-ubyte.gz")
 
-    ### Convert
+    ### Convert to npy format.
     convert_image_data("train-images-idx3-ubyte.gz", "MNIST_train_images.npy")
     convert_label_data("train-labels-idx1-ubyte.gz", "MNIST_train_labels.npy")
     convert_image_data("t10k-images-idx3-ubyte.gz",  "MNIST_test_images.npy")
     convert_label_data("t10k-labels-idx1-ubyte.gz",  "MNIST_test_labels.npy")
 
-# }}}
 
 #################################### SOURCE FINISH ##################################
+# vim: expandtab tabstop=4 shiftwidth=4 fdm=marker
 # Ganerated by grasp version 0.0

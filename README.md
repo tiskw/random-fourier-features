@@ -1,9 +1,8 @@
 Random Fourier Features
 ====
 
-
-Python module of random fourier features (RFF) and orthogonal random features (ORF) for regression and support vector machines [1, 2].
-Features of this RFF/ORF module is that interfaces of the module is quite close to the scikit-learn.
+Python module of random fourier features (RFF) for regression and support vector machines [1].
+Features of this RFF module is that interfaces of the module is quite close to the scikit-learn.
 Also, this module needs scikit-learn as a backend of SVM solver.
 
 Now this module only has a module for classification (RandomFourierFeatures.SVC),
@@ -41,7 +40,7 @@ See example/ directory for more detailed examples.
 I tried MNIST which is a famous benchmark dataset for classification task using SVM with RFF,
 and I've got a better performance and much faster inference speed than kernel SVM.
 The following table gives a brief comparison of kernel SVM and SVM with RFF.
-See [this README.md](https://github.com/tiskw/RandomFourierFeatures/blob/master/examples/rff_and_orf_svc_for_mnist/README.md) for mode details.
+See [the example of RFFSVC mofule](https://github.com/tiskw/RandomFourierFeatures/blob/master/examples/rff_svc_for_mnist/README.md) for mode details.
 
 | Method                   | Inference time (us) | Score (%) |
 | :---------------------:  | :-----------------: | :-------: |
