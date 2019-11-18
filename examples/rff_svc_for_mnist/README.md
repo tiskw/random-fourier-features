@@ -1,7 +1,7 @@
-Random Fourier Features: RFF and ORF for MNIST dataset
+Random Fourier Features: RFF for MNIST dataset
 ====
 
-This python script provide an example for RFF/ORF SVC with MNIST dataset.
+This python script provide an example for RFF SVC with MNIST dataset.
 Our module for random fourier features (PyRFFF.py) needs scikit-learn as a backend of SVM solver therefore you need to install scikit-learn.
 
 
@@ -13,19 +13,18 @@ If you don't have scikit-learn, please run the following as root to install it:
 
 Also, you need to download and convert MNIST data before running sample code by the following command:
 
-    $ cd ../../data
+    $ cd ../../dataset/mnist
     $ python3 download_and_convert_mnist.py
 
-Original MNIST data will be downloaded automatically and converted to .npy file.
+Original MNIST data will be automatically downloaded, converted to .npy file and save them under mnist/ directory.
 
 
 ## Usage
 
-After generating MNIST .npy files, run sample script by the following command:
+After generating MNIST .npy files, run sample scripts by the following command:
 
-    $ python3 sample_rff_batch_svc_for_mnist.py kernel   # Run kernel SVC
-    $ python3 sample_rff_batch_svc_for_mnist.py rff      # Run SVC with RFF
-    $ python3 sample_rff_batch_svc_for_mnist.py orf      # Run SVC with ORF
+    $ python3 sample_rff_svc_for_mnist.py kernel   # Run kernel SVC
+    $ python3 sample_rff_svc_for_mnist.py rff      # Run SVC with RFF
 
 Parameters of each method are hard-corded in the Python script.
 
@@ -45,7 +44,7 @@ Where score means test accuracy of MNIST dataset and inference time means infere
 Commonly used techniques like data normalization and dimention reduction using PCA is also used in the above analysis.
 See comments in the Python script for details.
 
-Score of RFF is slightly better than kernel SVM, moreover, prediction time of RFF and ORF is amazingly faster.
+Score of RFF is slightly better than kernel SVM, moreover, prediction time of RFF is amazingly faster.
 On the otherhand, learning time of RFF can be longer than kernel SVM if dimention of RFF is large.
 
 The following figures shows a tradeoff between accuracy and inference time of RFF.

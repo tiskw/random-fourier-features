@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 #
-# Python script
+# Python module of regression and support vector machine using random fourier features.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : Oct 20, 2018
+# Date  : Nov 16, 2019
 #################################### SOURCE START ###################################
 
 import numpy as np
@@ -11,22 +11,12 @@ import scipy.stats
 import sklearn.svm
 import sklearn.multiclass
 
-__version__ = "1.0"
+__version__ = "1.1"
 
 def seed(seed):
 # {{{
 
     np.random.seed(seed)
-
-# }}}
-
-def conv_RFF(X, W):
-# {{{
-
-    ts = np.dot(X, W)
-    cs = np.cos(ts)
-    ss = np.sin(ts)
-    return np.bmat([cs, ss])
 
 # }}}
 
@@ -54,7 +44,10 @@ class RFFRegression:
             self.W = self.std * np.random.randn(length, self.dim)
 
     def conv(self, X):
-        return conv_RFF(X, self.W)
+        ts = np.dot(X, self.W)
+        cs = np.cos(ts)
+        ss = np.sin(ts)
+        return np.bmat([cs, ss])
 
     def fit(self, X, y, **args):
         self.set_weight(X.shape[1])
@@ -85,7 +78,10 @@ class RFFSVC:
             self.W = self.std * np.random.randn(length, self.dim)
 
     def conv(self, X):
-        return conv_RFF(X, self.W)
+        ts = np.dot(X, self.W)
+        cs = np.cos(ts)
+        ss = np.sin(ts)
+        return np.bmat([cs, ss])
 
     def fit(self, X, y, **args):
         self.set_weight(X.shape[1])
@@ -152,44 +148,17 @@ class RFFBatchSVC:
                 index_end = batch_size * (batch + 1)
                 self.train_batch(X[index_bgn:index_end, :], y[index_bgn:index_end], test, **args)
                 if test is not None:
-                    print("Epoch = %d, Batch = %d, Accuracy = %.2f [%%]" % (epoch, batch, 100.0 * self.score(test[0], test[1])))
+                    print("Epoch = %d, Batch = %d, Accuracy = %.2f [%%]" % (epoch, batch, 100.0 * self.score(test[0], test[1], **args)))
 
-        return self
-
-    def predict(self, X):
-        svc = rff.SVC(self.dim, self.std, self.W)
-        return np.argmax(np.dot(svc.conv(X), self.coef.T) + self.icpt, axis = 1)
-
-    def score(self, X, y):
-        pred  = self.predict(X)
-        return np.mean([(1 if pred[n, 0] == y[n] else 0) for n in range(X.shape[0])])
-
-# }}}
-
-class ORFSVC:
-# {{{
-
-    def __init__(self, dim_output, std = 0.1, multi_mode = "ovr", **args):
-        self.dim = dim_output
-        self.std = std
-        self.svm = select_classifier(multi_mode, sklearn.svm.LinearSVC(**args))
-
-    def conv(self, X):
-        return conv_RFF(X, self.W)
-
-    def fit(self, X, y, **args):
-        self.G = np.random.randn(X.shape[1], self.dim)
-        self.S = np.diag(scipy.stats.chi.rvs(X.shape[1], size = X.shape[1]))
-        self.Q = np.linalg.qr(self.G)[0]
-        self.W = self.std * np.dot(self.S, self.Q)
-        self.svm.fit(self.conv(X), y, **args)
         return self
 
     def predict(self, X, **args):
-        return self.svm.predict(self.conv(X), **args)
+        svc = RFFSVC(self.dim, self.std, self.W, **args)
+        return np.argmax(np.dot(svc.conv(X), self.coef.T) + self.icpt.flatten(), axis = 1)
 
     def score(self, X, y, **args):
-        return self.svm.score(self.conv(X), y, **args)
+        pred  = self.predict(X)
+        return np.mean([(1 if pred[n, 0] == y[n] else 0) for n in range(X.shape[0])])
 
 # }}}
 

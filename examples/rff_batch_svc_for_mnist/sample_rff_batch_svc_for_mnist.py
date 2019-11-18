@@ -12,9 +12,9 @@ import os
 ### Add path to PyRFF.py
 ### The followings are not necessary if you copied PyRFF.py to the current directory
 ### or other directory which is included in the Python path
-# current_dir = os.path.dirname(__file__)
-# module_path = os.path.join(current_dir, "../../source")
-# sys.path.append(module_path)
+current_dir = os.path.dirname(__file__)
+module_path = os.path.join(current_dir, "../../source")
+sys.path.append(module_path)
 
 import time
 import traceback
@@ -65,17 +65,18 @@ def main():
     pyrff.seed(111)
 
     ### Create classifier instance
-    svc = pyrff.RFFBatchSVC(dim = 1280, std = 0.10, num_epochs = 10, num_batches = 10, alpha = 0.05)
+    # svc = pyrff.RFFBatchSVC(dim = 1024, std = 0.10, num_epochs = 10, num_batches = 10, alpha = 0.05)
+    svc = pyrff.RFFBatchSVC(dim = 1024, std = 0.05, num_epochs = 10, num_batches = 3, alpha = 0.15)
 
     ### Load training data
     with Timer("Loading training data: "):
-        Xs_train = vectorise_MNIST_images("../../data/MNIST_train_images.npy")
-        ys_train = vectorise_MNIST_labels("../../data/MNIST_train_labels.npy")
+        Xs_train = vectorise_MNIST_images("../../dataset/mnist/MNIST_train_images.npy")
+        ys_train = vectorise_MNIST_labels("../../dataset/mnist/MNIST_train_labels.npy")
 
     ### Load test data
     with Timer("Loading test data: "):
-        Xs_test = vectorise_MNIST_images("../../data/MNIST_test_images.npy")
-        ys_test = vectorise_MNIST_labels("../../data/MNIST_test_labels.npy")
+        Xs_test = vectorise_MNIST_images("../../dataset/mnist/MNIST_test_images.npy")
+        ys_test = vectorise_MNIST_labels("../../dataset/mnist/MNIST_test_labels.npy")
 
     ### Create matrix for principal component analysis
     with Timer("Calculate PCA matrix: "):
