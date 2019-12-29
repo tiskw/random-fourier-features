@@ -65,5 +65,5 @@ See [the example of RFFSVC mofule](https://github.com/tiskw/RandomFourierFeature
 
 ## Author
 
-Tetsuya Ishikawa (https://github.com/tiskw)
+Tetsuya Ishikawa (https://gitlab.com/tiskw)
 
