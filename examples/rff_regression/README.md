@@ -23,7 +23,7 @@ $ python3 main_rff_regression.py
 
 The following figure shows regression results for the function y = sin(x^2) with RFF where the dimension of RFF is 16.
 
-<p align="center">
+<div align="center">
   <img src="./figure_rff_regression.png" width="600" height="480" alt="Regression results for function y = sin(x^2) with RFF" />
-</p>
+</div>
 
