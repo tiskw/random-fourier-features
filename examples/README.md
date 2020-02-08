@@ -7,9 +7,9 @@ This directory contains the example code for PyRFF module.
 An example for regression using Random Fourier Features.
 See [README.md](./rff_regression/README.md) for more details.
 
-<p align="center">
+<div align="center">
   <img src="./rff_regression/figure_rff_regression.png" width="600" height="480" alt="Regression results for function y = sin(x^2) with RFF" />
-</p>
+</div>
 
 ## Support Vector Classification using Random Fourier Features
 
