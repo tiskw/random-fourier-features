@@ -1,52 +1,63 @@
 Random Fourier Features
 ====
 
-Python module of random fourier features (RFF) for regression and support vector machines [1].
+Python module of random fourier features (RFF) for regression and support vector classification [1].
 Features of this RFF module is that interfaces of the module is quite close to the scikit-learn.
 Also, this module needs scikit-learn as a backend of SVM solver.
 
-Now this module only has a module for classification (RandomFourierFeatures.SVC),
+Now this module only has a module for regression (PyRFF.RFFRegression) and classification (PyRFF.RFFSVC),
 however I will provide other SVM functions soon.
+
+Also, RFF support vector classifier (RyRFF.RFFSVC) support GPU inference.
 
 
 ## Requirement
 
-- Python 3.6.6
-- Numpy 1.13.3
-- Scipy 0.19.1
-- scikit-learn 0.19.1
+- Python 3.6.9
+- docopt 0.6.2
+- Numpy 1.18.1
+- Scipy 1.4.1
+- scikit-learn 0.22.1
+- Tensorflow 2.1.0 (for GPU inference)
 
 
 ## Minimal example
 
-Regression and support vector classification is implemented in source/PyRFF.py
+Regression and support vector classification is implemented in `source/PyRFF.py`
 and usage of the classes provided by this module is quite close to Scikit-learn.
 For example, the following Python code is a sample usage of RFF regression class:
 
-    >>> import numpy as np
-    >>> import PyRFF as pyrff
-    >>> X = np.array([[1], [2], [3], [4]])
-    >>> y = X**2
-    >>> reg = pyrff.RFFRegression().fit(X, y)
-    >>> reg.score(X, y)
-    1.0
-    >>> reg.predict(np.array([[1.5]]))
-    array([[ 2.25415897]])
+```python
+>>> import numpy as np
+>>> import PyRFF as pyrff
+>>> X = np.array([[1], [2], [3], [4]])
+>>> y = X**2
+>>> reg = pyrff.RFFRegression().fit(X, y)
+>>> reg.score(X, y)
+1.0
+>>> reg.predict(np.array([[1.5]]))
+array([[ 2.25415897]])
+```
 
-See example/ directory for more detailed examples.
+See `example/` directory for more detailed examples.
 
 ## MNIST using RFF and SVM
 
-I tried MNIST which is a famous benchmark dataset for classification task using SVM with RFF,
+I applied SVM with RFF to MNIST which is a famous benchmark dataset for classification task,
 and I've got a better performance and much faster inference speed than kernel SVM.
 The following table gives a brief comparison of kernel SVM and SVM with RFF.
-See [the example of RFFSVC mofule](https://github.com/tiskw/RandomFourierFeatures/blob/master/examples/rff_svc_for_mnist/README.md) for mode details.
+See [the example of RFFSVC mofule](./examples/rff_svc_for_mnist/README.md) for mode details.
 
 | Method                   | Inference time (us) | Score (%) |
 | :---------------------:  | :-----------------: | :-------: |
 | Kernel SVM               | 4644.9 us           | 96.3 %    |
-| SVM w/ RFF <br> d = 512  | 39.0 us             | 96.5 %    |
-| SVM w/ RFF <br> d = 1024 | 96.1 us             | 97.5 %    |
+| SVM w/ RFF (d=512)       | 39.0 us             | 96.5 %    |
+| SVM w/ RFF (d=1024)      | 96.1 us             | 97.5 %    |
+| SVM w/ RFF (d=1024, GPU) | 2.38 us             | 97.5 %    |
+
+<div align="center">
+  <img src="./examples/rff_svc_for_mnist/Inference_Time_and_Accuracy_on_MNIST.png" width="480" height="320" alt="Accuracy for each epochs in SVM with batch RFF" />
+</div>
 
 
 ## Licence
