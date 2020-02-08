@@ -36,7 +36,7 @@ Original MNIST data will be downloaded automatically and converted to .npy file.
 After generating MNIST .npy files, run sample script by the following command:
 
 ```console
-$ python3 sample_rff_batch_svc_for_mnist.py
+$ python3 main_rff_batch_svc_for_mnist.py
 ```
 
 You possibly have many warnings from liblinear (e.g. ConvergenceWarning: Liblinear failed to converge, ...).
@@ -56,11 +56,9 @@ In my computing environment (CPU: Intl Core i5 5250U, RAM: 4GB), I've got the fo
 | SVM w/ batched RFF <br> d = 1024 | 2062.2 sec          | 108.6 us            | 96.4 %    |
 
 <div align="center">
-  <img src="figure_rff_batch_svc_for_mnist.png" width="480" height="320" alt="Accuracy for each epochs in SVM with batch RFF" />
+  <img src="./figure_rff_batch_svc_for_mnist.png" width="480" height="320" alt="Accuracy for each epochs in SVM with batch RFF" />
 </div>
 
-As the author pointed out on the top of this document, the above results is worse than
-[usual SVC training](https://github.com/tiskw/RandomFourierFeatures/blob/master/examples/rff_svc_for_mnist/README.md).
+As the author pointed out on the top of this document, the above results is worse than [usual SVC training](../rff_svc_for_mnist/README.md).
 However, the author's guess is that batch learing exceeds non-batch learning in case of larger and more complicated dataset than MNIST.
-
 

@@ -36,10 +36,12 @@ If you don't need GPU support, `--runtime=nvidia` is not necessary.
 ## Dataset Preparation
 
 Also, you need to download and convert MNIST data before running sample code by the following command:
+
 ```console
 $ cd ../../dataset/mnist
 $ python3 download_and_convert_mnist.py
 ```
+
 Original MNIST data will be automatically downloaded, converted to .npy file and save them under mnist/ directory.
 
 
@@ -86,7 +88,7 @@ As for inference using GPU, I've got the following result:
 | SVM w/ RFF | 1024             | TitanXp | 2,000      | 2.38 us             | 97.5 %    |
 
 <div align="center">
-  <img src="Inference_Time_and_Accuracy_on_MNIST.png" width="480" height="320" alt="Accuracy for each epochs in SVM with batch RFF" />
+  <img src="./figures/figure_Inference_Time_and_Accuracy_on_MNIST.png" width="600" height="371" alt="Inference Time vs Accuracy on MNIST" />
 </div>
 
 Where score means test accuracy of MNIST dataset and inference time means inference time for one image.
@@ -100,6 +102,6 @@ On the otherhand, learning time of RFF can be longer than kernel SVM if dimentio
 The following figures shows a tradeoff between accuracy and inference time of RFF.
 
 <div align="center">
-  <img src="figure_rff_and_orf_svc_for_mnist.png" width="480" height="320" alt="Accuracy for each epochs in SVM with batch RFF" />
+  <img src="./figures/figure_rff_svc_for_mnist.png" width="480" height="320" alt="Accuracy for each dimention in RFF SVC" />
 </div>
 

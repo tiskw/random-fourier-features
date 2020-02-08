@@ -3,15 +3,14 @@
 # Python module of regression and support vector machine using random fourier features.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : Nov 16, 2019
+# Date  : February 08, 2020
 #################################### SOURCE START ###################################
 
 import numpy as np
-import scipy.stats
 import sklearn.svm
 import sklearn.multiclass
 
-__version__ = "1.1.1"
+__version__ = "1.2.0"
 
 def seed(seed):
 # {{{
@@ -87,6 +86,14 @@ class RFFSVC:
         self.set_weight(X.shape[1])
         self.svm.fit(self.conv(X), y, **args)
         return self
+
+    def predict_proba(self, X, **args):
+        self.set_weight(X.shape[1])
+        return self.svm.predict_proba(self.conv(X), **args)
+
+    def predict_log_proba(self, X, **args):
+        self.set_weight(X.shape[1])
+        return self.svm.predict_log_proba(self.conv(X), **args)
 
     def predict(self, X, **args):
         self.set_weight(X.shape[1])

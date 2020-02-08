@@ -4,7 +4,7 @@
 # SVM classifier using RFF. Interface of RFFSVC is quite close to sklearn.svm.SVC.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : February 07, 2020
+# Date  : February 08, 2020
 ##################################################### SOURCE START #####################################################
 
 """
@@ -26,7 +26,6 @@ Options:
     -h, --help          Show this message.
 """
 
-
 import sys
 import os
 
@@ -40,11 +39,9 @@ sys.path.append(module_path)
 import time
 import pickle
 import docopt
-import numpy   as np
-import sklearn as skl
-import PyRFF   as pyrff
-
-### NOTE: Tensorflow is imported inside 'main_tensorflow' for users who run only CPU inference and don't have tensorflow-gpu.
+import numpy     as np
+import sklearn   as skl
+import PyRFF     as pyrff
 
 
 ### Load train/test image data.
@@ -84,12 +81,12 @@ class Timer:
 
 
 ### Inference using CPU.
-def main_cpu(args):
+def main(args):
 
     ### Load test data.
     with Timer("Loading test data: "):
-        Xs_test = vectorise_MNIST_images(os.path.join(args["--input"], "MNIST_test_images.npy"))
-        ys_test = vectorise_MNIST_labels(os.path.join(args["--input"], "MNIST_test_labels.npy"))
+        Xs_test = vectorise_MNIST_images(os.path.join(args["--input"], "MNIST_test_images.npy")).astype(np.float32)
+        ys_test = vectorise_MNIST_labels(os.path.join(args["--input"], "MNIST_test_labels.npy")).astype(np.float32)
 
     ### Load pickled result.
     with Timer("Loading model: "):
@@ -98,98 +95,21 @@ def main_cpu(args):
         svc = result["svc"]
         T   = result["pca"]
 
+    ### Only GPU inference: Convert PyRFF.RFFSVC -> PyRFF_GPU.RFFSVC_GPU and overwrite 'svc' variable.
+    if args["tensorflow"]:
+        import tensorflow as tf
+        import PyRFF_GPU  as pyrff_gpu
+        svc = pyrff_gpu.RFFSVC_GPU(svc, T, args["--batch_size"])
+
     ### Calculate score for test data.
     with Timer("SVM prediction time for 1 image: ", unit = "us", devide_by = ys_test.shape[0]):
-        score = 100 * svc.score(Xs_test.dot(T), ys_test)
+
+        ### In case of GPU inference, Calculation of PCA ".dot(T)" is not necessary because PCA matrix T is
+        ### embedded to GPU computation graph as a preprocessing matrix for faster calculation.
+        if   args["cpu"]       : score = 100 * svc.score(Xs_test.dot(T), ys_test)
+        elif args["tensorflow"]: score = 100 * svc.score(Xs_test,        ys_test)
+
     print("Score = %.2f [%%]" % score)
-
-
-### Inference using GPU.
-def main_tensorflow(args):
-
-    import tensorflow as tf
-
-    ### Function for building Tensorflow model of RFF.
-    def build_model_tensorflow(svc, M_pca, batch_size):
-
-        ### Create parameters on CPU at first.
-        ###   - W: Random matrix of Random Fourier Features.
-        ###        If PCA applied, combine it to the random matrix for high throughput.
-        ###   - A: Coefficients of Linear SVC.
-        ###   - b: Intercepts of Linear SVC.
-        W_cpu = M_pca.dot(svc.W)
-        A_cpu = svc.svm.coef_.T
-        b_cpu = svc.svm.intercept_.T
-
-        ### Cureate psuedo input on CPU for GPU variable creation.
-        x_cpu = np.zeros((batch_size, W_cpu.shape[0]), dtype = np.float32)
-
-        ### Create GPU variables.
-        x_gpu = tf.Variable(x_cpu, dtype = tf.float32)
-        W_gpu = tf.constant(W_cpu, dtype = tf.float32)
-        A_gpu = tf.constant(A_cpu, dtype = tf.float32)
-        b_gpu = tf.constant(b_cpu, dtype = tf.float32)
-
-        ### Model is only a tuple of necessary variables and constants.
-        model = (x_gpu, W_gpu, A_gpu, b_gpu)
-
-        ### Run the GPU model for creating the graph (because we are in the eager-mode here).
-        _ = run_model_tensorflow(x_cpu, *model)
-
-        return model
-
-    ### Function for running the Tensorflow model of RFF.
-    @tf.function
-    def run_model_tensorflow(x_cpu, x_gpu, W_gpu, A_gpu, b_gpu):
-        x_gpu.assign(x_cpu)
-        z = tf.matmul(x_gpu, W_gpu)
-        z = tf.concat([tf.cos(z), tf.sin(z)], 1)
-        return tf.matmul(z, A_gpu) + b_gpu
-
-    ### Load test data.
-    with Timer("Loading test data: "):
-        Xs_test = vectorise_MNIST_images(os.path.join(args["--input"], "MNIST_test_images.npy")).astype(np.float32)
-        ys_test = vectorise_MNIST_labels(os.path.join(args["--input"], "MNIST_test_labels.npy")).astype(np.float32)
-
-    ### Load trained model.
-    with Timer("Loading model: "):
-        with open(args["--model"], "rb") as ifp:
-            result = pickle.load(ifp)
-        svc = result["svc"]
-        T   = result["pca"]
-
-    ### Only RFFSVC support GPU inference.
-    if type(svc) != pyrff.RFFSVC:
-        exit("GPU inference is available only PyRFF.RFFSVC class.")
-
-    ### TODO: One-versus-one classifier is not supported now.
-    if svc.svm.get_params()["estimator__multi_class"] != "ovr":
-        exit("Sorry, current implementation support only One-versus-the-rest classifier.")
-
-    ### Calsulate batch size and butch numbers.
-    b_size = args["--batch_size"]
-    b_num  = Xs_test.shape[0] // b_size
-
-    ### Warning: fractions of the batches are ignored.
-    ###          For guaranteeing the correct accuracy, this software will abort is fraction is not zero.
-    if Xs_test.shape[0] % b_size != 0:
-        exit("Batch size must be a divisor of total data number (= %d)." % Xs_test.shape[0])
-
-    ### Build tensorflow model.
-    model = build_model_tensorflow(svc, T, args["--batch_size"])
-
-    ### Prepare a vector to store the inference results.
-    result = np.zeros(ys_test.shape)
-
-    ### Run inference for each batch.
-    with Timer("SVM prediction time for 1 image: ", unit = "us", devide_by = ys_test.shape[0]):
-        for n in range(b_num):
-            batch_Xs = Xs_test[b_size*n:b_size*(n+1), :]
-            batch_ys = ys_test[b_size*n:b_size*(n+1)]
-            logits   = run_model_tensorflow(batch_Xs, *model)
-            result[b_size*n:b_size*(n+1)] = np.argmax(logits, 1)
-        total_score = 100.0 * np.mean(result == ys_test)
-    print("Score = %.2f [%%]" % total_score)
 
 
 if __name__ == "__main__":
@@ -203,8 +123,7 @@ if __name__ == "__main__":
         except: args[k] = str(v)
 
     ### Run main procedure.
-    if   args["cpu"]       : main_cpu(args)
-    elif args["tensorflow"]: main_tensorflow(args)
+    main(args)
 
 
 ##################################################### SOURCE FINISH ####################################################
