@@ -1,9 +1,9 @@
 Random Fourier Features: RFF for MNIST dataset
 ====
 
-This python script provide an example for RFF SVC with MNIST dataset.
-Our module for random fourier features (PyRFFF.py) needs scikit-learn as a backend of SVM solver therefore you need to install scikit-learn.
-Also, this script support GPU inference of RFF SVC (only one-versus-the-rest is supported now). for running GPU inference, you need to install Tensorflow 2.x (Tensorflow 1.x is not supported).
+This python script provides an example for RFF SVC with MNIST dataset.
+Our module for Random Fourier Features (PyRFFF.py) needs scikit-learn as a backend of SVM solver therefore you need to install scikit-learn.
+Also, this script supports GPU inference of RFF SVC (only one-versus-the-rest is supported now). for running GPU inference, you need to install Tensorflow 2.x (Tensorflow 1.x is not supported).
 
 
 ## Installation
@@ -20,8 +20,8 @@ $ pip3 install tensorflow-gpu       # Required only for GPU inference
 
 ### Docker image (alternative)
 
-If you does not like to pollute your development environment, it is good idea to run everything inside Docker.
-Scripts in this directory are execultable on [this docker image](https://hub.docker.com/repository/docker/tiskw/tensorflow).
+If you don't like to pollute your development environment, it is a good idea to run everything inside Docker.
+Scripts in this directory are executable on [this docker image](https://hub.docker.com/repository/docker/tiskw/tensorflow).
 
 ```console
 $ docker pull tiskw/tensorflow:2020-01-18    # Download docker image from DockerHub
@@ -35,7 +35,7 @@ If you don't need GPU support, `--runtime=nvidia` is not necessary.
 
 ## Dataset Preparation
 
-Also, you need to download and convert MNIST data before running sample code by the following command:
+Also, you need to download and convert MNIST data before running the sample code by the following command:
 
 ```console
 $ cd ../../dataset/mnist
@@ -54,7 +54,7 @@ $ python3 train_rff_svc_for_mnist.py kernel   # Run kernel SVC training
 $ python3 train_rff_svc_for_mnist.py rff      # Run SVC with RFF training
 ```
 
-Default hyper parameter settings are reccomended one, however, you are able change the parameters by command option.
+Default hyperparameter settings are recommended one, however, you are able to change the parameters by command option.
 The following command will generate `result.pickle` in which trained model and command arguments are stored.
 See `train_rff_svc_for_mnist.py --help` for details.
 
@@ -81,7 +81,7 @@ In my computing environment (CPU: Intl Core i5 5250U, RAM: 4GB), I've got the fo
 
 As for inference using GPU, I've got the following result:
 
-| Method     | Dimention of RFF | Device  | Batch size | Inference time (us) | Score (%) |
+| Method     | Dimension of RFF | Device  | Batch size | Inference time (us) | Score (%) |
 | :-------:  | :--------------: | :-----: | :---------:| :-----------------: | :-------: |
 | SVM w/ RFF | 512              | CPU     | -          | 39.0 us             | 96.5 %    |
 | SVM w/ RFF | 1024             | CPU     | -          | 96.1 us             | 97.5 %    |
@@ -93,13 +93,13 @@ As for inference using GPU, I've got the following result:
 
 Where score means test accuracy of MNIST dataset and inference time means inference time for one image.
 
-Commonly used techniques like data normalization and dimention reduction using PCA is also used in the above analysis.
+Commonly used techniques like data normalization and dimension reduction using PCA is also used in the above analysis.
 See comments in the Python script for details.
 
-Score of RFF is slightly better than kernel SVM, moreover, prediction time of RFF is amazingly faster.
-On the otherhand, learning time of RFF can be longer than kernel SVM if dimention of RFF is large.
+The Score of RFF is slightly better than kernel SVM, moreover, the inference time of RFF is amazingly faster.
+On the other hand, the learning time of RFF can be longer than kernel SVM if the dimension of RFF is large.
 
-The following figures shows a tradeoff between accuracy and inference time of RFF.
+The following figure shows a tradeoff between the accuracy and inference time of RFF.
 
 <div align="center">
   <img src="./figures/figure_rff_svc_for_mnist.png" width="480" height="320" alt="Accuracy for each dimention in RFF SVC" />
