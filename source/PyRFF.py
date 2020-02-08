@@ -11,7 +11,7 @@ import scipy.stats
 import sklearn.svm
 import sklearn.multiclass
 
-__version__ = "1.1"
+__version__ = "1.1.1"
 
 def seed(seed):
 # {{{
@@ -164,4 +164,3 @@ class RFFBatchSVC:
 
 #################################### SOURCE FINISH ##################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker
-# Ganerated by grasp version 0.0

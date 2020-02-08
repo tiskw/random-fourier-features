@@ -9,12 +9,15 @@ Our module for random fourier features (PyRFFF.py) needs scikit-learn as a backe
 
 If you don't have scikit-learn, please run the following as root to install it:
 
-    # pip3 install scikit-learn
+```console
+$ pip3 install scikit-learn
+```
 
 You can run the example code by the following command:
 
-    $ python3 sample_rff_regression.py
-
+```console
+$ python3 sample_rff_regression.py
+```
 
 ## Results of Regression with RFF
 
