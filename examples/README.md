@@ -25,7 +25,7 @@ See [README.md](./rff_svc_for_mnist/README.md) for more details.
 An example of support vector classification with batch learning for [MNIST](http://yann.lecun.com/exdb/mnist/) dataset using Random Fourier Features.
 See [README.md](./rff_batch_svc_for_mnist/README.md) for more details.
 
-However, you do not need to pay much attention for this example because
+However, you do not need to pay much attention to this example because
 [non-batch learning approach](./rff_svc_for_mnist/README.md)
-(i.e. usual SVC training using all dataset) now shows more higher performance than the batch learning approach.
+(i.e. usual SVC training using all dataset) now shows higher performance than the batch learning approach.
 

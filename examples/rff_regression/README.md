@@ -1,8 +1,8 @@
 Random Fourier Features: Sample RFF Regression
 ====
 
-This python script provides an example for regression with Random Fourier Features.
-Our module for random fourier features (PyRFFF.py) needs scikit-learn as a backend of SVM solver therefore you need to install scikit-learn.
+This python script provides an example of regression with Random Fourier Features.
+Our module for Random Fourier Features (PyRFFF.py) needs scikit-learn as a backend of SVM solver therefore you need to install scikit-learn.
 
 
 ## Usage
@@ -21,7 +21,7 @@ $ python3 main_rff_regression.py
 
 ## Results of Regression with RFF
 
-The following figure shows a regression results for the function y = sin(x^2) with RFF where dimension of RFF is 16.
+The following figure shows regression results for the function y = sin(x^2) with RFF where the dimension of RFF is 16.
 
 <p align="center">
   <img src="./figure_rff_regression.png" width="600" height="480" alt="Regression results for function y = sin(x^2) with RFF" />
