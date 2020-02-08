@@ -55,9 +55,9 @@ In my computing environment (CPU: Intl Core i5 5250U, RAM: 4GB), I've got the fo
 | :------------------------------: | :-----------------: | :-----------------: | :-------: |
 | SVM w/ batched RFF <br> d = 1024 | 2062.2 sec          | 108.6 us            | 96.4 %    |
 
-<p align="center">
+<div align="center">
   <img src="figure_rff_batch_svc_for_mnist.png" width="480" height="320" alt="Accuracy for each epochs in SVM with batch RFF" />
-</p>
+</div>
 
 As the author pointed out on the top of this document, the above results is worse than
 [usual SVC training](https://github.com/tiskw/RandomFourierFeatures/blob/master/examples/rff_svc_for_mnist/README.md).
