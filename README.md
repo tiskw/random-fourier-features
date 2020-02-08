@@ -1,14 +1,13 @@
 Random Fourier Features
 ====
 
-Python module of random fourier features (RFF) for regression and support vector classification [1].
-Features of this RFF module is that interfaces of the module is quite close to the scikit-learn.
-Also, this module needs scikit-learn as a backend of SVM solver.
+Python module of Random Fourier Features (RFF) for regression and support vector classification [1].
+Features of this RFF module are:
+ * interfaces of the module is quite close to the scikit-learn,
+ * module for Support Vector Classification supports GPU inference.
 
-Now this module only has a module for regression (PyRFF.RFFRegression) and classification (PyRFF.RFFSVC),
-however I will provide other SVM functions soon.
-
-Also, RFF support vector classifier (RyRFF.RFFSVC) support GPU inference.
+Now, this module only has a module for regression (`PyRFF.RFFRegression`) and classification (`PyRFF.RFFSVC`, `PyRFF_GPU.RFFSVC_GPU`),
+however, I will provide other SVM functions soon.
 
 
 ## Requirement
@@ -16,37 +15,45 @@ Also, RFF support vector classifier (RyRFF.RFFSVC) support GPU inference.
 - Python 3.6.9
 - docopt 0.6.2
 - Numpy 1.18.1
-- Scipy 1.4.1
 - scikit-learn 0.22.1
 - Tensorflow 2.1.0 (for GPU inference)
 
 
 ## Minimal example
 
-Regression and support vector classification is implemented in `source/PyRFF.py`
-and usage of the classes provided by this module is quite close to Scikit-learn.
+Interfeces provided by our module is quite close to Scikit-learn.
 For example, the following Python code is a sample usage of RFF regression class:
 
 ```python
 >>> import numpy as np
->>> import PyRFF as pyrff
->>> X = np.array([[1], [2], [3], [4]])
->>> y = X**2
->>> reg = pyrff.RFFRegression().fit(X, y)
->>> reg.score(X, y)
+>>> import PyRFF as pyrff                               # Import our module
+>>> X = np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]])  # Define input data
+>>> y = np.array([1, 1, 2, 2])                          # Defile label data
+>>> svc = pyrff.RFFSVC().fit(X, y)                      # Training
+>>> svc.score(X, y)                                     # Inference (on CPU)
 1.0
->>> reg.predict(np.array([[1.5]]))
-array([[ 2.25415897]])
+>>> svc.predict(np.array([[-0.8, -1]]))                                                                                                                                                                             
+array([1])
 ```
 
-See `example/` directory for more detailed examples.
+Also, you are able to run the inference on GPU by adding only two lines, if you have Tensorflow 2.x.
+
+```python
+>>> import PyRFF_GPU as pyrff_gpu    # Import additional module
+>>> svc = pyrff_gpu.RFFSVC_GPU(svc)  # Convert to GPU model
+>>> svc.score(X, y)                  # Inference on GPU
+1.0
+```
+
+See `examples/` directory for more detailed examples.
+
 
 ## MNIST using RFF and SVM
 
 I applied SVM with RFF to MNIST which is a famous benchmark dataset for classification task,
 and I've got a better performance and much faster inference speed than kernel SVM.
 The following table gives a brief comparison of kernel SVM and SVM with RFF.
-See [the example of RFFSVC mofule](./examples/rff_svc_for_mnist/README.md) for mode details.
+See [the example of RFF SVC module](./examples/rff_svc_for_mnist/README.md) for mode details.
 
 | Method                   | Inference time (us) | Score (%) |
 | :---------------------:  | :-----------------: | :-------: |
@@ -56,7 +63,7 @@ See [the example of RFFSVC mofule](./examples/rff_svc_for_mnist/README.md) for m
 | SVM w/ RFF (d=1024, GPU) | 2.38 us             | 97.5 %    |
 
 <div align="center">
-  <img src="./examples/rff_svc_for_mnist/Inference_Time_and_Accuracy_on_MNIST.png" width="480" height="320" alt="Accuracy for each epochs in SVM with batch RFF" />
+  <img src="./examples/rff_svc_for_mnist/figures/figure_Inference_Time_and_Accuracy_on_MNIST.png" width="600" height="371" alt="Accuracy for each epochs in SVM with batch RFF" />
 </div>
 
 
@@ -76,5 +83,5 @@ See [the example of RFFSVC mofule](./examples/rff_svc_for_mnist/README.md) for m
 
 ## Author
 
-Tetsuya Ishikawa (https://gitlab.com/tiskw)
+Tetsuya Ishikawa ([EMail](mailto:tiskw111@gmail.com), [Website](https://sites.google.com/view/tiskw/))
 

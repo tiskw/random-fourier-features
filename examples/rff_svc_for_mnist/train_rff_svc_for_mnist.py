@@ -4,7 +4,7 @@
 # SVM classifier using RFF. Interface of RFFSVC is quite close to sklearn.svm.SVC.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : February 07, 2020
+# Date  : February 08, 2020
 ##################################################### SOURCE START #####################################################
 
 """
