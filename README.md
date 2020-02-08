@@ -55,9 +55,9 @@ See [the example of RFFSVC mofule](./examples/rff_svc_for_mnist/README.md) for m
 | SVM w/ RFF (d=1024)      | 96.1 us             | 97.5 %    |
 | SVM w/ RFF (d=1024, GPU) | 2.38 us             | 97.5 %    |
 
-<p align="center">
+<div align="center">
   <img src="./examples/rff_svc_for_mnist/Inference_Time_and_Accuracy_on_MNIST.png" width="480" height="320" alt="Accuracy for each epochs in SVM with batch RFF" />
-</p>
+</div>
 
 
 ## Licence
