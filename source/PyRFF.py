@@ -3,14 +3,15 @@
 # Python module of regression and support vector machine using random fourier features.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : February 08, 2020
+# Date  : February 19, 2020
 #################################### SOURCE START ###################################
 
 import numpy as np
+import scipy.stats
 import sklearn.svm
 import sklearn.multiclass
 
-__version__ = "1.2.0"
+__version__ = "1.3.0"
 
 def seed(seed):
 # {{{
@@ -166,6 +167,21 @@ class RFFBatchSVC:
     def score(self, X, y, **args):
         pred  = self.predict(X)
         return np.mean([(1 if pred[n, 0] == y[n] else 0) for n in range(X.shape[0])])
+
+# }}}
+
+class ORFSVC(RFFSVC):
+# {{{
+
+    def set_weight(self, length):
+        if self.W is None:
+            for _ in range(self.dim // length + 1):
+                s = scipy.stats.chi.rvs(df = length, size = (length, ))
+                Q = np.linalg.qr(np.random.randn(length, length))[0]
+                W = self.std * np.dot(np.diag(s), Q)
+                if self.W is None: self.W = W
+                else             : self.W = np.concatenate([self.W, W], axis = 1)
+        self.W = self.W[:length, :self.dim]
 
 # }}}
 
