@@ -14,8 +14,8 @@ Overview:
 
 Usage:
     main_rff_svc_for_mnist.py kernel [--input <str>] [--output <str>] [--pcadim <int>] [--kernel <str>] [--gamma <float>] [--C <float>] [--seed <int>]
-    main_rff_svc_for_mnist.py rff [--input <str>] [--output <str>] [--pcadim <int>] [--kdim <int>] [--stdev <float>] [--seed <int>]
-    main_rff_svc_for_mnist.py orf [--input <str>] [--output <str>] [--pcadim <int>] [--kdim <int>] [--stdev <float>] [--seed <int>]
+    main_rff_svc_for_mnist.py rff [--input <str>] [--output <str>] [--pcadim <int>] [--kdim <int>] [--stdev <float>] [--seed <int>] [--cpus <int>]
+    main_rff_svc_for_mnist.py orf [--input <str>] [--output <str>] [--pcadim <int>] [--kdim <int>] [--stdev <float>] [--seed <int>] [--cpus <int>]
     main_rff_svc_for_mnist.py -h|--help
 
 Options:
@@ -31,6 +31,7 @@ Options:
     --kdim <int>     Hyper parameter of RFF SVM (dimention of RFF)       [default: 1024]
     --stdev <float>  Hyper parameter of RFF SVM (stdev of RFF)           [default: 0.05]
     --seed <int>     Random seed.                                        [default: 111]
+    --cpus <int>     Number of available CPUs.                           [default: -1]
     -h, --help       Show this message.
 """
 
@@ -100,8 +101,8 @@ def main(args):
 
     ### Create classifier instance.
     if   args["kernel"]: svc = skl.svm.SVC(kernel = args["--kernel"], gamma = args["--gamma"])
-    elif args["rff"]   : svc = pyrff.RFFSVC(dim_output = args["--kdim"], std = args["--stdev"], tol = 1.0E-3)
-    elif args["orf"]   : svc = pyrff.ORFSVC(dim_output = args["--kdim"], std = args["--stdev"], tol = 1.0E-3)
+    elif args["rff"]   : svc = pyrff.RFFSVC(dim_output = args["--kdim"], std = args["--stdev"], tol = 1.0E-3, n_jobs = args["--cpus"])
+    elif args["orf"]   : svc = pyrff.ORFSVC(dim_output = args["--kdim"], std = args["--stdev"], tol = 1.0E-3, n_jobs = args["--cpus"])
     else               : exit("Error: First argument must be 'kernel' or 'rff'.")
 
     ### Load training data.

@@ -11,7 +11,7 @@ import scipy.stats
 import sklearn.svm
 import sklearn.multiclass
 
-__version__ = "1.3.0"
+__version__ = "1.3.1"
 
 def seed(seed):
 # {{{
@@ -20,13 +20,13 @@ def seed(seed):
 
 # }}}
 
-def select_classifier(mode, svm):
+def select_classifier(mode, svm, n_jobs):
 # {{{
 
     if   mode == "ovo": classifier = sklearn.multiclass.OneVsOneClassifier
     elif mode == "ovr": classifier = sklearn.multiclass.OneVsRestClassifier
     else              : classifier = sklearn.multiclass.OneVsRestClassifier
-    return classifier(svm, n_jobs = -1)
+    return classifier(svm, n_jobs = n_jobs)
 
 # }}}
 
@@ -67,11 +67,11 @@ class RFFRegression:
 class RFFSVC:
 # {{{
 
-    def __init__(self, dim_output = 1024, std = 0.1, W = None, multi_mode = "ovr", **args):
+    def __init__(self, dim_output = 1024, std = 0.1, W = None, multi_mode = "ovr", n_jobs = -1, **args):
         self.dim = dim_output
         self.std = std
         self.W   = W
-        self.svm = select_classifier(multi_mode, sklearn.svm.LinearSVC(**args))
+        self.svm = select_classifier(multi_mode, sklearn.svm.LinearSVC(**args), n_jobs)
 
     def set_weight(self, length):
         if self.W is None:

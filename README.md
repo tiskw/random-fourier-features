@@ -56,7 +56,7 @@ The following table gives a brief comparison of kernel SVM and SVM with RFF.
 See [the example of RFF SVC module](./examples/rff_svc_for_mnist/README.md) for mode details.
 
 | Method                   | Inference time (us) | Score (%) |
-| :---------------------:  | :-----------------: | :-------: |
+| :----------------------: | :-----------------: | :-------: |
 | Kernel SVM               | 4644.9 us           | 96.3 %    |
 | SVM w/ RFF (d=512)       | 39.0 us             | 96.5 %    |
 | SVM w/ RFF (d=1024)      | 96.1 us             | 97.5 %    |
@@ -66,6 +66,17 @@ See [the example of RFF SVC module](./examples/rff_svc_for_mnist/README.md) for 
   <img src="./examples/rff_svc_for_mnist/figures/figure_Inference_Time_and_Accuracy_on_MNIST.png" width="600" height="371" alt="Accuracy for each epochs in SVM with batch RFF" />
 </div>
 
+
+## Notes
+
+ * If number of training data is huge, error message like
+   `RuntimeError: The task could not be sent to the workers as it is too large for 'send_bytes'.`
+   will be raised from joblib library. The reason of this error is that sklearn.svm.LinearSVC uses
+   joblib as a multiprocessing backend, but joblib cannot deal huge size of array which cannot be managed
+   with 32 bit address space. In this case, please try `n_jobs = 1` option for `RFFSVC` or `ORFSVC` function.
+   Default settings is `n_jobs = -1` which means automatically detect available CPUs and use them.
+   (This bug information was reported by Mr. Katsuya Terahata @ Toyota Research Institute Advanced Development.
+   Thank you so much for the reporting!)
 
 ## Licence
 
@@ -83,5 +94,5 @@ See [the example of RFF SVC module](./examples/rff_svc_for_mnist/README.md) for 
 
 ## Author
 
-Tetsuya Ishikawa ([EMail](mailto:tiskw111@gmail.com), [Website](https://sites.google.com/view/tiskw/))
+Tetsuya Ishikawa ([EMail](mailto:tiskw111@gmail.com), [Website](https://tiskw.gitlab.io/home/))
 
