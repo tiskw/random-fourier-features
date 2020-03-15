@@ -86,11 +86,12 @@ def main(args):
         ys_test  = np.sin(Xs_test**2)
 
     ### Train SVM with orthogonal random features.
-    with Timer("GP learning: "):
+    with Timer("GP learning: ", unit = "ms"):
         gp.fit(Xs_train, ys_train)
 
     ### Conduct prediction for the test data
-    pred, pstd = gp.predict(Xs_test, return_std = True)
+    with Timer("GP inference: ", unit = "us"):
+        pred, pstd = gp.predict(Xs_test, return_std = True)
 
     ### Plot regression results
     mpl.figure(0)
