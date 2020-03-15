@@ -14,10 +14,13 @@ Overview:
   As a comparison with Kernel SVM, this script has a capability to run a Kernel SVM as the same condition with RFF SVM.
 
 Usage:
-    main_rff_svc_for_mnist.py [--kdim <int>] [--kstd <float>] [--estd <float>] [--samples <int>] [--seed <int>]
+    main_rff_svc_for_mnist.py kernel [--samples <int>] [--seed <int>]
+    main_rff_svc_for_mnist.py rff [--kdim <int>] [--kstd <float>] [--estd <float>] [--samples <int>] [--seed <int>]
     main_rff_svc_for_mnist.py -h|--help
 
 Options:
+    kernel           Use RBF kernel function
+    rff              Use Random Fourier Features
     --kdim <int>     Hyper parameter of RFF SVM (dimention of RFF)  [default: 16]
     --kstd <float>   Hyper parameter of RFF SVM (stdev of RFF)      [default: 5.0]
     --estd <float>   Hyper parameter of RFF SVM (stdev of error)    [default: 1.0]
@@ -42,6 +45,7 @@ import pickle
 import docopt
 import numpy             as np
 import sklearn           as skl
+import sklearn.gaussian_process
 import matplotlib.pyplot as mpl
 import PyRFF             as pyrff
 
@@ -72,11 +76,13 @@ def main(args):
     print("Program starts: args =", args)
 
     ### Fix seed for random fourier feature calclation.
-    # pyrff.seed(args["--seed"])
-    pyrff.seed(111)
+    pyrff.seed(args["--seed"])
 
     ### Create classifier instance.
-    gp = pyrff.RFFGaussianProcessRegression(dim_output = args["--kdim"], std_kernel = args["--kstd"], std_error = args["--estd"])
+    if args["kernel"]:
+        gp = skl.gaussian_process.GaussianProcessRegressor(random_state = args["--seed"])
+    elif args["rff"]:
+        gp = pyrff.RFFGaussianProcessRegression(dim_output = args["--kdim"], std_kernel = args["--kstd"], std_error = args["--estd"])
 
     ### Load training data.
     with Timer("Generating training/testing data: "):
@@ -90,8 +96,10 @@ def main(args):
         gp.fit(Xs_train, ys_train)
 
     ### Conduct prediction for the test data
-    with Timer("GP inference: ", unit = "us"):
+    with Timer("GP inference: ", unit = "ms"):
         pred, pstd = gp.predict(Xs_test, return_std = True)
+        pred = pred.reshape((pred.shape[0],))
+        pstd = pstd.reshape((pstd.shape[0],))
 
     ### Plot regression results
     mpl.figure(0)

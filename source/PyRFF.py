@@ -227,8 +227,7 @@ class RFFGaussianProcessRegression:
     def std(self, F):
         clip_flt = lambda x: max(0.0, float(x))
         pred_var = [clip_flt(F[:, n].T @ (np.eye(2 * self.dim) - self.S) @ F[:, n]) for n in range(F.shape[1])]
-        pred_var = np.array(pred_var).reshape((F.shape[1],))
-        return np.sqrt(pred_var)
+        return np.sqrt(np.array(pred_var))
 
     def cov(self, F):
         return F @ self.S @ F
