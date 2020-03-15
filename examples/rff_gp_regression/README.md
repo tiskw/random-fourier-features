@@ -29,11 +29,11 @@ The following table is a summary of training and inference speed under my own en
 
 | Number of trainig samples | Training time | Inference time |
 | :-----------------------: | :-----------: | :------------: |
-|   1,000                   | 1.48 ms       | 1.28 us        |
-|   5,000                   | 6.14 ms       | 1.25 us        |
-|  10,000                   | 11.2 ms       | 1.36 us        |
-|  50,000                   | 70.5 ms       | 1.38 us        |
-| 100,000                   |  142 ms       | 1.70 us        |
+|   1,000                   | 1.48 ms       | 1.28 ms        |
+|   5,000                   | 6.14 ms       | 1.25 ms        |
+|  10,000                   | 11.2 ms       | 1.36 ms        |
+|  50,000                   | 70.5 ms       | 1.38 ms        |
+| 100,000                   |  142 ms       | 1.70 ms        |
 
 <div align="center">
   <img src="./figure_gp_regression.png" width="600" height="480" alt="Regression results for function y = sin(x^2) using Gaussian process w/ RFF" />
