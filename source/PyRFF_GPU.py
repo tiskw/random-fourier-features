@@ -12,7 +12,7 @@ import sklearn.multiclass
 import tensorflow as tf
 import PyRFF as pyrff
 
-__version__ = "1.2.0"
+__version__ = "1.4.0"
 
 def seed(seed):
 # {{{

@@ -11,7 +11,7 @@ import scipy.stats
 import sklearn.svm
 import sklearn.multiclass
 
-__version__ = "1.3.1"
+__version__ = "1.4.0"
 
 def seed(seed):
 # {{{
@@ -182,6 +182,60 @@ class ORFSVC(RFFSVC):
                 if self.W is None: self.W = W
                 else             : self.W = np.concatenate([self.W, W], axis = 1)
         self.W = self.W[:length, :self.dim]
+
+# }}}
+
+class RFFGaussianProcessRegression:
+# {{{
+
+    def __init__(self, dim_output = 16, std_kernel = 5, std_error = 0.3, W = None):
+        self.dim = dim_output
+        self.s_k = std_kernel
+        self.s_e = std_error
+        self.W   = W
+
+    def set_weight(self, length):
+        if self.W is None:
+            self.W = self.s_k * np.random.randn(length, self.dim)
+
+    def conv(self, X):
+        ts = np.dot(X, self.W)
+        cs = np.cos(ts)
+        ss = np.sin(ts)
+        return np.bmat([cs, ss])
+
+    def fit(self, X, y, **args):
+        self.set_weight(X.shape[1])
+        F = self.conv(X).T
+        P = F @ F.T
+        I = np.eye(2 * self.dim)
+        s = self.s_e**2
+        M = I - np.linalg.pinv(P + s * I) @ P
+        self.a = (y.T @ F.T) @ M / s
+        self.S = P @ M / s
+        return self
+
+    def predict(self, X, return_std = False, return_cov = False):
+        self.set_weight(X.shape[1])
+        F = self.conv(X).T
+        p = np.array(self.a.dot(F)).reshape((X.shape[0],))
+        if       return_std and     return_cov: return (p, self.std(F), self.conv(F))
+        elif     return_std and not return_cov: return (p, self.std(F))
+        elif not return_std and     return_cov: return (p, self.cov(F))
+        elif not return_std and not return_cov: return p
+
+    def std(self, F):
+        clip_flt = lambda x: max(0.0, float(x))
+        pred_var = [clip_flt(F[:, n].T @ (np.eye(2 * self.dim) - self.S) @ F[:, n]) for n in range(F.shape[1])]
+        pred_var = np.array(pred_var).reshape((F.shape[1],))
+        return np.sqrt(pred_var)
+
+    def cov(self, F):
+        return F @ self.S @ F
+
+    def score(self, X, y, **args):
+        self.set_weight(X.shape[1])
+        return self.reg.score(self.conv(X), y, **args)
 
 # }}}
 
