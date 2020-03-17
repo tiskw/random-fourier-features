@@ -32,7 +32,7 @@ For example, the following Python code is a sample usage of RFF regression class
 >>> svc = pyrff.RFFSVC().fit(X, y)                      # Training
 >>> svc.score(X, y)                                     # Inference (on CPU)
 1.0
->>> svc.predict(np.array([[-0.8, -1]]))                                                                                                                                                                             
+>>> svc.predict(np.array([[-0.8, -1]]))
 array([1])
 ```
 
