@@ -49,7 +49,8 @@ import pickle
 import docopt
 import numpy   as np
 import sklearn as skl
-import PyRFF   as pyrff
+# import PyRFF   as pyrff
+import PyRFF_GPU as pyrff
 
 
 ### Load train/test image data.
