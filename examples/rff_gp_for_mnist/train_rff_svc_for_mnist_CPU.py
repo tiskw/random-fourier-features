@@ -13,18 +13,14 @@ Overview:
   As a comparison with Kernel SVM, this script has a capability to run a Kernel SVM as the same condition with RFF SVM.
 
 Usage:
-    main_rff_svc_for_mnist.py rff [--input <str>] [--output <str>] [--pcadim <int>] [--kdim <int>]
+    main_rff_svc_for_mnist_CPU.py [--input <str>] [--output <str>] [--pcadim <int>] [--kdim <int>]
                                   [--std_kernel <float>] [--std_error <float>] [--seed <int>]
-    main_rff_svc_for_mnist.py -h|--help
+    main_rff_svc_for_mnist_CPU.py -h|--help
 
 Options:
-    rff                  Run RFF Gaussian process classifier.
     --input <str>        Directory path to the MNIST dataset.                [default: ../../dataset/mnist]
     --output <str>       File path to the output pickle file.                [default: result.pickle]
     --pcadim <int>       Output dimention of Principal Component Analysis.   [default: 256]
-    --kernel <str>       Hyper parameter of kernel SVM (type of kernel)      [default: rbf]
-    --gamma <float>      Hyper parameter of kernel SVM (softness of kernel). [default: auto]
-    --C <float>          Hyper parameter of kernel SVM (margin allowance).   [default: 1.0]
     --kdim <int>         Hyper parameter of RFF SVM (dimention of RFF)       [default: 128]
     --std_kernel <float> Hyper parameter of RFF SVM (stdev of RFF)           [default: 0.05]
     --std_error <float>  Hyper parameter of RFF SVM (stdev of RFF)           [default: 0.05]
@@ -49,8 +45,7 @@ import pickle
 import docopt
 import numpy   as np
 import sklearn as skl
-# import PyRFF   as pyrff
-import PyRFF_GPU as pyrff
+import PyRFF   as pyrff
 
 
 ### Load train/test image data.
@@ -99,7 +94,7 @@ def main(args):
     pyrff.seed(args["--seed"])
 
     ### Create classifier instance.
-    gp = pyrff.RFFGaussianProcessClassifier(dim_output = args["--kdim"], std_kernel = 0.1, std_error = 0.5)
+    gp = pyrff.RFFGaussianProcessClassifier(dim_output = args["--kdim"], std_kernel = args["--std_kernel"], std_error = args["--std_error"])
 
     ### Load training data.
     with Timer("Loading training data: "):
