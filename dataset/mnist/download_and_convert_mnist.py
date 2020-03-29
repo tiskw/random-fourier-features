@@ -8,6 +8,7 @@
 #################################### SOURCE START ###################################
 
 import os
+import subprocess
 import gzip
 import numpy as np
 
@@ -23,7 +24,7 @@ def download_MNIST(filepath):
 
     url = "http://yann.lecun.com/exdb/mnist/%s" % filepath
     cmd = "wget %s ." % url
-    os.system(cmd)
+    subprocess.run(cmd, shell = True)
 
 
 ### Convert MNIST image data to npy format.

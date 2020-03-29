@@ -14,23 +14,25 @@ Overview:
 
 Usage:
     main_rff_svc_for_mnist_GPU.py [--input <str>] [--output <str>] [--pcadim <int>] [--kdim <int>]
-                                  [--std_kernel <float>] [--std_error <float>] [--seed <int>]
+                                  [--std_kernel <float>] [--std_error <float>] [--steps <int>]
+                                  [--batch_size <int>] [--seed <int>] [--save]
     main_rff_svc_for_mnist_GPU.py -h|--help
 
 Options:
-    --input <str>        Directory path to the MNIST dataset.       [default: ../../dataset/mnist]
-    --output <str>       File path to the output pickle file.       [default: result.pickle]
-    --pcadim <int>       Output dimention of PCA.                   [default: 256]
-    --kdim <int>         Hyper parameter of RFF SVM (dim of RFF)    [default: 128]
-    --std_kernel <float> Hyper parameter of RFF SVM (stdev of RFF)  [default: 0.1]
-    --std_error <float>  Hyper parameter of RFF SVM (stdev of RFF)  [default: 0.5]
-    --seed <int>         Random seed.                               [default: 111]
-    -h, --help           Show this message.
+    --input <str>         Directory path to the MNIST dataset.       [default: ../../dataset/mnist]
+    --output <str>        File path to the output pickle file.       [default: result.pickle]
+    --pcadim <int>        Output dimention of PCA.                   [default: 128]
+    --kdim <int>          Hyper parameter of RFF SVM (dim of RFF)    [default: 256]
+    --std_kernel <float>  Hyper parameter of RFF SVM (stdev of RFF)  [default: 0.01]
+    --std_error <float>   Hyper parameter of RFF SVM (stdev of RFF)  [default: 0.5]
+    --steps <int>         Number of iterations.                      [default: 100]
+    --batch_size <int>    Size of batch.                             [default: 10000]
+    --seed <int>          Random seed.                               [default: None]
+    -h, --help            Show this message.
 """
 
 import sys
 import os
-import time
 import pickle
 import random
 
@@ -43,7 +45,8 @@ import tensorflow as tf
 ### Load train/test image data.
 def vectorise_MNIST_images(filepath):
     Xs = np.load(filepath)
-    return np.array([Xs[n, :, :].reshape((28 * 28, )) for n in range(Xs.shape[0])]) / 255.0 - 0.5
+    # return np.array([Xs[n, :, :].reshape((28**2, )) for n in range(Xs.shape[0])]) / 255.0 - 0.5
+    return np.array([Xs[n, :, :].reshape((32**2 * 3, )) for n in range(Xs.shape[0])]) / 255.0 - 0.5
 
 
 ### Load train/test label data.
@@ -120,12 +123,11 @@ def main(args):
     W = tf.constant(W_cpu, dtype = tf.float64)
     a = tf.constant(np.zeros((2 * args["--kdim"], ys_train_oh.shape[1])), dtype = tf.float64)
     S = tf.constant(np.eye(2 * args["--kdim"]), dtype = tf.float64)
-    # print(X.shape, y.shape, W.shape, a.shape, S.shape)
 
-    batch_size = 10000
-    total_size = 60000
+    batch_size = int(args["--batch_size"])
+    total_size = Xs_train.shape[0]
 
-    for step in range(10):
+    for step in range(args["--steps"]):
 
         mask = [True] * batch_size + [False] * (total_size - batch_size)
         random.shuffle(mask)
@@ -140,12 +142,11 @@ def main(args):
         m, v, V = predict(Xs_test.dot(T), W, a, S)
         score = 100.0 * np.mean(np.argmax(m, axis = 1) == ys_test)
         print("Score = %.2f [%%]" % score)
+        sys.stdout.flush()
 
-    exit()
-
-    # ### Save training results.
-    # with open(args["--output"], "wb") as ofp:
-    #     pickle.dump({"W":W, "mean":a, "cov":S, "pca":T, "args":args}, ofp)
+    ### Save training results.
+    with open(args["--output"], "wb") as ofp:
+        pickle.dump({"W":W, "mean":a, "cov":S, "pca":T, "args":args}, ofp)
 
 
 if __name__ == "__main__":
@@ -158,6 +159,10 @@ if __name__ == "__main__":
         try   : args[k] = eval(str(v))
         except: args[k] = str(v)
 
+    ### Set random seed
+    random.seed(args["--seed"])
+    np.random.seed(args["--seed"])
+    tf.random.set_seed(args["--seed"])
 
     ### Run main procedure.
     main(args)
