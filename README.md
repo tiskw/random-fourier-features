@@ -3,14 +3,17 @@ Random Fourier Features
 
 Python module of Random Fourier Features (RFF) for regression, support vector classification [1] and gaussian process.
 Features of this RFF module are:
+
 * interfaces of the module is quite close to the scikit-learn,
 * module for Support Vector Classification provides GPU inference,
 * module for Gaussian Process provides GPU train and inference.
 
 Now, this module only supports
+
 * regression (`PyRFF.RFFRegression`)
 * support vector classification (`PyRFF.RFFSVC`, `PyRFF_GPU.RFFSVC_GPU`),
 * gaussian process (`PyRFF.GaussianProcessRegression`, `PyRFF.GaussianProcessClassifire`, `PyRFF.GaussianProcessClassifier_GPU`)
+
 however, I will provide other functions soon.
 
 
@@ -82,6 +85,15 @@ See [the example of RFF SVC module](./examples/rff_svc_for_mnist/README.md) for 
    Default settings is `n_jobs = -1` which means automatically detect available CPUs and use them.
    (This bug information was reported by Mr. Katsuya Terahata @ Toyota Research Institute Advanced Development.
    Thank you so much for the reporting!)
+
+
+## TODO
+
+[ ] New function: implementation of batch RFF GP (but my GPU is poor to do that...)
+[ ] New function: implementation of RFF Logistic GP
+[ ] Refactoring: current class names are too long
+[ ] Refactoring: gather utility function to `utils.py`
+
 
 ## Licence
 
