@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 #
-# This Python script provides an example usage of RFFSVC class which is a class for
-# SVM classifier using RFF. Interface of RFFSVC is quite close to sklearn.svm.SVC.
-#
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # Date  : February 19, 2020
 ##################################################### SOURCE START #####################################################
@@ -34,71 +31,40 @@ import os
 import time
 import pickle
 
+### Add path to PyRFF.py.
+### The followings are not necessary if you copied PyRFF.py to the current directory
+### or other directory which is included in the Python path.
+current_dir = os.path.dirname(__file__)
+module_path = os.path.join(current_dir, "../../source")
+sys.path.append(module_path)
+
 import docopt
 import numpy   as np
 import sklearn as skl
 import tensorflow as tf
 
+import PyRFF_GPU as pyrff
+import utils
+
 
 ### Load train/test image data.
 def vectorise_MNIST_images(filepath):
+
     Xs = np.load(filepath)
     return np.array([Xs[n, :, :].reshape((28 * 28, )) for n in range(Xs.shape[0])]) / 255.0 - 0.5
 
 
 ### Load train/test label data.
 def vectorise_MNIST_labels(filepath):
+
     return np.load(filepath)
 
 
 ### PCA analysis for dimention reduction.
 def mat_transform_pca(Xs, dim):
+
     _, V = np.linalg.eig(Xs.T.dot(Xs))
     return np.real(V[:, :dim])
-
-
-def train(X_cpu, y_cpu, kdim, s_k, s_e):
-
-    ### Generate random matrix W and identity matrix I on CPU.
-    W_cpu = s_k * np.random.randn(X_cpu.shape[1], kdim)
-    I_cpu = np.eye(2 * kdim)
-
-    ### Move matrices to GPU.
-    I = tf.constant(I_cpu, dtype = tf.float64)
-    W = tf.constant(W_cpu, dtype = tf.float64)
-    X = tf.constant(X_cpu, dtype = tf.float64)
-    y = tf.constant(y_cpu, dtype = tf.float64)
-
-    Z   = tf.matmul(X, W)
-    F_T = tf.concat([tf.cos(Z), tf.sin(Z)], 1)
-    F   = tf.transpose(F_T)
-    P   = tf.matmul(F, F_T)
-    s   = (s_e)**2
-
-    M = I - tf.matmul(tf.linalg.pinv(P + s * I), P)
-    a = tf.matmul(tf.matmul(tf.transpose(y), F_T), M) / s
-    S = tf.matmul(P, M) / s
-
-    return (W.numpy(), a.numpy(), S.numpy())
-
-
-def predict(X_cpu, W_cpu, a_cpu, S_cpu):
-
-    ### Move matrix to GPU.
-    X = tf.constant(X_cpu, dtype = tf.float64)
-    W = tf.constant(W_cpu, dtype = tf.float64)
-    a = tf.constant(a_cpu, dtype = tf.float64)
-    S = tf.constant(S_cpu, dtype = tf.float64)
-
-    Z   = tf.matmul(X, W)
-    F_T = tf.concat([tf.cos(Z), tf.sin(Z)], 1)
-    F   = tf.transpose(F_T)
-
-    p = tf.matmul(a, F)
-    p = tf.transpose(p)
-    V = tf.matmul(tf.matmul(F_T, S), F)
-
-    return (p.numpy(), np.diag(V.numpy()), V.numpy())
 
 
 ### Main procedure.
@@ -119,16 +85,15 @@ def main(args):
     T = mat_transform_pca(Xs_train, dim = args["--pcadim"])
 
     ### Calculate score for test data.
-    ys_train_oh = np.eye(int(np.max(ys_train) + 1))[ys_train]
-    W, a, S = train(Xs_train.dot(T), ys_train_oh, args["--kdim"], args["--std_kernel"], args["--std_error"])
 
-    m, v, V = predict(Xs_test.dot(T), W, a, S)
-    score = 100.0 * np.mean(np.argmax(m, axis = 1) == ys_test)
-    print("Score = %.2f [%%]" % score)
+    gpc = pyrff.RFFGaussianProcessClassifier_GPU(args["--kdim"], args["--std_kernel"], args["--std_error"])
+    gpc.fit(Xs_train.dot(T), ys_train)
+
+    print("Score = %.2f [%%]" % (100.0 * gpc.score(Xs_test.dot(T), ys_test)))
 
     ### Save training results.
     with open(args["--output"], "wb") as ofp:
-        pickle.dump({"W":W, "mean":a, "cov":S, "pca":T, "args":args}, ofp)
+        pickle.dump({"gpc": gpc, "pca": T, "args": args}, ofp)
 
 
 if __name__ == "__main__":
@@ -140,7 +105,6 @@ if __name__ == "__main__":
     for k, v in args.items():
         try   : args[k] = eval(str(v))
         except: args[k] = str(v)
-
 
     ### Run main procedure.
     main(args)

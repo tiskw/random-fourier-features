@@ -71,7 +71,7 @@ $ python3 valid_rff_svc_for_mnist.py tensorflow  # Inference on GPU using Tensor
 
 ## Results of Support Vector Classification with RFF
 
-In my computing environment (CPU: Intl Core i5 5250U, RAM: 4GB), I've got the following results:
+In my computing environment (CPU: Intl Core i5 5250U, RAM: 4GB, GPU: GTX1050Ti), I've got the following results:
 
 | Method                   | Training time (sec) | Inference time (us) | Score (%) |
 | :---------------------:  | :-----------------: | :-----------------: | :-------: |

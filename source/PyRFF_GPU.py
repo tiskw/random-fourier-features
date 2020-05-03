@@ -4,15 +4,13 @@
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # Date  : February 08, 2020
-#################################### SOURCE START ###################################
+######################################### SOURCE START ########################################
 
 import numpy as np
 import sklearn.svm
 import sklearn.multiclass
 import tensorflow as tf
 import PyRFF as pyrff
-
-__version__ = "1.4.0"
 
 def seed(seed):
 # {{{
@@ -22,6 +20,10 @@ def seed(seed):
 
 # }}}
 
+### This class provides the RFFSVC classification using GPU.
+### However, this class support only inference now.
+### This class feeds a trained PyRFF.RFFSVC instance, read trained parameters from the class
+### and run inference on GPU.
 class RFFSVC_GPU:
 # {{{
 
@@ -103,5 +105,91 @@ class RFFSVC_GPU:
 
 # }}}
 
-#################################### SOURCE FINISH ##################################
+class RFFGaussianProcessClassifier_GPU:
+# {{{
+
+    def __init__(self, dim_output = 256, std_kernel = 0.1, std_error = 1.0, W = None):
+        self.dim = dim_output
+        self.s_k = std_kernel
+        self.s_e = std_error
+        self.W   = W
+
+    ### Generate random metrix for RFF if not set.
+    def set_weight(self, length):
+        if self.W is None:
+            self.W = self.s_k * np.random.randn(length, self.dim)
+
+    ### Training of gaussian process using GPU.
+    ###   - X_cpu (np.array, shape = [N, K]): training data
+    ###   - y_cpu (np.array, shape = [N, C]): training label
+    ### where N is the number of training data, K is dimention of the input data, and C is the number of classes.
+    def fit(self, X_cpu, y_cpu):
+
+        ### Generate random matrix.
+        self.set_weight(X_cpu.shape[1])
+
+        ### Convert the input label vector to the one hot format.
+        y_oh = np.eye(int(np.max(y_cpu) + 1))[y_cpu]
+
+        ### Generate random matrix W and identity matrix I on CPU.
+        I_cpu = np.eye(2 * self.dim)
+
+        ### Move matrices to GPU.
+        W = tf.constant(self.W, dtype = tf.float64)
+        I = tf.constant(I_cpu,  dtype = tf.float64)
+        X = tf.constant(X_cpu,  dtype = tf.float64)
+        y = tf.constant(y_oh,   dtype = tf.float64)
+
+        Z   = tf.matmul(X, W)
+        F_T = tf.concat([tf.cos(Z), tf.sin(Z)], 1)
+        F   = tf.transpose(F_T)
+        P   = tf.matmul(F, F_T)
+        s   = (self.s_e)**2
+
+        M = I - tf.linalg.solve((P + s * I), P)
+        a = tf.matmul(tf.matmul(tf.transpose(y), F_T), M) / s
+        S = tf.matmul(P, M) / s
+
+        self.a = a.numpy()
+        self.S = S.numpy()
+
+    ### Inference of gaussian process using GPU.
+    ###   - X_cpu (np.array, shape = [N, K]): inference data
+    ###   - var   (boolean)                 : returns variance vector if true
+    ###   - cov   (boolean)                 : returns covariance matrix if true
+    ### where N is the number of training data and K is dimention of the input data.
+    def predict(self, X_cpu, var = False, cov = False):
+
+        ### Move matrix to GPU.
+        X = tf.constant(X_cpu,  dtype = tf.float64)
+        W = tf.constant(self.W, dtype = tf.float64)
+        a = tf.constant(self.a, dtype = tf.float64)
+        S = tf.constant(self.S, dtype = tf.float64)
+
+        Z   = tf.matmul(X, W)
+        F_T = tf.concat([tf.cos(Z), tf.sin(Z)], 1)
+        F   = tf.transpose(F_T)
+
+        p = tf.matmul(a, F)
+        p = tf.transpose(p)
+        V = tf.matmul(tf.matmul(F_T, S), F)
+
+        ### Convert prediction one-hot vector to the class label.
+        y = tf.argmax(p, axis = 1)
+
+        if   var and cov: return (y.numpy(), np.diag(V.numpy()), V.numpy())
+        elif var        : return (y.numpy(), np.diag(V.numpy()))
+        elif cov        : return (y.numpy(), V.numpy())
+        else            : return (y.numpy())
+
+    ### calculate score of the given inference data.
+    ###   - X_cpu (np.array, shape = [N, K]): test data
+    ###   - y_cpu (np.array, shape = [N, C]): test label
+    ### where N is the number of training data, K is dimention of the input data, and C is the number of classes.
+    def score(self, X_cpu, y_cpu):
+        return np.mean(self.predict(X_cpu) == y_cpu)
+
+# }}}
+
+######################################### SOURCE FINISH #######################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

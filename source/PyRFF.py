@@ -12,8 +12,6 @@ import scipy.stats
 import sklearn.svm
 import sklearn.multiclass
 
-__version__ = "1.4.1"
-
 def seed(seed):
 # {{{
 
@@ -189,7 +187,7 @@ class ORFSVC(RFFSVC):
 class RFFGaussianProcessRegression:
 # {{{
 
-    def __init__(self, dim_output = 16, std_kernel = 5, std_error = 0.3, W = None):
+    def __init__(self, dim_output = 16, std_kernel = 1.0, std_error = 0.1, W = None):
         self.dim = dim_output
         self.s_k = std_kernel
         self.s_e = std_error
@@ -211,7 +209,7 @@ class RFFGaussianProcessRegression:
         P = F @ F.T
         I = np.eye(2 * self.dim)
         s = self.s_e**2
-        M = I - np.linalg.pinv(P + s * I) @ P
+        M = I - np.linalg.solve((P + s * I), P)
         self.a = (y.T @ F.T) @ M / s
         self.S = P @ M / s
         return self

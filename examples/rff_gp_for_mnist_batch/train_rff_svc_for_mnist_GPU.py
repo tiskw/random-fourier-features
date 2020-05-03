@@ -25,8 +25,8 @@ Options:
     --kdim <int>          Hyper parameter of RFF SVM (dim of RFF)    [default: 256]
     --std_kernel <float>  Hyper parameter of RFF SVM (stdev of RFF)  [default: 0.01]
     --std_error <float>   Hyper parameter of RFF SVM (stdev of RFF)  [default: 0.5]
-    --steps <int>         Number of iterations.                      [default: 100]
-    --batch_size <int>    Size of batch.                             [default: 10000]
+    --steps <int>         Number of iterations.                      [default: 1000]
+    --batch_size <int>    Size of batch.                             [default: 1024]
     --seed <int>          Random seed.                               [default: None]
     -h, --help            Show this message.
 """
@@ -45,8 +45,8 @@ import tensorflow as tf
 ### Load train/test image data.
 def vectorise_MNIST_images(filepath):
     Xs = np.load(filepath)
-    # return np.array([Xs[n, :, :].reshape((28**2, )) for n in range(Xs.shape[0])]) / 255.0 - 0.5
-    return np.array([Xs[n, :, :].reshape((32**2 * 3, )) for n in range(Xs.shape[0])]) / 255.0 - 0.5
+    return np.array([Xs[n, :, :].reshape((28**2, )) for n in range(Xs.shape[0])]) / 255.0 - 0.5
+    # return np.array([Xs[n, :, :].reshape((32**2 * 3, )) for n in range(Xs.shape[0])]) / 255.0 - 0.5
 
 
 ### Load train/test label data.
@@ -60,6 +60,7 @@ def mat_transform_pca(Xs, dim):
     return np.real(V[:, :dim])
 
 
+@tf.function
 def train(X, y, W, a, S, s_e):
 
     ### Generate random matrix W and identity matrix I on CPU.
