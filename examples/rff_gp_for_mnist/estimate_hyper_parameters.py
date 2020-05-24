@@ -6,31 +6,35 @@
 
 """
 Overview:
-  Train Random Fourier Feature SVM. Before running this script, make sure to create MNIST dataset.
-  As a comparison with Kernel SVM, this script has a capability to run a Kernel SVM as the same condition with RFF SVM.
+    Estimate hyper parameters for Gaussian process. The folowing parameters will be estimated:
+      - scale factor of the RBF kernel (scale)
+      - standers deviation of the RBF kernel (s_k)
+      - standers deviation of the measurement error (s_e)
 
 Usage:
-    main_rff_svc_for_mnist_GPU.py [--input <str>] [--output <str>] [--pcadim <int>] [--kdim <int>]
-                                  [--scale <float>] [--std_kernel <float>] [--std_error <float>] [--seed <int>]
-    main_rff_svc_for_mnist_GPU.py -h|--help
+    estimate_hyper_parameters.py [--input <str>] [--output <str>] [--pcadim <int>]
+                                 [--scale <float>] [--std_kernel <float>] [--std_error <float>]
+                                 [--epoch <int>] [--batch_size <int>] [--lr <float>] [--seed <int>]
+    estimate_hyper_parameters.py -h|--help
 
 Options:
-    --input <str>        Directory path to the MNIST dataset.                [default: ../../dataset/mnist]
-    --output <str>       File path to the output pickle file.                [default: result.pickle]
-    --pcadim <int>       Output dimention of Principal Component Analysis.   [default: 256]
-    --kdim <int>         Hyper parameter of RFF SVM (dimention of RFF)       [default: 128]
-    --scale <float>      Hyper parameter of RFF SVM (scale of RFF)           [default: 1.0]
-    --std_kernel <float> Hyper parameter of RFF SVM (stdev of RFF)           [default: 0.05]
-    --std_error <float>  Hyper parameter of RFF SVM (stdev of the error)     [default: 0.05]
-    --seed <int>         Random seed.                                        [default: 111]
-    --cpus <int>         Number of available CPUs.                           [default: -1]
+    --input <str>        Directory path to the MNIST dataset.               [default: ../../dataset/mnist]
+    --output <str>       File path to the output pickle file.               [default: result_hp.pickle]
+    --pcadim <int>       Output dimention of Principal Component Analysis.  [default: 256]
+    --scale <float>      Hyper parameter of Gaussian process.               [default: 1.0]
+    --std_kernel <float> Hyper parameter of Gaussian process.               [default: 0.1]
+    --std_error <float>  Hyper parameter of Gaussian process.               [default: 0.5]
+    --epoch <int>        Number of epochs.                                  [default: 8]
+    --batch_size <int>   Size of batch.                                     [default: 128]
+    --lr <float>         Learning rate of the momentum SGD optimizer.       [default: 1.0E-4]
+    --seed <int>         Random seed.                                       [default: 111]
     -h, --help           Show this message.
 """
 
-import sys
 import os
-import time
 import pickle
+import sys
+import time
 
 import docopt
 
@@ -65,22 +69,19 @@ def main(args):
     Xs_train = vectorise_MNIST_images("../../dataset/mnist/MNIST_train_images.npy")
     ys_train = vectorise_MNIST_labels("../../dataset/mnist/MNIST_train_labels.npy")
 
-    ### Load test data.
-    Xs_test = vectorise_MNIST_images("../../dataset/mnist/MNIST_test_images.npy")
-    ys_test = vectorise_MNIST_labels("../../dataset/mnist/MNIST_test_labels.npy")
-
     ### Create matrix for principal component analysis.
     T = mat_transform_pca(Xs_train, dim = args["--pcadim"])
 
-    ### Calculate score for test data.
-    gpc = pyrff.RFFGPC(args["--kdim"], args["--std_kernel"], args["--std_error"], args["--scale"])
-    gpc.fit(Xs_train.dot(T), ys_train)
+    ### Run hyper parameter estimation.
+    init_val_s_k = args["--std_kernel"]
+    init_val_s_e = args["--std_error"]
+    init_val_sca = args["--scale"]
+    gpkpe = pyrff.GPKernelParameterEstimator(args["--epoch"], args["--batch_size"], args["--lr"], init_val_s_k, init_val_s_e, init_val_sca)
+    s_k, s_e, scale = gpkpe.fit(Xs_train.dot(T), ys_train)
 
-    print("Score = %.2f [%%]" % (100.0 * gpc.score(Xs_test.dot(T), ys_test)))
-
-    ### Save training results.
+    ### Save results.
     with open(args["--output"], "wb") as ofp:
-        pickle.dump({"gpc": gpc, "pca": T, "args": args}, ofp)
+        pickle.dump({"pca":T, "s_k":s_k, "s_e":s_e, "scale":scale, "args":args}, ofp)
 
 
 if __name__ == "__main__":
@@ -95,7 +96,7 @@ if __name__ == "__main__":
     module_path = os.path.join(current_dir, "../../source")
     sys.path.append(module_path)
 
-    import numpy   as np
+    import numpy as np
     import sklearn as skl
     import tensorflow as tf
 
