@@ -184,7 +184,7 @@ class ORFSVC(RFFSVC):
 
 # }}}
 
-class RFFGaussianProcessRegression:
+class RFFGPR:
 # {{{
 
     def __init__(self, dim_output = 16, std_kernel = 1.0, std_error = 0.1, W = None):
@@ -237,7 +237,7 @@ class RFFGaussianProcessRegression:
 
 # }}}
 
-class RFFGaussianProcessClassifier(RFFGaussianProcessRegression):
+class RFFGPC(RFFGPR):
 # {{{
 
     def __init__(self, dim_output = 16, std_kernel = 5, std_error = 0.3, W = None):

@@ -155,11 +155,12 @@ class RFFGPC:
         y = tf.constant(y_oh,   dtype = tf.float64)
 
         ### Derive posterior distribution.
+        s   = (self.s_e)**2
+        c   = np.sqrt(self.sca)
         Z   = tf.matmul(X, W)
-        F_T = tf.concat([tf.cos(Z), tf.sin(Z)], 1)
+        F_T = c * tf.concat([tf.cos(Z), tf.sin(Z)], 1)
         F   = tf.transpose(F_T)
         P   = tf.matmul(F, F_T)
-        s   = (self.s_e)**2
         M   = I - tf.linalg.solve((P + s * I), P)
         a   = tf.matmul(tf.matmul(tf.transpose(y), F_T), M) / s
         S   = tf.matmul(P, M) / s
@@ -335,12 +336,15 @@ class GPKernelParameterEstimator:
                 loss_val = train_step(Xs, ys, trainable_variables, opt)
                 loss_ave = 0.95 * loss_ave + 0.05 * float(loss_val.numpy())
 
-                ### Print current hyper parameter.
+                ### Store intermediate results.
                 self.s_k = float(np.exp(s_k_ln.numpy()))
                 self.s_e = float(np.exp(s_e_ln.numpy()))
                 self.sca = float(np.exp(sca_ln.numpy()))
-                format_str = "loss = %.3e, s_k = %.3e, s_e = %.3e, scale = %.3e (epoch %d step %d)"
-                print(format_str % (loss_ave, self.s_k, self.s_e, self.sca, epoch, step))
+
+                ### Print current hyper parameter.
+                if step % 10 == 0:
+                    format_str = "loss = %.3e, s_k = %.3e, s_e = %.3e, scale = %.3e (epoch %d step %d)"
+                    print(format_str % (loss_ave, self.s_k, self.s_e, self.sca, epoch, step))
 
         return (self.s_k, self.s_e, self.sca)
 

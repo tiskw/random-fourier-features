@@ -52,7 +52,7 @@ Also, you are able to run the inference on GPU by adding only two lines, if you 
 1.0
 ```
 
-See `examples/` directory for more detailed examples.
+See [examples](./examples/README.md) directory for more detailed examples.
 
 
 ## MNIST using RFF and SVM
@@ -60,7 +60,7 @@ See `examples/` directory for more detailed examples.
 I applied SVM with RFF to MNIST which is a famous benchmark dataset for classification task,
 and I've got a better performance and much faster inference speed than kernel SVM.
 The following table gives a brief comparison of kernel SVM and SVM with RFF.
-See [the example of RFF SVC module](./examples/rff_svc_for_mnist/README.md) for mode details.
+See the example of [RFF SVC module](./examples/svc_for_mnist/README.md) and [RFF GP module](./examples/gpc_for_mnist/README.md) for mode details.
 
 | Method                   | Inference time (us) | Score (%) |
 |:------------------------:|:-------------------:|:---------:|
@@ -71,14 +71,14 @@ See [the example of RFF SVC module](./examples/rff_svc_for_mnist/README.md) for 
 | GP w/ RFF (d=5120, CPU)  | 342.1 us            | 98.2 %    |
 
 <div align="center">
-  <img src="./examples/rff_svc_for_mnist/figures/figure_Inference_Time_and_Accuracy_on_MNIST.png" width="600" height="371" alt="Accuracy for each epochs in SVM with batch RFF" />
+  <img src="./examples/svc_for_mnist/figures/figure_Inference_Time_and_Accuracy_on_MNIST.png" width="600" height="371" alt="Accuracy for each epochs in RFF SVC" />
 </div>
 
 
 ## Notes
 
  * If number of training data is huge, error message like
-   `RuntimeError: The task could not be sent to the workers as it is too large for 'send_bytes'.`
+   `RuntimeError: The task could not be sent to the workers as it is too large for 'send_bytes'`.
    will be raised from the joblib library. The reason of this error is that sklearn.svm.LinearSVC uses
    joblib as a multiprocessing backend, but joblib cannot deal huge size of array which cannot be managed
    with 32 bit address space. In this case, please try `n_jobs = 1` option for `RFFSVC` or `ORFSVC` function.
@@ -89,10 +89,11 @@ See [the example of RFF SVC module](./examples/rff_svc_for_mnist/README.md) for 
 
 ## TODO
 
-[ ] New function: implementation of batch RFF GP (but my GPU is poor to do that...)
-[ ] New function: implementation of RFF Logistic GP
-[ ] Refactoring: current class names are too long
-[ ] Refactoring: gather utility function to `utils.py`
+- [ ] New function: implementation of batch RFF GP (but my GPU is poor to do that...)
+- [ ] New function: implementation of RFF Logistic GP
+- [ ] Refactoring: less comments on PyRFF.py
+- [X] Refactoring: current class names are too long
+- [X] Refactoring: gather utility function to utils.py
 
 
 ## Licence

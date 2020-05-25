@@ -82,7 +82,7 @@ def main(args):
     if args["kernel"]:
         gp = skl.gaussian_process.GaussianProcessRegressor(random_state = args["--seed"])
     elif args["rff"]:
-        gp = pyrff.RFFGaussianProcessRegression(dim_output = args["--kdim"], std_kernel = args["--kstd"], std_error = args["--estd"])
+        gp = pyrff.RFFGPR(dim_output = args["--kdim"], std_kernel = args["--kstd"], std_error = args["--estd"])
 
     ### Load training data.
     with Timer("Generating training/testing data: "):

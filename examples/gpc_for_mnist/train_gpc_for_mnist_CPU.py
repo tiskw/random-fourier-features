@@ -20,7 +20,7 @@ Usage:
 Options:
     --input <str>        Directory path to the MNIST dataset.                [default: ../../dataset/mnist]
     --output <str>       File path to the output pickle file.                [default: result.pickle]
-    --pcadim <int>       Output dimention of Principal Component Analysis.   [default: 256]
+    --pcadim <int>       Output dimention of Principal Component Analysis.   [default: 128]
     --kdim <int>         Hyper parameter of RFF SVM (dimention of RFF)       [default: 128]
     --std_kernel <float> Hyper parameter of RFF SVM (stdev of RFF)           [default: 0.05]
     --std_error <float>  Hyper parameter of RFF SVM (stdev of RFF)           [default: 0.05]
@@ -29,23 +29,10 @@ Options:
     -h, --help           Show this message.
 """
 
-
 import sys
 import os
 
-### Add path to PyRFF.py.
-### The followings are not necessary if you copied PyRFF.py to the current directory
-### or other directory which is included in the Python path.
-current_dir = os.path.dirname(__file__)
-module_path = os.path.join(current_dir, "../../source")
-sys.path.append(module_path)
-
-import time
-import pickle
 import docopt
-import numpy   as np
-import sklearn as skl
-import PyRFF   as pyrff
 
 
 ### Load train/test image data.
@@ -94,7 +81,7 @@ def main(args):
     pyrff.seed(args["--seed"])
 
     ### Create classifier instance.
-    gp = pyrff.RFFGaussianProcessClassifier(dim_output = args["--kdim"], std_kernel = args["--std_kernel"], std_error = args["--std_error"])
+    gp = pyrff.RFFGPC(dim_output = args["--kdim"], std_kernel = args["--std_kernel"], std_error = args["--std_error"])
 
     ### Load training data.
     with Timer("Loading training data: "):
@@ -129,6 +116,20 @@ if __name__ == "__main__":
 
     ### Parse input arguments.
     args = docopt.docopt(__doc__)
+
+    ### Add path to the PyRFF modules.
+    ### The followings are not necessary if you copied PyRFF.py to the current directory
+    ### or other directory which is included in the Python path.
+    current_dir = os.path.dirname(__file__)
+    module_path = os.path.join(current_dir, "../../source")
+    sys.path.append(module_path)
+
+    import time
+    import pickle
+    import numpy   as np
+    import sklearn as skl
+    import PyRFF   as pyrff
+    import utils
 
     ### Convert all arguments to an appropriate type.
     for k, v in args.items():

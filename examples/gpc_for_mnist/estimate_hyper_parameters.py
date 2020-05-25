@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 #
+# Estimate hyper parameters for Gaussian process. The folowing parameters will be estimated:
+#   - scale factor of the RBF kernel (scale)
+#   - standers deviation of the RBF kernel (s_k)
+#   - standers deviation of the measurement error (s_e)
+#
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : February 19, 2020
+# Date  : May 25, 2020
 ##################################################### SOURCE START #####################################################
 
 """
@@ -19,13 +24,13 @@ Usage:
 
 Options:
     --input <str>        Directory path to the MNIST dataset.               [default: ../../dataset/mnist]
-    --output <str>       File path to the output pickle file.               [default: result_hp.pickle]
-    --pcadim <int>       Output dimention of Principal Component Analysis.  [default: 256]
+    --output <str>       File path to the output pickle file.               [default: None]
+    --pcadim <int>       Output dimention of Principal Component Analysis.  [default: 128]
     --scale <float>      Hyper parameter of Gaussian process.               [default: 1.0]
     --std_kernel <float> Hyper parameter of Gaussian process.               [default: 0.1]
     --std_error <float>  Hyper parameter of Gaussian process.               [default: 0.5]
-    --epoch <int>        Number of epochs.                                  [default: 8]
-    --batch_size <int>   Size of batch.                                     [default: 128]
+    --epoch <int>        Number of epochs.                                  [default: 10]
+    --batch_size <int>   Size of batch.                                     [default: 256]
     --lr <float>         Learning rate of the momentum SGD optimizer.       [default: 1.0E-4]
     --seed <int>         Random seed.                                       [default: 111]
     -h, --help           Show this message.
@@ -80,8 +85,9 @@ def main(args):
     s_k, s_e, scale = gpkpe.fit(Xs_train.dot(T), ys_train)
 
     ### Save results.
-    with open(args["--output"], "wb") as ofp:
-        pickle.dump({"pca":T, "s_k":s_k, "s_e":s_e, "scale":scale, "args":args}, ofp)
+    if args["--output"]:
+        with open(args["--output"], "wb") as ofp:
+            pickle.dump({"pca":T, "s_k":s_k, "s_e":s_e, "scale":scale, "args":args}, ofp)
 
 
 if __name__ == "__main__":
