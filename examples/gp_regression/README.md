@@ -1,14 +1,13 @@
-Random Fourier Features: Regression using Gaussian Process
-====
+# Gaussian Process Regression using Random Fourier Features
 
-Gaussian Process can be accelerated by RFF technique.
-This python script provides an example of Gaussian Process regression with Random Fourier Features.
-Our module for Gaussian Process (RFFGaussianProcess) needs numpy and docopt.
+The Gaussian process can be accelerated by the RFF technique.
+This python script provides an example of Gaussian process regression with random Fourier features.
+Our module for Gaussian Process (RFFGPR) needs Numpy and Docopt.
 
 
 ## Usage
 
-If you don't have docopt-learn, please run one of the following commands as root to install it:
+If you don't have docopt, please run one of the following commands as root to install it:
 
 ```console
 $ pip3 install docopt         # using pip
@@ -18,15 +17,16 @@ $ apt install python3-docopt  # using apt
 You can run the example code by the following command:
 
 ```console
-$ python3 main_gp_regression.py rff
+$ python3 main_gp_regression.py kernel  # Kernel regression
+$ python3 main_gp_regression.py rff     # RFF regression
 ```
 
 ## Results of Gaussian Process Regression with RFF
 
 The following figure shows regression results for the function y = sin(x^2) with RFF where the dimension of RFF is 16.
-RFF makes the training and inference speed much faster than usual Gaussian Process.
+RFF makes the training and inference speed much faster than the usual Gaussian process.
 The following table is a summary of training and inference (100 test data points) speed
-under my own environment (Intel Core i7-8665U@1.90GHz, 4GB RAM).
+under my environment (Intel Core i7-8665U@1.90GHz, 4GB RAM).
 
 | Number of trainig samples | Training/Inference Time of GP | Training/Inference Time of GP w/ RFF |
 | :-----------------------: | :---------------------------: | :----------------------------------: |

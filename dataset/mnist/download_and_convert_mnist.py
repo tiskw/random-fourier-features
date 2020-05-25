@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Python script for downloading MNIST dataset and convert them to
+# Python script for downloading the MNIST dataset and convert them to
 # .npy format which is easy to read, train and test for a Python script.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
@@ -27,7 +27,7 @@ def download_MNIST(filepath):
     subprocess.run(cmd, shell = True)
 
 
-### Convert MNIST image data to npy format.
+### Convert the MNIST image data to .npy format.
 def convert_image_data(filepath_input, filepath_output):
 
     ### Skip the following procedure if the output file exists.
@@ -62,7 +62,7 @@ def convert_image_data(filepath_input, filepath_output):
     np.save(filepath_output, images)
 
 
-### Convert MNIST label data to npy format.
+### Convert the MNIST label data to .npy format.
 def convert_label_data(filepath_input, filepath_output):
 
     ### Skip the following procedure if the output file exists.
@@ -90,7 +90,7 @@ def convert_label_data(filepath_input, filepath_output):
 
 if __name__  == "__main__":
 
-    ### Download MNIST.
+    ### Download the MNIST dataset.
     download_MNIST("train-images-idx3-ubyte.gz")
     download_MNIST("train-labels-idx1-ubyte.gz")
     download_MNIST("t10k-images-idx3-ubyte.gz")

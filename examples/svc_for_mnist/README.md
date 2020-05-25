@@ -1,5 +1,4 @@
-Random Fourier Features: RFF for MNIST dataset
-====
+# Support Vector Classifier using Random Fourier Features for MNIST dataset
 
 This python script provides an example for RFF SVC with MNIST dataset.
 Our module for Random Fourier Features (PyRFFF.py) needs scikit-learn as a backend of SVM solver therefore you need to install scikit-learn.
@@ -42,7 +41,7 @@ $ cd ../../dataset/mnist
 $ python3 download_and_convert_mnist.py
 ```
 
-Original MNIST data will be automatically downloaded, converted to .npy file and save them under mnist/ directory.
+Original MNIST data will be automatically downloaded, converted to .npy file, and save them under `mnist/` directory.
 
 
 ## Training
@@ -54,14 +53,14 @@ $ python3 train_rff_svc_for_mnist.py kernel   # Run kernel SVC training
 $ python3 train_rff_svc_for_mnist.py rff      # Run SVC with RFF training
 ```
 
-Default hyperparameter settings are recommended one, however, you are able to change the parameters by command option.
-The following command will generate `result.pickle` in which trained model and command arguments are stored.
+Default hyperparameter settings are recommended one, however, you can change the parameters by command option.
+The following command will generate `result.pickle` in which a trained model and command arguments are stored.
 See `train_rff_svc_for_mnist.py --help` for details.
 
 
 ## Inference
 
-You are able to run inference by the following command:
+You can run inference by the following command:
 
 ```console
 $ python3 valid_rff_svc_for_mnist.py cpu         # Inference on CPU using scikit-learn

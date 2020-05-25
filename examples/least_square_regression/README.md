@@ -1,5 +1,4 @@
-Random Fourier Features: Sample RFF Regression
-====
+# Least Square Regression using Random Fourier Features
 
 This python script provides an example of regression with Random Fourier Features.
 Our module for Random Fourier Features (PyRFFF.py) needs scikit-learn as a backend of SVM solver therefore you need to install scikit-learn.

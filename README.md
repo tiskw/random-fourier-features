@@ -1,20 +1,19 @@
-Random Fourier Features
-====
+# Random Fourier Features
 
-Python module of Random Fourier Features (RFF) for regression, support vector classification [1] and gaussian process.
+Python module of Random Fourier Features (RFF) for regression, support vector classification [1], and Gaussian process.
 Features of this RFF module are:
 
-* interfaces of the module is quite close to the scikit-learn,
-* module for Support Vector Classification provides GPU inference,
-* module for Gaussian Process provides GPU train and inference.
+* interfaces of the module are quite close to the scikit-learn,
+* module for support vector classification provides CPU training and inference, and GPU inference,
+* module for the Gaussian process provides CPU/GPU training and inference.
 
 Now, this module only supports
 
-* regression (`PyRFF.RFFRegression`)
-* support vector classification (`PyRFF.RFFSVC`, `PyRFF_GPU.RFFSVC_GPU`),
-* gaussian process (`PyRFF.GaussianProcessRegression`, `PyRFF.GaussianProcessClassifire`, `PyRFF.GaussianProcessClassifier_GPU`)
+* regression (`PyRFF.RFFRegression`),
+* support vector classification (`PyRFF.RFFSVC`, `PyRFF_GPU.RFFSVC`),
+* Gaussian process (`PyRFF.RFFGPR`, `PyRFF.RFFGPC`, `PyRFF_GPU.RFFGPC`).
 
-however, I will provide other functions soon.
+RFF can be applicable for many other machine learning algorithms, however, I will provide other functions soon.
 
 
 ## Requirement
@@ -28,7 +27,7 @@ however, I will provide other functions soon.
 
 ## Minimal example
 
-Interfeces provided by our module is quite close to Scikit-learn.
+Interfaces provided by our module is quite close to Scikit-learn.
 For example, the following Python code is a sample usage of RFF regression class:
 
 ```python
@@ -57,8 +56,8 @@ See [examples](./examples/README.md) directory for more detailed examples.
 
 ## MNIST using RFF and SVM
 
-I applied SVM with RFF to MNIST which is a famous benchmark dataset for classification task,
-and I've got a better performance and much faster inference speed than kernel SVM.
+I applied SVM with RFF to MNIST which is a famous benchmark dataset for the classification task,
+and I've got better performance and much faster inference speed than kernel SVM.
 The following table gives a brief comparison of kernel SVM and SVM with RFF.
 See the example of [RFF SVC module](./examples/svc_for_mnist/README.md) and [RFF GP module](./examples/gpc_for_mnist/README.md) for mode details.
 
@@ -77,14 +76,14 @@ See the example of [RFF SVC module](./examples/svc_for_mnist/README.md) and [RFF
 
 ## Notes
 
- * If number of training data is huge, error message like
-   `RuntimeError: The task could not be sent to the workers as it is too large for 'send_bytes'`.
-   will be raised from the joblib library. The reason of this error is that sklearn.svm.LinearSVC uses
-   joblib as a multiprocessing backend, but joblib cannot deal huge size of array which cannot be managed
-   with 32 bit address space. In this case, please try `n_jobs = 1` option for `RFFSVC` or `ORFSVC` function.
-   Default settings is `n_jobs = -1` which means automatically detect available CPUs and use them.
-   (This bug information was reported by Mr. Katsuya Terahata @ Toyota Research Institute Advanced Development.
-   Thank you so much for the reporting!)
+- If a number of training data are huge, error message like
+  `RuntimeError: The task could not be sent to the workers as it is too large for 'send_bytes'`.
+  will be raised from the joblib library. The reason for this error is that sklearn.svm.LinearSVC uses
+  joblib as a multiprocessing backend, but joblib cannot deal huge size of the array which cannot be managed
+  with 32-bit address space. In this case, please try `n_jobs = 1` option for `RFFSVC` or `ORFSVC` function.
+  Default settings are `n_jobs = -1` which means automatically detect available CPUs and use them.
+  (This bug information was reported by Mr. Katsuya Terahata @ Toyota Research Institute Advanced Development.
+  Thank you so much for the reporting!)
 
 
 ## TODO

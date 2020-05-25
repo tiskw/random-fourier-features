@@ -1,7 +1,7 @@
-# RFF Gaussian process classifier for MNIST dataset
+# Gaussian process classifier using Random Fourier Features for MNIST dataset
 
-These python scripts provide examples for RFF Gaussian Process with MNIST dataset.
-Our module for Random Fourier Features (PyRFFF.py) needs numpy as a backend of numerical computation therefore you need to install it.
+These python scripts provide examples for the RFF Gaussian process with the MNIST dataset.
+Our module for random Fourier features (PyRFFF.py) needs Numpy as a backend of numerical computation therefore you need to install it.
 Also, these scripts support GPU for both training and inference.
 For running GPU training and inference, you need to install Tensorflow 2.x (Tensorflow 1.x is not supported).
 
@@ -24,7 +24,7 @@ If you don't need GPU support, `--runtime=nvidia` is not necessary.
 
 ### Install Python packages (alternative)
 
-The training end validation script requires `docopt`, `numpy` and, if you will run the inference on GPU, `tensorflow-gpu`.
+The training end validation script requires `docopt`, `numpy`, and, if you will run the inference on GPU, `tensorflow-gpu`.
 If you don't have them, please run the following as root to install them:
 
 ```console
@@ -41,7 +41,7 @@ $ cd ../../dataset/mnist
 $ python3 download_and_convert_mnist.py
 ```
 
-Original MNIST data will be automatically downloaded, converted to .npy file and save them under `mnist/` directory.
+Original MNIST data will be automatically downloaded, converted to .npy file, and save them under `mnist/` directory.
 
 
 ## Training
@@ -53,15 +53,15 @@ $ python3 train_gpc_for_mnist_CPU.py  # CPU
 $ python3 train_gpc_for_mnist_GPU.py  # GPU
 ```
 
-Default hyperparameter settings are recommended one for test running.
-However, in order to get a higher score, you need to change the parameters by command option.
-The following command will generate `result.pickle` in which trained model and command arguments are stored.
+Default hyperparameter settings are recommended for test running.
+However, to get a higher score, you need to change the parameters by command option.
+The following command will generate `result.pickle` in which a trained model and command arguments are stored.
 See `--help` for details.
 
 
 ## Inference
 
-You are able to run inference by the following command:
+You can run inference by the following command:
 
 ```console
 $ python3 valid_rff_svc_for_mnist.py cpu         # Inference on CPU using scikit-learn

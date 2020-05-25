@@ -1,7 +1,6 @@
-Random Fourier Features RFF Batch SVC for MNIST
-====
+# Bacthed Support Vector Classifier using Random Fourier Features for MNIST
 
-This python script provides an example of RFF SVC with batch learning on MNIST dataset.
+This python script provides an example of RFF SVC with batch learning on the MNIST dataset.
 Our module for Random Fourier Features (PyRFFF.py) needs scikit-learn as a backend of SVM solver therefore you need to install scikit-learn.
 
 However, you do not need to pay much attention to this example because

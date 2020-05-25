@@ -62,7 +62,7 @@ def parse_cifar_labels(batch):
 ### Returned values of this function is ((Xs_train, ys_train), (Xs_valid, ys_valid)), where
 ###   - Xs_train: (50000, 32, 32, 3),   - ys_train: (50000, ),
 ###   - Xs_valid: (10000, 32, 32, 3),   - ys_valid: (10000, ).
-### If archive of the CIFAR10 is not exists, this function will download the archive from official website automatically.
+### If archive of the CIFAR10 is not exists, this funcion will download the archive from official website automatically.
 def create_dataset(filepath):
 
     ### Download the CIFAR10 archive from the official website.
@@ -84,7 +84,7 @@ def create_dataset(filepath):
     ###   * cifar-10-batches-py/data_batch_4  (Pickled images and labels for training)
     ###   * cifar-10-batches-py/data_batch_5  (Pickled images and labels for training)
     ###   * cifar-10-batches-py/test_batch    (Pickled images and labels for testing)
-    ### and the following code extract only data files, un-pickle and store them as dictionary format.
+    ### and the following code extract only data files, un-pickle and store them as dictionaly format.
     with tarfile.open(filepath, "r") as tar:
         data = {tarinfo.name:read_and_unpickle(tar, tarinfo) for tarinfo in tar if tarinfo.isreg() and "_batch" in tarinfo.name}
 

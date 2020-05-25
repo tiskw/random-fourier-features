@@ -4,7 +4,7 @@
 # Before running this script, make sure to create MNIST dataset.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : February 19, 2020
+# Date  : May 25, 2020
 ##################################################### SOURCE START #####################################################
 
 """

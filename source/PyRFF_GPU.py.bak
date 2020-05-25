@@ -49,7 +49,7 @@ class RFFSVC:
         A_cpu = rffsvc.svm.coef_.T
         b_cpu = rffsvc.svm.intercept_.T
 
-        ### Create pseudo input on CPU for GPU variable creation.
+        ### Cureate psuedo input on CPU for GPU variable creation.
         x_cpu = np.zeros((batch_size, W_cpu.shape[0]), dtype = np.float32)
 
         ### Create GPU variables.
@@ -67,7 +67,7 @@ class RFFSVC:
 
     ### Function for running the Tensorflow model of RFF for one batch.
     ###   - X_cpu (np.array, shape = [N, K]): training data,
-    ### where N is the number of training data, K is dimension of the input data.
+    ### where N is the number of training data, K is dimention of the input data.
     @tf.function
     def predict_proba_batch(self, X_cpu):
         self.x_gpu.assign(X_cpu)
@@ -77,7 +77,7 @@ class RFFSVC:
 
     ### Run prediction and return probability (features).
     ###   - X_cpu (np.array, shape = [N, K]): training data,
-    ### where N is the number of training data, K is dimension of the input data.
+    ### where N is the number of training data, K is dimention of the input data.
     def predict_proba(self, X_cpu):
 
         ### Calculate size and number of batch.
@@ -94,20 +94,20 @@ class RFFSVC:
 
     ### Run prediction and return log-probability.
     ###   - X_cpu (np.array, shape = [N, K]): training data,
-    ### where N is the number of training data, K is dimension of the input data.
+    ### where N is the number of training data, K is dimention of the input data.
     def predict_log_proba(self, X_cpu, **args):
         return np.log(self.predict_proba(X_cpu))
 
     ### Run prediction and return class label.
     ###   - X_cpu (np.array, shape = [N, K]): training data,
-    ### where N is the number of training data, K is dimension of the input data.
+    ### where N is the number of training data, K is dimention of the input data.
     def predict(self, X_cpu, **args):
         return np.argmax(self.predict_proba(X_cpu), 1)
 
     ### Run prediction and return the accuracy of the prediction.
     ###   - X_cpu (np.array, shape = [N, K]): training data,
     ###   - y_cpu (np.array, shape = [N, C]): training label,
-    ### where N is the number of training data, K is dimension of the input data, and C is the number of classes.
+    ### where N is the number of training data, K is dimention of the input data, and C is the number of classes.
     def score(self, X_cpu, y_cpu, **args):
         return np.mean(y_cpu == self.predict(X_cpu))
 
@@ -128,15 +128,15 @@ class RFFGPC:
         self.sca = scale
         self.W   = W
 
-    ### Generate random matrix for RFF if not set.
+    ### Generate random metrix for RFF if not set.
     def set_weight(self, length):
         if self.W is None:
             self.W = self.s_k * np.random.randn(length, self.dim)
 
-    ### Training of Gaussian process using GPU.
+    ### Training of gaussian process using GPU.
     ###   - X_cpu (np.array, shape = [N, K]): training data
     ###   - y_cpu (np.array, shape = [N, C]): training label
-    ### where N is the number of training data, K is dimension of the input data, and C is the number of classes.
+    ### where N is the number of training data, K is dimention of the input data, and C is the number of classes.
     def fit(self, X_cpu, y_cpu):
 
         ### Generate random matrix.
@@ -169,11 +169,11 @@ class RFFGPC:
         self.a = a.numpy()
         self.S = S.numpy()
 
-    ### Inference of Gaussian process using GPU.
+    ### Inference of gaussian process using GPU.
     ###   - X_cpu (np.array, shape = [N, K]): inference data
     ###   - var   (boolean, scalar)         : returns variance vector if true
     ###   - cov   (boolean, scalar)         : returns covariance matrix if true
-    ### where N is the number of training data and K is dimension of the input data.
+    ### where N is the number of training data and K is dimention of the input data.
     def predict(self, X_cpu, var = False, cov = False):
 
         ### Move matrix to GPU.
@@ -208,7 +208,7 @@ class RFFGPC:
     ### calculate score of the given inference data.
     ###   - X_cpu (np.array, shape = [N, K]): test data
     ###   - y_cpu (np.array, shape = [N, C]): test label
-    ### where N is the number of training data, K is dimension of the input data, and C is the number of classes.
+    ### where N is the number of training data, K is dimention of the input data, and C is the number of classes.
     def score(self, X_cpu, y_cpu):
         return np.mean(self.predict(X_cpu) == y_cpu)
 
@@ -231,7 +231,7 @@ class GPKernelParameterEstimator:
     ###   - ini_s_k (float, scalar)         : initial value of the s_k (if None, randomly initialized)
     ###   - ini_s_e (float, scalar)         : initial value of the s_e (if None, randomly initialized)
     ###   - ini_scale (float, scalar)       : initial value of the scale (if None, randomly initialized)
-    ###   - reg (float, scalar)             : coefficient of the L2 regularization term
+    ###   - reg (float, scalar)             : coefficient of the L2 regulalization term
     def __init__(self, epoch_max, batch_size, lr, ini_s_k = None, ini_s_e = None, ini_scale = None, reg = 1.0):
         self.e_max  = epoch_max
         self.b_size = batch_size
@@ -245,8 +245,8 @@ class GPKernelParameterEstimator:
     ### This function conduct the optimization of the hyper parameters, s_k, s_e and scale.
     ###   - X_cpu (np.array, shape = [N, K]): training data
     ###   - y_cpu (np.array, shape = [N, C]): training label
-    ###   - OTHERS                          : same as constructor and will be overwrite if given.
-    ### where N is the number of training data, K is dimension of the input data, and C is the number of classes.
+    ###   - OTHERS                          : same as constractor and will be overwrite if given.
+    ### where N is the number of training data, K is dimention of the input data, and C is the number of classes.
     def fit(self, X_cpu, y_cpu, epoch_max = None, batch_size = None, lr = None):
 
         ### Generate data batch for training.

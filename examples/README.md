@@ -1,10 +1,10 @@
 # Example of PyRFF module
 
-This directory contains the example code for PyRFF module.
+This directory contains the example code for the PyRFF and PyRFF_GPU module.
 
 ## Least Square Regression using Random Fourier Features
 
-An example for regression using random fourier features.
+An example of regression using random Fourier features.
 See [README.md](./least_square_regression/README.md) for more details.
 
 <div align="center">
@@ -13,7 +13,7 @@ See [README.md](./least_square_regression/README.md) for more details.
 
 ## Support Vector Classification using Random Fourier Features
 
-An example of support vector classification for [MNIST](http://yann.lecun.com/exdb/mnist/) dataset using random fourier features.
+An example of support vector classification for [MNIST](http://yann.lecun.com/exdb/mnist/) dataset using random Fourier features.
 See [README.md](./svc_for_mnist/README.md) for more details.
 
 <div align="center">
@@ -22,7 +22,7 @@ See [README.md](./svc_for_mnist/README.md) for more details.
 
 ## Support Vector Classification using Random Fourier Features with Batch Learning
 
-An example of support vector classification with batch learning for [MNIST](http://yann.lecun.com/exdb/mnist/) dataset using random fourier features.
+An example of support vector classification with batch learning for [MNIST](http://yann.lecun.com/exdb/mnist/) dataset using random Fourier features.
 See [README.md](./svc_for_mnist_batch/README.md) for more details.
 
 However, you do not need to pay much attention to this example because
@@ -31,7 +31,7 @@ However, you do not need to pay much attention to this example because
 
 ## Gaussian Process Regression using Random Fourier Features
 
-An example of Gaussian process regression using random fourier features.
+An example of Gaussian process regression using random Fourier features.
 See [README.md](./gpc_for_mnist/README.md) for more details.
 
 <div align="center">
@@ -40,7 +40,7 @@ See [README.md](./gpc_for_mnist/README.md) for more details.
 
 ## Gaussian Process Classification using Random Fourier Features
 
-An example of Gaussian process classification using random fourier features.
+An example of the Gaussian process classification using random Fourier features.
 See [README.md](./gpc_for_mnist/README.md) for more details.
 
 <div align="center">
