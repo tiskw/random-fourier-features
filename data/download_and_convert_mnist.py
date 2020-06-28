@@ -2,8 +2,8 @@
 #
 # Python script
 #
-# Author: 
-# Date  : Oct  6, 2018
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
+# Date  : Sep 16, 2019
 #################################### SOURCE START ###################################
 
 import os
