@@ -17,8 +17,8 @@ $ apt install python3-docopt  # using apt
 You can run the example code by the following command:
 
 ```console
-$ python3 main_gp_regression.py kernel  # Normal GP regression
-$ python3 main_gp_regression.py rff     # RFF GP regression
+$ python3 main_gpr_sparse_data.py kernel  # Normal GP regression
+$ python3 main_gpr_sparse_data.py rff     # RFF GP regression
 ```
 
 ## Results of Gaussian Process Regression with RFF
