@@ -216,7 +216,7 @@ class RFFGPC:
 
 ### This class provides the function to estimate hyper parameter of the RFF based GP.
 ### In this class, kernel is assumed to be given by:
-###     kernel(x1, x2) = scale * exp( -|x1 - x2|^2 / (2 * s_k^2) ),
+###     kernel(x1, x2) = scale * exp( - |x1 - x2|^2 / (2 * s_k^2) ),
 ### where s_k and scale are scalar variables.
 ### This class will estimate s_k, scale and s_e where s_e is a standard deviation of the measurement.
 ### NOTE: Optimization is conducted under log scale of each hyper parameters,
