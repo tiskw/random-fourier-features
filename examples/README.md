@@ -32,10 +32,10 @@ However, you do not need to pay much attention to this example because
 ## Gaussian Process Regression using Random Fourier Features
 
 An example of Gaussian process regression using random Fourier features.
-See [README.md](./gpc_for_mnist/README.md) for more details.
+See [README.md](./gpr_sparse_data/README.md) for more details.
 
 <div align="center">
-  <img src="./gp_regression/figure_gp_regression.png" width="640" height="480" alt="Regression results for function y = sin(x^2) with RFF" />
+  <img src="./gpr_sparse_data/figure_gpr_sparse_data.png" width="640" height="480" alt="Regression results for function y = sin(x^2) with RFF" />
 </div>
 
 ## Gaussian Process Classification using Random Fourier Features

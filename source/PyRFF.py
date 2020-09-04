@@ -19,16 +19,6 @@ def seed(seed):
 
 # }}}
 
-def select_classifier(mode, svm, n_jobs):
-# {{{
-
-    if   mode == "ovo": classifier = sklearn.multiclass.OneVsOneClassifier
-    elif mode == "ovr": classifier = sklearn.multiclass.OneVsRestClassifier
-    else              : classifier = sklearn.multiclass.OneVsRestClassifier
-    return classifier(svm, n_jobs = n_jobs)
-
-# }}}
-
 class RFFRegression:
 # {{{
 
@@ -70,7 +60,13 @@ class RFFSVC:
         self.dim = dim_output
         self.std = std
         self.W   = W
-        self.svm = select_classifier(multi_mode, sklearn.svm.LinearSVC(**args), n_jobs)
+        self.svm = self.set_classifier(sklearn.svm.LinearSVC(**args), mode, n_jobs)
+
+    def set_classifier(self, svm, mode, n_jobs):
+        if   mode == "ovo": classifier = sklearn.multiclass.OneVsOneClassifier
+        elif mode == "ovr": classifier = sklearn.multiclass.OneVsRestClassifier
+        else              : classifier = sklearn.multiclass.OneVsRestClassifier
+        return classifier(svm, n_jobs = n_jobs)
 
     def set_weight(self, length):
         if self.W is None:
