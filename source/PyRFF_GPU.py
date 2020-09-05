@@ -12,9 +12,11 @@ import sklearn.multiclass
 import tensorflow as tf
 import PyRFF as pyrff
 
+### Fix random seed used in this script.
 def seed(seed):
 # {{{
 
+    ### Need to fix the random seed of Numpy and Tensorflow.
     np.random.seed(seed)
     tf.set_random_seed(seed)
 

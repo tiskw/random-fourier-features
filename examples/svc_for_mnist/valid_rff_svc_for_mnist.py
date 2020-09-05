@@ -42,6 +42,10 @@ import docopt
 import numpy     as np
 import sklearn   as skl
 import PyRFF     as pyrff
+import utils
+
+### Import utility functions from training script.
+from train_rff_svc_for_mnist import vectorise_MNIST_images, vectorise_MNIST_labels, mat_transform_pca
 
 
 ### Load train/test image data.
@@ -61,35 +65,16 @@ def mat_transform_pca(Xs, dim):
     return np.real(V[:, :dim])
 
 
-### Class for measure elasped time using 'with' sentence.
-class Timer:
-
-    def __init__(self, message = "", unit = "s", devide_by = 1):
-        self.message   = message
-        self.time_unit = unit
-        self.devide_by = devide_by
-
-    def __enter__(self):
-        self.t0 = time.time()
-        return self
-
-    def __exit__(self, ex_type, ex_value, trace):
-        dt = (time.time() - self.t0) / self.devide_by
-        if   self.time_unit == "ms": dt *= 1E3
-        elif self.time_unit == "us": dt *= 1E6
-        print("%s%f [%s]" % (self.message, dt, self.time_unit))
-
-
 ### Inference using CPU.
 def main(args):
 
     ### Load test data.
-    with Timer("Loading test data: "):
+    with utils.Timer("Loading test data: "):
         Xs_test = vectorise_MNIST_images(os.path.join(args["--input"], "MNIST_test_images.npy")).astype(np.float32)
         ys_test = vectorise_MNIST_labels(os.path.join(args["--input"], "MNIST_test_labels.npy")).astype(np.float32)
 
     ### Load pickled result.
-    with Timer("Loading model: "):
+    with utils.Timer("Loading model: "):
         with open(args["--model"], "rb") as ifp:
             result = pickle.load(ifp)
         svc = result["svc"]
@@ -102,7 +87,7 @@ def main(args):
         svc = pyrff_gpu.RFFSVC_GPU(svc, T, args["--batch_size"])
 
     ### Calculate score for test data.
-    with Timer("SVM prediction time for 1 image: ", unit = "us", devide_by = ys_test.shape[0]):
+    with utils.Timer("SVM prediction time for 1 image: ", unit = "us", devide_by = ys_test.shape[0]):
 
         ### In case of GPU inference, Calculation of PCA ".dot(T)" is not necessary because PCA matrix T is
         ### embedded to GPU computation graph as a preprocessing matrix for faster calculation.

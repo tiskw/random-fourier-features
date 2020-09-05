@@ -51,25 +51,7 @@ import sklearn           as skl
 import sklearn.gaussian_process
 import matplotlib.pyplot as mpl
 import PyRFF             as pyrff
-
-
-### Class for measure elasped time using 'with' sentence.
-class Timer:
-
-    def __init__(self, message = "", unit = "s", devide_by = 1):
-        self.message   = message
-        self.time_unit = unit
-        self.devide_by = devide_by
-
-    def __enter__(self):
-        self.t0 = time.time()
-        return self
-
-    def __exit__(self, ex_type, ex_value, trace):
-        dt = (time.time() - self.t0) / self.devide_by
-        if   self.time_unit == "ms": dt *= 1E3
-        elif self.time_unit == "us": dt *= 1E6
-        print("%s%f [%s]" % (self.message, dt, self.time_unit))
+import utils
 
 
 ### Main procedure.
@@ -89,23 +71,23 @@ def main(args):
         gp = pyrff.RFFGPR(dim_output = args["--kdim"], std_kernel = args["--kstd"], std_error = args["--estd"])
 
     ### Load training data.
-    with Timer("Generating training/testing data: "):
+    with utils.Timer("Generating training/testing data: "):
         Xs_train = np.random.randn(args["--n_train"], 1)
         ys_train = np.sin(Xs_train**2)
         Xs_test  = np.linspace(-4, 4, args["--n_test"]).reshape((args["--n_test"], 1))
         ys_test  = np.sin(Xs_test**2)
 
     ### Train SVM with orthogonal random features.
-    with Timer("GP learning: ", unit = "ms"):
+    with utils.Timer("GP learning: ", unit = "ms"):
         gp.fit(Xs_train, ys_train)
 
     ### Conduct prediction for the test data.
     if args["--no_pred_std"]:
-        with Timer("GP inference: ", unit = "us", devide_by = args["--n_test"]):
+        with utils.Timer("GP inference: ", unit = "us", devide_by = args["--n_test"]):
             pred = gp.predict(Xs_test)
             pstd = None
     else:
-        with Timer("GP inference: ", unit = "us", devide_by = args["--n_test"]):
+        with utils.Timer("GP inference: ", unit = "us", devide_by = args["--n_test"]):
             pred, pstd = gp.predict(Xs_test, return_std = True)
             pred = pred.reshape((pred.shape[0],))
             pstd = pstd.reshape((pstd.shape[0],))
