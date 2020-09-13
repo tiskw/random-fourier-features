@@ -9,6 +9,7 @@
 import multiprocessing
 import numpy as np
 import scipy.stats
+import sklearn.decomposition
 import sklearn.svm
 import sklearn.multiclass
 
@@ -305,6 +306,41 @@ class RFFGPC(RFFGPR):
 
     def score(self, Xs, ys):
         return np.mean(self.predict(Xs) == ys)
+
+# }}}
+
+### Principal Component Analysis using Random Fourier Features.
+class RFFPCA:
+# {{{
+
+    ### Constractor. Save hyperparameters as member variables.
+    def __init__(self, n_components = None, dim_kernel = 16, std_kernel = 0.1, W = None):
+        self.dim = dim_kernel
+        self.std = std_kernel
+        self.pca = sklearn.decomposition.PCA(n_components)
+        self.W   = W
+
+    ### Set the appropriate random matrix to 'self.W' if 'self.W' is None (i.e. empty).
+    def set_weight(self, length):
+        if self.W is None:
+            self.W = self.std * np.random.randn(length, self.dim)
+
+    ### Apply random matrix to the given input vectors 'X' and create feature vectors.
+    def conv(self, X):
+        ts = np.dot(X, self.W)
+        cs = np.cos(ts)
+        ss = np.sin(ts)
+        return np.bmat([cs, ss])
+
+    ### Run training, that is, extract feature vectors and train SVC.
+    def fit(self, X, *pargs, **kwargs):
+        self.set_weight(X.shape[1])
+        self.pca.fit(self.conv(X), y, **args)
+        return self
+
+    def fit_transform(self, X, *pargs, **kwargs):
+        self.set_weight(X.shape[1])
+        return self.pca.fit_transform(self.conv(X), *pargs, **kwargs)
 
 # }}}
 

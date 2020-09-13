@@ -25,11 +25,11 @@ Options:
     --input <str>    Directory path to the MNIST dataset.                [default: ../../dataset/mnist]
     --output <str>   File path to the output pickle file.                [default: result.pickle]
     --pcadim <int>   Output dimention of Principal Component Analysis.   [default: 256]
-    --kernel <str>   Hyper parameter of kernel SVM (type of kernel)      [default: rbf]
+    --kernel <str>   Hyper parameter of kernel SVM (type of kernel).     [default: rbf]
     --gamma <float>  Hyper parameter of kernel SVM (softness of kernel). [default: auto]
     --C <float>      Hyper parameter of kernel SVM (margin allowance).   [default: 1.0]
-    --kdim <int>     Hyper parameter of RFF SVM (dimention of RFF)       [default: 1024]
-    --stdev <float>  Hyper parameter of RFF SVM (stdev of RFF)           [default: 0.05]
+    --kdim <int>     Hyper parameter of RFF SVM (dimention of RFF).      [default: 1024]
+    --stdev <float>  Hyper parameter of RFF SVM (stdev of RFF).          [default: 0.05]
     --seed <int>     Random seed.                                        [default: 111]
     --cpus <int>     Number of available CPUs.                           [default: -1]
     -h, --help       Show this message.
@@ -101,7 +101,7 @@ def main(args):
     with utils.Timer("Calculate PCA matrix: "):
         T = mat_transform_pca(Xs_train, dim = args["--pcadim"])
 
-    ### Train SVM with orthogonal random features.
+    ### Train SVM.
     with utils.Timer("SVM learning: "):
         svc.fit(Xs_train.dot(T), ys_train)
 

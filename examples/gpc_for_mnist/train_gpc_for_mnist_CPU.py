@@ -21,9 +21,9 @@ Options:
     --input <str>        Directory path to the MNIST dataset.                [default: ../../dataset/mnist]
     --output <str>       File path to the output pickle file.                [default: result.pickle]
     --pcadim <int>       Output dimention of Principal Component Analysis.   [default: 128]
-    --kdim <int>         Hyper parameter of RFF SVM (dimention of RFF)       [default: 128]
-    --std_kernel <float> Hyper parameter of RFF SVM (stdev of RFF)           [default: 0.05]
-    --std_error <float>  Hyper parameter of RFF SVM (stdev of RFF)           [default: 0.05]
+    --kdim <int>         Hyper parameter of RFF SVM (dimention of RFF).      [default: 128]
+    --std_kernel <float> Hyper parameter of RFF SVM (stdev of RFF).          [default: 0.05]
+    --std_error <float>  Hyper parameter of RFF SVM (stdev of RFF).          [default: 0.05]
     --seed <int>         Random seed.                                        [default: 111]
     --cpus <int>         Number of available CPUs.                           [default: -1]
     -h, --help           Show this message.
