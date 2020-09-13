@@ -38,23 +38,13 @@ Options:
 """
 
 
-import sys
 import os
-
-### Add path to PyRFF.py.
-### The followings are not necessary if you copied PyRFF.py to the current directory
-### or other directory which is included in the Python path.
-current_dir = os.path.dirname(__file__)
-module_path = os.path.join(current_dir, "../../source")
-sys.path.append(module_path)
-
-import time
 import pickle
+import sys
+
 import docopt
 import numpy   as np
 import sklearn as skl
-import PyRFF   as pyrff
-import utils
 
 
 ### Load train/test image data.
@@ -133,6 +123,16 @@ if __name__ == "__main__":
 
     ### Parse input arguments.
     args = docopt.docopt(__doc__)
+
+    ### Add path to PyRFF.py.
+    ### The followings are not necessary if you copied PyRFF.py to the current directory
+    ### or other directory which is included in the Python path.
+    current_dir = os.path.dirname(__file__)
+    module_path = os.path.join(current_dir, "../../source")
+    sys.path.append(module_path)
+
+    import PyRFF as pyrff
+    import utils
 
     ### Convert all arguments to an appropriate type.
     for k, v in args.items():

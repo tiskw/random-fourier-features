@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 #
-# This Python script provides an example usage of RFFSVC class which is a class for
-# SVM classifier using RFF. Interface of RFFSVC is quite close to sklearn.svm.SVC.
+# This Python script provides an example usage of RFFGPC class which is a class for
+# Gaussian process classifier using RFF. Interface of RFFGPC is quite close to sklearn.svm.SVC.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : May 25, 2020
+# Date  : September 13, 2020
 ##################################################### SOURCE START #####################################################
 
 """
 Overview:
-  Train Random Fourier Feature SVM. Before running this script, make sure to create MNIST dataset.
-  As a comparison with Kernel SVM, this script has a capability to run a Kernel SVM as the same condition with RFF SVM.
+  Train Random Fourier Feature Gaussian process classifire.
+  Before running this script, make sure to create MNIST dataset.
 
 Usage:
     main_rff_svc_for_mnist_CPU.py [--input <str>] [--output <str>] [--pcadim <int>] [--kdim <int>]
@@ -29,10 +29,13 @@ Options:
     -h, --help           Show this message.
 """
 
-import sys
 import os
+import pickle
+import sys
 
 import docopt
+import numpy   as np
+import sklearn as skl
 
 
 ### Load train/test image data.
@@ -62,7 +65,7 @@ def main(args):
     pyrff.seed(args["--seed"])
 
     ### Create classifier instance.
-    gp = pyrff.RFFGPC(dim_output = args["--kdim"], std_kernel = args["--std_kernel"], std_error = args["--std_error"])
+    gpc = pyrff.RFFGPC(args["--kdim"], args["--std_kernel"], args["--std_error"])
 
     ### Load training data.
     with utils.Timer("Loading training data: "):
@@ -79,18 +82,18 @@ def main(args):
         T = mat_transform_pca(Xs_train, dim = args["--pcadim"])
 
     ### Train SVM with orthogonal random features.
-    with utils.Timer("SVM learning: "):
-        gp.fit(Xs_train.dot(T), ys_train)
+    with utils.Timer("GPC learning: "):
+        gpc.fit(Xs_train.dot(T), ys_train)
 
     ### Calculate score for test data.
-    with utils.Timer("SVM prediction time for 1 image: ", unit = "us", devide_by = ys_test.shape[0]):
-        score = 100 * gp.score(Xs_test.dot(T), ys_test)
+    with utils.Timer("GPC prediction time for 1 image: ", unit = "us", devide_by = ys_test.shape[0]):
+        score = 100 * gpc.score(Xs_test.dot(T), ys_test)
     print("Score = %.2f [%%]" % score)
 
     ### Save training results.
     with utils.Timer("Saving model: "):
         with open(args["--output"], "wb") as ofp:
-            pickle.dump({"gp":gp, "pca":T, "args":args}, ofp)
+            pickle.dump({"gpc":gpc, "pca":T, "args":args}, ofp)
 
 
 if __name__ == "__main__":
@@ -105,11 +108,7 @@ if __name__ == "__main__":
     module_path = os.path.join(current_dir, "../../source")
     sys.path.append(module_path)
 
-    import time
-    import pickle
-    import numpy   as np
-    import sklearn as skl
-    import PyRFF   as pyrff
+    import PyRFF as pyrff
     import utils
 
     ### Convert all arguments to an appropriate type.
