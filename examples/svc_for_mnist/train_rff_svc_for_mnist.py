@@ -54,9 +54,7 @@ import docopt
 import numpy   as np
 import sklearn as skl
 import PyRFF   as pyrff
-# import PyRFF_GPU as pyrff
 import utils
-
 
 
 ### Load train/test image data.
