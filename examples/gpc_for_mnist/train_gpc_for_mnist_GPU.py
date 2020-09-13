@@ -29,12 +29,13 @@ Options:
     -h, --help           Show this message.
 """
 
-import sys
 import os
-import time
 import pickle
+import sys
 
 import docopt
+import numpy   as np
+import sklearn as skl
 
 
 ### Load train/test image data.
@@ -105,10 +106,6 @@ if __name__ == "__main__":
     current_dir = os.path.dirname(__file__)
     module_path = os.path.join(current_dir, "../../source")
     sys.path.append(module_path)
-
-    import numpy   as np
-    import sklearn as skl
-    import tensorflow as tf
 
     import PyRFF_GPU as pyrff
     import utils

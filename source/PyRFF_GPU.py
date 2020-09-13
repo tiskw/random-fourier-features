@@ -245,8 +245,8 @@ class RFFSVC:
 class RFFGPC:
 # {{{
 
-    def __init__(self, dim_output = 256, std_kernel = 0.1, std_error = 1.0, scale = 1.0, W = None):
-        self.dim = dim_output
+    def __init__(self, dim_kernel = 256, std_kernel = 0.1, std_error = 1.0, scale = 1.0, W = None):
+        self.dim = dim_kernel
         self.s_k = std_kernel
         self.s_e = std_error
         self.sca = scale

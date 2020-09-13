@@ -13,56 +13,27 @@ Overview:
   As a comparison with Kernel SVM, this script has a capability to run a Kernel SVM as the same condition with RFF SVM.
 
 Usage:
-    main_rff_svc_for_mnist.py cpu [--input <str>] [--model <str>]
-    main_rff_svc_for_mnist.py tensorflow [--input <str>] [--model <str>] [--batch_size <int>]
+    main_rff_svc_for_mnist.py cpu [--input <str>] [--model <str>] [--use_fft]
+    main_rff_svc_for_mnist.py tensorflow [--input <str>] [--model <str>] [--batch_size <int>] [--use_fft]
     main_rff_svc_for_mnist.py -h|--help
 
 Options:
     cpu                 Run inference on CPU.
     tensorflow          Run inference on GPU using Tensorflow 2.
-    --input <str>       Directory path to the MNIST dataset.   [default: ../../dataset/mnist]
-    --model <str>       File path to the output pickle file.   [default: result.pickle]
-    --batch_size <int>  Batch size for GPU inference.          [default: 2000]
+    --input <str>       Directory path to the MNIST dataset.      [default: ../../dataset/mnist]
+    --model <str>       File path to the output pickle file.      [default: result.pickle]
+    --batch_size <int>  Batch size for GPU inference.             [default: 2000]
+    --use_fft           Apply FFT to the MNIST images.            [default: False]
     -h, --help          Show this message.
 """
 
-import sys
 import os
-
-### Add path to PyRFF.py.
-### The followings are not necessary if you copied PyRFF.py to the current directory
-### or other directory which is included in the Python path.
-current_dir = os.path.dirname(__file__)
-module_path = os.path.join(current_dir, "../../source")
-sys.path.append(module_path)
-
-import time
 import pickle
+import sys
+
 import docopt
-import numpy     as np
-import sklearn   as skl
-import PyRFF     as pyrff
-import utils
-
-### Import utility functions from training script.
-from train_rff_svc_for_mnist import vectorise_MNIST_images, vectorise_MNIST_labels, mat_transform_pca
-
-
-### Load train/test image data.
-def vectorise_MNIST_images(filepath):
-    Xs = np.load(filepath)
-    return np.array([Xs[n, :, :].reshape((28 * 28, )) for n in range(Xs.shape[0])]) / 255.0
-
-
-### Load train/test label data.
-def vectorise_MNIST_labels(filepath):
-    return np.load(filepath)
-
-
-### PCA analysis for dimention reduction.
-def mat_transform_pca(Xs, dim):
-    _, V = np.linalg.eig(Xs.T.dot(Xs))
-    return np.real(V[:, :dim])
+import numpy   as np
+import sklearn as skl
 
 
 ### Inference using CPU.
@@ -70,7 +41,7 @@ def main(args):
 
     ### Load test data.
     with utils.Timer("Loading test data: "):
-        Xs_test = vectorise_MNIST_images(os.path.join(args["--input"], "MNIST_test_images.npy")).astype(np.float32)
+        Xs_test = vectorise_MNIST_images(os.path.join(args["--input"], "MNIST_test_images.npy"), args["--use_fft"]).astype(np.float32)
         ys_test = vectorise_MNIST_labels(os.path.join(args["--input"], "MNIST_test_labels.npy")).astype(np.float32)
 
     ### Load pickled result.
@@ -82,8 +53,7 @@ def main(args):
 
     ### If GPU inference, convert PyRFF.RFFSVC -> PyRFF_GPU.RFFSVC_GPU and overwrite 'svc' instance.
     if args["tensorflow"]:
-        import PyRFF_GPU  as pyrff_gpu
-        svc = pyrff_gpu.RFFSVC(batch_size = args["--batch_size"]).from_RFFSVC_cpu(svc, T)
+        svc = pyrff_gpu.RFFSVC(batch_size = args["--batch_size"]).init_from_RFFSVC_cpu(svc, T)
 
     ### Calculate score for test data.
     with utils.Timer("SVM prediction time for 1 image: ", unit = "us", devide_by = ys_test.shape[0]):
@@ -100,6 +70,22 @@ if __name__ == "__main__":
 
     ### Parse input arguments.
     args = docopt.docopt(__doc__)
+
+    ### Add path to PyRFF.py.
+    ### The followings are not necessary if you copied PyRFF.py to the current directory
+    ### or other directory which is included in the Python path.
+    current_dir = os.path.dirname(__file__)
+    module_path = os.path.join(current_dir, "../../source")
+    sys.path.append(module_path)
+
+    if   args["cpu"]       : import PyRFF as pyrff
+    elif args["tensorflow"]: import PyRFF_GPU  as pyrff_gpu
+    import utils
+
+    ### Import utility functions from training script.
+    from train_rff_svc_for_mnist import vectorise_MNIST_images
+    from train_rff_svc_for_mnist import vectorise_MNIST_labels
+    from train_rff_svc_for_mnist import mat_transform_pca
 
     ### Convert all arguments to an appropriate type.
     for k, v in args.items():

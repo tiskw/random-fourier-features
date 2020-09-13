@@ -28,8 +28,8 @@ class RFFRegression:
 
     ### Constractor. Save hyper parameters as member variables and create LinearRegression instance.
     ### NOTE: If 'W' is None then the appropriate matrix will be set just before the training.
-    def __init__(self, dim_output = 1024, std = 0.1, W = None, **args):
-        self.dim = dim_output
+    def __init__(self, dim_kernel = 1024, std = 0.1, W = None, **args):
+        self.dim = dim_kernel
         self.std = std
         self.reg = sklearn.linear_model.LinearRegression(**args)
         self.W   = W
@@ -70,8 +70,8 @@ class RFFSVC:
 
     ### Constractor. Save hyper parameters as member variables and create LinearSVC instance.
     ### The LinearSVC instance is always wrappered by multiclass classifier.
-    def __init__(self, dim_output = 1024, std = 0.1, W = None, multi_mode = "ovr", n_jobs = -1, **args):
-        self.dim = dim_output
+    def __init__(self, dim_kernel = 1024, std = 0.1, W = None, multi_mode = "ovr", n_jobs = -1, **args):
+        self.dim = dim_kernel
         self.std = std
         self.W   = W
         self.svm = self.set_classifier(sklearn.svm.LinearSVC(**args), multi_mode, n_jobs)
@@ -129,11 +129,11 @@ class RFFBatchSVC:
 
     ### Constractor. Save hyper parameters as member variables and create LinearSVC instance.
     ### The LinearSVC instance is always wrappered by multiclass classifier.
-    def __init__(self, dim, std, num_epochs = 10, num_batches = 10, alpha = 0.05):
+    def __init__(self, dim_kernel, std, num_epochs = 10, num_batches = 10, alpha = 0.05):
         self.coef    = None
         self.icpt    = None
         self.W       = None
-        self.dim     = dim
+        self.dim     = dim_kernel
         self.std     = std
         self.n_epoch = num_epochs
         self.n_batch = num_batches
@@ -219,8 +219,8 @@ class RFFGPR:
 # {{{
 
     ### Constractor. Save hyperparameters as member variables.
-    def __init__(self, dim_output = 16, std_kernel = 1.0, std_error = 0.1, W = None):
-        self.dim = dim_output
+    def __init__(self, dim_kernel = 16, std_kernel = 1.0, std_error = 0.1, W = None):
+        self.dim = dim_kernel
         self.s_k = std_kernel
         self.s_e = std_error
         self.W   = W
@@ -290,8 +290,8 @@ class RFFGPC(RFFGPR):
     ### The purpouse of this RFFGPC class is only to do these pre/post-processings.
 
     ### Constractor. Save hyperparameters as member variables.
-    def __init__(self, dim_output = 16, std_kernel = 5, std_error = 0.3, W = None):
-        self.dim = dim_output
+    def __init__(self, dim_kernel = 16, std_kernel = 5, std_error = 0.3, W = None):
+        self.dim = dim_kernel
         self.s_k = std_kernel
         self.s_e = std_error
         self.W   = W
