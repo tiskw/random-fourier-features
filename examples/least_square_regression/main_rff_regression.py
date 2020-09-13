@@ -62,4 +62,3 @@ if __name__ == "__main__":
 
 #################################### SOURCE FINISH ##################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker
-# Ganerated by grasp version 0.0

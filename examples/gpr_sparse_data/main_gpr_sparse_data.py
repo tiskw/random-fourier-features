@@ -20,11 +20,11 @@ Usage:
     main_gpr_sparse_data.py -h|--help
 
 Options:
-    kernel           Run normal Gaussian Process
-    rff              Run Gaussian process with Random Fourier Features
-    --estd <float>   Hyper parameter of RFF SVM (stdev of error)    [default: 1.0]
-    --kdim <int>     Hyper parameter of RFF SVM (dimention of RFF)  [default: 16]
-    --kstd <float>   Hyper parameter of RFF SVM (stdev of RFF)      [default: 5.0]
+    kernel           Run normal Gaussian Process.
+    rff              Run Gaussian process with Random Fourier Features.
+    --estd <float>   Hyper parameter of RFF SVM (stdev of error).   [default: 1.0]
+    --kdim <int>     Hyper parameter of RFF SVM (dimention of RFF). [default: 16]
+    --kstd <float>   Hyper parameter of RFF SVM (stdev of RFF).     [default: 5.0]
     --n_train <int>  Number of training samples.                    [default: 10000]
     --n_test <int>   Number of test samples.                        [default: 101]
     --no_pred_std    Run standard deviation prediction.
