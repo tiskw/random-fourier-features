@@ -314,7 +314,7 @@ class RFFPCA:
 # {{{
 
     ### Constractor. Save hyperparameters as member variables.
-    def __init__(self, n_components = None, dim_kernel = 16, std_kernel = 0.1, W = None):
+    def __init__(self, n_components = None, dim_kernel = 128, std_kernel = 0.1, W = None):
         self.dim = dim_kernel
         self.std = std_kernel
         self.pca = sklearn.decomposition.PCA(n_components)
@@ -332,15 +332,39 @@ class RFFPCA:
         ss = np.sin(ts)
         return np.bmat([cs, ss])
 
-    ### Run training, that is, extract feature vectors and train SVC.
+    ### Wrapper function of sklearn.decomposition.PCA.get_covariance.
+    def get_covariance(self):
+        return self.pca.get_covariance()
+
+    ### Wrapper function of sklearn.decomposition.PCA.get_precision.
+    def get_precision(self):
+        return self.pca.get_precision()
+
+    ### Wrapper function of sklearn.decomposition.PCA.fit.
     def fit(self, X, *pargs, **kwargs):
         self.set_weight(X.shape[1])
-        self.pca.fit(self.conv(X), y, **args)
+        self.pca.fit(self.conv(X), *pargs, **kwargs)
         return self
 
+    ### Wrapper function of sklearn.decomposition.PCA.fit_transform.
     def fit_transform(self, X, *pargs, **kwargs):
         self.set_weight(X.shape[1])
         return self.pca.fit_transform(self.conv(X), *pargs, **kwargs)
+
+    ### Wrapper function of sklearn.decomposition.PCA.score.
+    def score(self, X, *pargs, **kwargs):
+        self.set_weight(X.shape[1])
+        return self.pca.score(self.conv(X), *pargs, **kwargs)
+
+    ### Wrapper function of sklearn.decomposition.PCA.score_samples.
+    def score_samples(self, X, *pargs, **kwargs):
+        self.set_weight(X.shape[1])
+        return self.pca.score_samples(self.conv(X), *pargs, **kwargs)
+
+    ### Wrapper function of sklearn.decomposition.PCA.transform.
+    def transform(self, X, *pargs, **kwargs):
+        self.set_weight(X.shape[1])
+        return self.pca.transform(self.conv(X), *pargs, **kwargs)
 
 # }}}
 

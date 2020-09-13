@@ -4,7 +4,7 @@ Python module of Random Fourier Features (RFF) for regression, support vector cl
 Features of this RFF module are:
 
 * interfaces of the module are quite close to the scikit-learn,
-* module for support vector classification provides CPU training and inference, and GPU inference,
+* module for support vector classification provides CPU/GPU training and inference.
 * module for the Gaussian process provides CPU/GPU training and inference.
 
 Now, this module only supports
@@ -12,8 +12,9 @@ Now, this module only supports
 * regression (`PyRFF.RFFRegression`),
 * support vector classification (`PyRFF.RFFSVC`, `PyRFF_GPU.RFFSVC`),
 * Gaussian process (`PyRFF.RFFGPR`, `PyRFF.RFFGPC`, `PyRFF_GPU.RFFGPC`).
+* principal component analysis (`PyRFF.RFFPCA`).
 
-RFF can be applicable for many other machine learning algorithms, however, I will provide other functions soon.
+RFF can be applicable for many other machine learning algorithms, I will provide other functions soon.
 
 
 ## Requirement
@@ -22,7 +23,7 @@ RFF can be applicable for many other machine learning algorithms, however, I wil
 - docopt 0.6.2
 - Numpy 1.18.1
 - scikit-learn 0.22.1
-- Tensorflow 2.1.0 (for GPU inference)
+- Tensorflow 2.1.0 (for GPU training/inference)
 
 
 ## Minimal example
@@ -59,15 +60,16 @@ See [examples](./examples/README.md) directory for more detailed examples.
 I applied SVM with RFF to MNIST which is a famous benchmark dataset for the classification task,
 and I've got better performance and much faster inference speed than kernel SVM.
 The following table gives a brief comparison of kernel SVM and SVM with RFF.
-See the example of [RFF SVC module](./examples/svc_for_mnist/README.md) and [RFF GP module](./examples/gpc_for_mnist/README.md) for mode details.
+See the example of [RFF SVC module](./examples/svc_for_mnist/README.md)
+and [RFF GP module](./examples/gpc_for_mnist/README.md) for mode details.
 
-| Method                   | Inference time (us) | Score (%) |
-|:------------------------:|:-------------------:|:---------:|
-| Kernel SVM               | 4644.9 us           | 96.3 %    |
-| SVM w/ RFF (d=512)       | 39.0 us             | 96.5 %    |
-| SVM w/ RFF (d=1024)      | 96.1 us             | 97.5 %    |
-| SVM w/ RFF (d=1024, GPU) | 2.38 us             | 97.5 %    |
-| GP w/ RFF (d=5120, CPU)  | 342.1 us            | 98.2 %    |
+| Method                   | RFF dimension | Inference time (us) | Score (%) |
+|:------------------------:|:-------------:|:-------------------:|:---------:|
+| Kernel SVM               | -             | 4644.9 us           | 96.3 %    |
+| RFF SVC                  |  512          | 39.0 us             | 96.5 %    |
+| RFF SVC                  | 1024          | 96.1 us             | 97.5 %    |
+| RFF SVC (GPU inference)  | 1024          | 2.38 us             | 97.5 %    |
+| RFF GPC                  | 5120          | 342.1 us            | 98.2 %    |
 
 <div align="center">
   <img src="./examples/svc_for_mnist/figures/figure_Inference_Time_and_Accuracy_on_MNIST.png" width="600" height="371" alt="Accuracy for each epochs in RFF SVC" />
@@ -112,4 +114,3 @@ See the example of [RFF SVC module](./examples/svc_for_mnist/README.md) and [RFF
 ## Author
 
 Tetsuya Ishikawa ([EMail](mailto:tiskw111@gmail.com), [Website](https://tiskw.gitlab.io/home/))
-
