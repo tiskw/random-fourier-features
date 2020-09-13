@@ -4,7 +4,7 @@
 # SVM classifier using RFF. Interface of RFFSVC is quite close to sklearn.svm.SVC.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : February 19, 2020
+# Date  : September 13, 2020
 ##################################################### SOURCE START #####################################################
 
 """
@@ -13,9 +13,9 @@ Overview:
   As a comparison with Kernel SVM, this script has a capability to run a Kernel SVM as the same condition with RFF SVM.
 
 Usage:
-    main_rff_svc_for_mnist.py kernel [--input <str>] [--output <str>] [--pcadim <int>] [--kernel <str>] [--gamma <float>] [--C <float>] [--seed <int>]
-    main_rff_svc_for_mnist.py rff [--input <str>] [--output <str>] [--pcadim <int>] [--kdim <int>] [--stdev <float>] [--seed <int>] [--cpus <int>]
-    main_rff_svc_for_mnist.py orf [--input <str>] [--output <str>] [--pcadim <int>] [--kdim <int>] [--stdev <float>] [--seed <int>] [--cpus <int>]
+    main_rff_svc_for_mnist.py kernel [--input <str>] [--output <str>] [--pcadim <int>] [--kernel <str>] [--gamma <float>] [--C <float>] [--seed <int>] [--use_fft]
+    main_rff_svc_for_mnist.py rff [--input <str>] [--output <str>] [--pcadim <int>] [--kdim <int>] [--stdev <float>] [--seed <int>] [--cpus <int>] [--use_fft]
+    main_rff_svc_for_mnist.py orf [--input <str>] [--output <str>] [--pcadim <int>] [--kdim <int>] [--stdev <float>] [--seed <int>] [--cpus <int>] [--use_fft]
     main_rff_svc_for_mnist.py -h|--help
 
 Options:
@@ -32,6 +32,8 @@ Options:
     --stdev <float>  Hyper parameter of RFF SVM (stdev of RFF).          [default: 0.05]
     --seed <int>     Random seed.                                        [default: 111]
     --cpus <int>     Number of available CPUs.                           [default: -1]
+    --batch_size <int> Batch size in training/inference.                 [default: 256]
+    --use_fft        Apply FFT to the MNIST images.                      [default: False]
     -h, --help       Show this message.
 """
 
@@ -56,9 +58,20 @@ import utils
 
 
 ### Load train/test image data.
-def vectorise_MNIST_images(filepath):
-    Xs = np.load(filepath)
-    return np.array([Xs[n, :, :].reshape((28 * 28, )) for n in range(Xs.shape[0])]) / 255.0
+def vectorise_MNIST_images(filepath, apply_fft = False):
+
+    # Load dataset and normalize.
+    Xs = np.load(filepath) / 255.0
+
+    if apply_fft:
+        Fs = np.zeros((Xs.shape[0], 2 * Xs.shape[1] * Xs.shape[2]))
+        for n in range(Xs.shape[0]):
+            fs = np.fft.fft2(Xs[n, :, :])
+            Fs[n, :] = np.array([np.real(fs), np.imag(fs)]).flatten()
+        return Fs
+
+    else:
+        return np.array([Xs[n, :, :].reshape((28 * 28, )) for n in range(Xs.shape[0])])
 
 
 ### Load train/test label data.
@@ -83,18 +96,18 @@ def main(args):
 
     ### Create classifier instance.
     if   args["kernel"]: svc = skl.svm.SVC(kernel = args["--kernel"], gamma = args["--gamma"])
-    elif args["rff"]   : svc = pyrff.RFFSVC(dim_output = args["--kdim"], std = args["--stdev"], tol = 1.0E-3, n_jobs = args["--cpus"])
-    elif args["orf"]   : svc = pyrff.ORFSVC(dim_output = args["--kdim"], std = args["--stdev"], tol = 1.0E-3, n_jobs = args["--cpus"])
-    else               : exit("Error: First argument must be 'kernel' or 'rff'.")
+    elif args["rff"]   : svc = pyrff.RFFSVC(dim_kernel = args["--kdim"], std = args["--stdev"], tol = 1.0E-3, n_jobs = args["--cpus"])
+    elif args["orf"]   : svc = pyrff.ORFSVC(dim_kernel = args["--kdim"], std = args["--stdev"], tol = 1.0E-3, n_jobs = args["--cpus"])
+    else               : exit("Error: First argument must be 'kernel', 'rff' or 'orf'.")
 
     ### Load training data.
     with utils.Timer("Loading training data: "):
-        Xs_train = vectorise_MNIST_images(os.path.join(args["--input"], "MNIST_train_images.npy"))
+        Xs_train = vectorise_MNIST_images(os.path.join(args["--input"], "MNIST_train_images.npy"), args["--use_fft"])
         ys_train = vectorise_MNIST_labels(os.path.join(args["--input"], "MNIST_train_labels.npy"))
 
     ### Load test data.
     with utils.Timer("Loading test data: "):
-        Xs_test = vectorise_MNIST_images(os.path.join(args["--input"], "MNIST_test_images.npy"))
+        Xs_test = vectorise_MNIST_images(os.path.join(args["--input"], "MNIST_test_images.npy"), args["--use_fft"])
         ys_test = vectorise_MNIST_labels(os.path.join(args["--input"], "MNIST_test_labels.npy"))
 
     ### Create matrix for principal component analysis.

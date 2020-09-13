@@ -104,3 +104,18 @@ The following figure shows a tradeoff between the accuracy and inference time of
   <img src="./figures/figure_rff_svc_for_mnist.png" width="480" height="320" alt="Accuracy for each dimention in RFF SVC" />
 </div>
 
+
+## Tips
+
+### Training on GPU
+
+The module `PyRFF_GPU` contains GPU training implementation.
+You can try the GPU training by replacing `PyRFF` to `PyRFF_GPU` like the following:
+
+```python
+# import PyRFF as pyrff
+import PyRFF_GPU as pyrff
+```
+
+Now the GPU training does not show an enough high performance than the CPU training,
+but it's worth to try if you want to try higher RFF dimension than 1024.

@@ -80,11 +80,10 @@ def main(args):
         svc = result["svc"]
         T   = result["pca"]
 
-    ### Only GPU inference: Convert PyRFF.RFFSVC -> PyRFF_GPU.RFFSVC_GPU and overwrite 'svc' variable.
+    ### If GPU inference, convert PyRFF.RFFSVC -> PyRFF_GPU.RFFSVC_GPU and overwrite 'svc' instance.
     if args["tensorflow"]:
-        import tensorflow as tf
         import PyRFF_GPU  as pyrff_gpu
-        svc = pyrff_gpu.RFFSVC_GPU(svc, T, args["--batch_size"])
+        svc = pyrff_gpu.RFFSVC(batch_size = args["--batch_size"]).from_RFFSVC_cpu(svc, T)
 
     ### Calculate score for test data.
     with utils.Timer("SVM prediction time for 1 image: ", unit = "us", devide_by = ys_test.shape[0]):

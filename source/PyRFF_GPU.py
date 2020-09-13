@@ -10,6 +10,7 @@ import numpy as np
 import sklearn.svm
 import sklearn.multiclass
 import tensorflow as tf
+import tensorflow_addons as tfa
 import PyRFF as pyrff
 
 ### Fix random seed used in this script.
@@ -18,7 +19,7 @@ def seed(seed):
 
     ### Need to fix the random seed of Numpy and Tensorflow.
     np.random.seed(seed)
-    tf.set_random_seed(seed)
+    tf.random.set_seed(seed)
 
 # }}}
 
@@ -30,49 +31,170 @@ def seed(seed):
 class RFFSVC:
 # {{{
 
-    def __init__(self, rffsvc, M_pre = None, batch_size = 32):
+    def __init__(self, dim_kernel = None, std = None, batch_size = 5000, dtype = 'float32', *pargs, **kwargs):
+
+        ### Create parameters on CPU, then move the parameters to GPU.
+        ### There are two ways to initialize these parameters:
+        ###   (1) from scratch: generate parameters from scratch,
+        ###   (2) from rffsvc: copy parameters from RFFSVC (CPU) class instance.
+        ### The member variable 'self.initialized' indicate that the parameters are well initialized or not.
+        ### If the parameters are initialized by one of the ways other than (1), 'self.initialized' is set to True.
+        ### And if 'self.initialized' is still False when just before the training/inference,
+        ### then the parameters are initialized by the way (1).
+
+        ### Save important variables.
+        self.dim_kernel  = dim_kernel
+        self.std         = std
+        self.batch_size  = batch_size
+        self.dtype       = dtype
+        self.initialized = False
+
+    ### Constractor: initialize parameters from scratch.
+    def init_from_scratch(self, dim_input, dim_kernel, dim_output, std):
+
+        ### Create parameters on CPU.
+        ###   - W: Random matrix of Random Fourier Features. (shape = [dim_input,  dim_kernel]).
+        ###   - A: Coefficients of Linear SVC.               (shape = [dim_kernel, dim_output]).
+        ###   - b: Intercepts of Linear SVC.                 (shape = [1,          dim_output]).
+        self.W_cpu = np.random.randn(dim_input,      dim_kernel) * self.std
+        self.A_cpu = np.random.randn(2 * dim_kernel, dim_output)
+        self.b_cpu = np.random.randn(1,              dim_output)
+
+        ### Create GPU variables and build GPU model.
+        self.build()
+
+        ### Mark as initialized.
+        self.initialized = True
+
+        ### Return myself in order to allow the usage like:
+        ###   svc = RFFSVC(...).init_from_scratch(...)
+        return self
+
+    ### Copy parameters from the given rffsvc and create instance.
+    def init_from_RFFSVC_cpu(self, rffsvc_cpu, M_pre):
 
         ### Only RFFSVC support GPU inference.
-        if type(rffsvc) != pyrff.RFFSVC:
+        if type(rffsvc_cpu) != pyrff.RFFSVC:
             raise TypeError("PyRFF.RFFSVC_GPU: Only PyRFF.RFFSVC supported.")
 
         ### TODO: One-versus-one classifier is not supported now.
-        if rffsvc.svm.get_params()["estimator__multi_class"] != "ovr":
+        if rffsvc_cpu.svm.get_params()["estimator__multi_class"] != "ovr":
             raise TypeError("PyRFF.RFFSVC_GPU: Sorry, current implementation support only One-versus-the-rest classifier.")
 
-        ### Create parameters on CPU at first.
-        ###   - M: Preprocessing matrix (e.g. Principal Component Analysis).
+        ### Copy parameters from rffsvc on CPU.
         ###   - W: Random matrix of Random Fourier Features.
         ###        If PCA applied, combine it to the random matrix for high throughput.
         ###   - A: Coefficients of Linear SVC.
         ###   - b: Intercepts of Linear SVC.
-        M_pre = M_pre if M_pre is not None else np.eye(rffsvc.W.shape[0])
-        W_cpu = M_pre.dot(rffsvc.W)
-        A_cpu = rffsvc.svm.coef_.T
-        b_cpu = rffsvc.svm.intercept_.T
+        self.W_cpu = M_pre.dot(rffsvc_cpu.W) if M_pre is not None else rffsvc_cpu.W
+        self.A_cpu = rffsvc_cpu.svm.coef_.T
+        self.b_cpu = rffsvc_cpu.svm.intercept_.T
 
-        ### Create pseudo input on CPU for GPU variable creation.
-        x_cpu = np.zeros((batch_size, W_cpu.shape[0]), dtype = np.float32)
+        ### Create GPU variables and build GPU model.
+        self.build()
 
-        ### Create GPU variables.
-        self.x_gpu = tf.Variable(x_cpu, dtype = tf.float32)
-        self.W_gpu = tf.constant(W_cpu, dtype = tf.float32)
-        self.A_gpu = tf.constant(A_cpu, dtype = tf.float32)
-        self.b_gpu = tf.constant(b_cpu, dtype = tf.float32)
+        ### Mark as initialized.
+        self.initialized = True
 
-        ### Run the GPU model for creating the graph (because we are in the eager-mode here).
-        _ = self.predict_proba_batch(x_cpu)
+        ### Return myself in order to allow the usage like:
+        ###   svc = RFFSVC(...).from_RFFSVC_cpu(...)
+        return self
 
-        ### Save several variables.
-        self.batch_size  = batch_size
-        self.input_shape = x_cpu.shape
+    ### Create GPU variables if all CPU variables are ready.
+    def build(self):
+
+        ### Run build procedure if and only if all variables is available.
+        if all(v is not None for v in [self.W_cpu, self.A_cpu, self.b_cpu]):
+
+            ### Create pseudo input on CPU for GPU variable creation.
+            self.X_cpu = np.zeros((self.batch_size, self.W_cpu.shape[0]), dtype = self.dtype)
+            self.y_cpu = np.zeros((self.batch_size, self.A_cpu.shape[1]), dtype = self.dtype)
+
+            ### Create GPU variables.
+            self.X_gpu = tf.Variable(self.X_cpu, dtype = self.dtype)
+            self.y_gpu = tf.Variable(self.y_cpu, dtype = self.dtype)
+            self.W_gpu = tf.constant(self.W_cpu, dtype = self.dtype)
+            self.A_gpu = tf.Variable(self.A_cpu, dtype = self.dtype)
+            self.b_gpu = tf.Variable(self.b_cpu, dtype = self.dtype)
+
+            ### Run a inference for building the model (because we are in the eager-mode here).
+            _ = self.predict_proba_batch(self.X_cpu)
+
+    ### Train the model for one batch.
+    ###   - X_cpu (np.array, shape = [N, K]): training data,
+    ### where N is the number of training data, K is dimension of the input data.
+    @tf.function
+    def fit_batch(self, X_gpu, y_gpu, opt):
+
+        ### Calclate loss function under the GradientTape.
+        with tf.GradientTape() as tape:
+            tape.watch([self.A_gpu, self.b_gpu])
+            z = tf.matmul(X_gpu, self.W_gpu)
+            z = tf.concat([tf.cos(z), tf.sin(z)], 1)
+            p = tf.matmul(z, self.A_gpu) + self.b_gpu
+            v = tf.math.reduce_mean(tf.math.maximum(tf.cast(0, self.dtype), 1 - y_gpu * p))
+
+        ### Derive gradient for all variables and apply gradient decent optimizer.
+        dv_dA, dv_db = tape.gradient(v, [self.A_gpu, self.b_gpu])
+        opt.apply_gradients(zip([dv_dA, dv_db], [self.A_gpu, self.b_gpu]))
+
+        ### Register loss value to the metric.
+        self.losses(v)
+
+    def fit(self, X_cpu, y_cpu, epoch_max = 1000, opt = "RAdam", learning_rate = 0.1, weight_decay = 1.0E-8, quiet = False):
+
+        ### Get optimizer.
+        if   opt == "SGD"    : opt = tf.keras.optimizers.SGD(learning_rate)
+        elif opt == "RMSProp": opt = tf.keras.optimizers.RMSprop(learning_rate)
+        elif opt == "Adam"   : opt = tf.keras.optimizers.Adam(learning_rate)
+        elif opt == "AdamW"  : opt = tfa.optimizers.AdamW(learning_rate, weight_decay = weight_decay)
+        elif opt == "RAdam"  : opt = tfa.optimizers.RectifiedAdam(learning_rate, weight_decay = weight_decay)
+
+        ### Get hyper parameters.
+        dim_input  = X_cpu.shape[1]
+        dim_output = np.max(y_cpu) + 1
+        num_data   = X_cpu.shape[0]
+
+        ### Convert the label to +1/-1 format.
+        X_cpu = X_cpu.astype(self.dtype)
+        y_cpu = (2 * np.identity(dim_output)[y_cpu] - 1).astype(self.dtype)
+
+        ### Create random matrix of RFF and linear SVM parameters on GPU.
+        if not self.initialized:
+            self.init_from_scratch(dim_input, self.dim_kernel, dim_output, self.std)
+
+        ### Create dataset instance for training.
+        data_train = tf.data.Dataset.from_tensor_slices((X_cpu, y_cpu)).shuffle(num_data).batch(self.batch_size)
+
+        ### Loss matric.
+        self.losses = tf.keras.metrics.Mean(name='train_loss')
+
+        for epoch in range(epoch_max):
+
+            ### Learning rate decay.
+            ### TODO: Modify to be changable by user.
+            if   epoch == 200: opt.learning_rate = 0.01
+            elif epoch == 700: opt.learning_rate = 0.001
+
+            ### Train one epoch.
+            for Xs_batch, ys_batch in data_train:
+                self.fit_batch(Xs_batch, ys_batch, opt)
+
+            ### Exit training loop if loss value is close to machine epsilone.
+            if self.losses.result().numpy() < 1.0E-10:
+                break
+
+            ### Print training log.
+            if not quiet and epoch % 10 == 0:
+                print(F"Epoch {epoch:>4}: Train loss = {self.losses.result().numpy():.4e}")
+            self.losses.reset_states()
 
     ### Function for running the Tensorflow model of RFF for one batch.
     ###   - X_cpu (np.array, shape = [N, K]): training data,
     ### where N is the number of training data, K is dimension of the input data.
     @tf.function
     def predict_proba_batch(self, X_cpu):
-        self.x_gpu.assign(X_cpu)
+        self.X_gpu.assign(X_cpu)
         z = tf.matmul(self.X_gpu, self.W_gpu)
         z = tf.concat([tf.cos(z), tf.sin(z)], 1)
         return tf.matmul(z, self.A_gpu) + self.b_gpu
@@ -88,10 +210,10 @@ class RFFSVC:
 
         ### Batch number must be a multiple of batch size because the Tensorflow Graph already built.
         if X_cpu.shape[0] % bs != 0:
-            raise ValueError("PyRFF_GPU: Number of input data must be a multiple of batch size (= %d)" % bs)
+            raise ValueError("PyRFF_GPU: Number of input data must be a multiple of batch size")
 
         ### Run prediction for each batch, concatenate them and return.
-        Xs = [self.predict_proba_batch(X_cpu[bs*n:bs*(n+1), :]).numpy() for n in range(bn)]
+        Xs = [self.predict_proba_batch(X_cpu[bs*n:bs*(n+1), :].astype(self.dtype)).numpy() for n in range(bn)]
         return np.concatenate(Xs)
 
     ### Run prediction and return log-probability.
