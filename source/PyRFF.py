@@ -9,6 +9,7 @@
 import multiprocessing
 import numpy as np
 import scipy.stats
+import sklearn.cross_decomposition
 import sklearn.decomposition
 import sklearn.svm
 import sklearn.multiclass
@@ -379,35 +380,34 @@ class RFFCCA:
         self.cca = sklearn.cross_decomposition.CCA(**args)
 
     ### Set the appropriate random matrix to 'self.W' if 'self.W' is None (i.e. empty).
-    def set_weight(self, length):
+    def set_weight(self, length1, length2):
         if self.W is None:
-            self.W = self.std * np.random.randn(length, self.dim)
+            self.W = (self.std * np.random.randn(length1, self.dim),
+                      self.std * np.random.randn(length2, self.dim))
 
     ### Apply random matrix to the given input vectors 'X' and create feature vectors.
-    def conv(self, X):
-        ts = X @ self.W
+    def conv(self, X, index):
+        ts = X @ self.W[index]
         return np.bmat([np.cos(ts), np.sin(ts)])
 
     ### Run training, that is, extract feature vectors and train CCA.
     def fit(self, X, Y):
-        self.set_weight(X.shape[1])
-        self.cca.fit(self.conv(X), self.conv(Y))
+        self.set_weight(X.shape[1], Y.shape[1])
+        self.cca.fit(self.conv(X, 0), self.conv(Y, 1))
         return self
 
     ### Return prediction results.
     def predict(self, X, copy = True):
-        self.set_weight(X.shape[1])
-        return self.cca.predict(self.conv(X), copy)
+        return self.cca.predict(self.conv(X, 0), copy)
 
     ### Return evaluation score.
     def score(self, X, Y, sample_weight = None):
-        self.set_weight(X.shape[1])
-        return self.cca.score(self.conv(X), self.conv(Y), sample_weight)
+        self.set_weight(X.shape[1], Y.shape[1])
+        return self.cca.score(self.conv(X, 0), self.conv(Y, 1), sample_weight)
 
     ### Return transformed results.
     def transform(self, X, Y = None, copy = True):
-        self.set_weight(X.shape[1])
-        return self.cca.transform(self.conv(X), None if Y is None else self.conv(Y), copy)
+        return self.cca.transform(self.conv(X, 0), None if Y is None else self.conv(Y, 1), copy)
 
 # }}}
 
