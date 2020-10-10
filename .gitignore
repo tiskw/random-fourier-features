@@ -1,5 +1,6 @@
 *.gz
 *.npy
+*.npz
 *.swp
 *.pickle
 .notifier
