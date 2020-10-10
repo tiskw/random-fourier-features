@@ -13,6 +13,7 @@ Now, this module only supports
 * support vector classification (`PyRFF.RFFSVC`, `PyRFF_GPU.RFFSVC`),
 * Gaussian process (`PyRFF.RFFGPR`, `PyRFF.RFFGPC`, `PyRFF_GPU.RFFGPC`).
 * principal component analysis (`PyRFF.RFFPCA`).
+* canonical correlation analysis (`PyRFF.RFFCCA`).
 
 RFF can be applicable for many other machine learning algorithms, I will provide other functions soon.
 
@@ -92,7 +93,7 @@ and [RFF GP module](./examples/gpc_for_mnist/README.md) for mode details.
 
 - [ ] New function: implementation of batch RFF GP (but my GPU is poor to do that...)
 - [ ] New function: implementation of RFF Logistic GP
-- [ ] Refactoring: less comments on PyRFF.py
+- [X] Refactoring: less comments on PyRFF.py
 - [X] Refactoring: current class names are too long
 - [X] Refactoring: gather utility function to utils.py
 
