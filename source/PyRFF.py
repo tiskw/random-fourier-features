@@ -368,5 +368,48 @@ class RFFPCA:
 
 # }}}
 
+### Canonival Correlation Analysis using Random Fourier Features.
+class RFFCCA:
+# {{{
+
+    def __init__(self, dim_kernel = 128, std = 0.1, W = None, **args):
+        self.dim = dim_kernel
+        self.std = std
+        self.W   = W
+        self.cca = sklearn.cross_decomposition.CCA(**args)
+
+    ### Set the appropriate random matrix to 'self.W' if 'self.W' is None (i.e. empty).
+    def set_weight(self, length):
+        if self.W is None:
+            self.W = self.std * np.random.randn(length, self.dim)
+
+    ### Apply random matrix to the given input vectors 'X' and create feature vectors.
+    def conv(self, X):
+        ts = X @ self.W
+        return np.bmat([np.cos(ts), np.sin(ts)])
+
+    ### Run training, that is, extract feature vectors and train CCA.
+    def fit(self, X, Y):
+        self.set_weight(X.shape[1])
+        self.cca.fit(self.conv(X), self.conv(Y))
+        return self
+
+    ### Return prediction results.
+    def predict(self, X, copy = True):
+        self.set_weight(X.shape[1])
+        return self.cca.predict(self.conv(X), copy)
+
+    ### Return evaluation score.
+    def score(self, X, Y, sample_weight = None):
+        self.set_weight(X.shape[1])
+        return self.cca.score(self.conv(X), self.conv(Y), sample_weight)
+
+    ### Return transformed results.
+    def transform(self, X, Y = None, copy = True):
+        self.set_weight(X.shape[1])
+        return self.cca.transform(self.conv(X), None if Y is None else self.conv(Y), copy)
+
+# }}}
+
 ##################################################### SOURCE FINISH ####################################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker
