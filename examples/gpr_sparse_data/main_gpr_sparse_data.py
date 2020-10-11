@@ -17,6 +17,8 @@ Usage:
     main_gpr_sparse_data.py kernel [--n_test <int>] [--n_train <int>] [--no_pred_std] [--seed <int>]
     main_gpr_sparse_data.py rff [--kdim <int>] [--std_kernel <float>] [--std_error <float>]
                                 [--n_test <int>] [--n_train <int>] [--no_pred_std] [--seed <int>]
+    main_gpr_sparse_data.py orf [--kdim <int>] [--std_kernel <float>] [--std_error <float>]
+                                [--n_test <int>] [--n_train <int>] [--no_pred_std] [--seed <int>]
     main_gpr_sparse_data.py -h|--help
 
 Options:
@@ -51,14 +53,16 @@ def main(args):
     print("Program starts: args =", args)
 
     ### Fix seed for random fourier feature calclation.
-    pyrff.seed(args["--seed"])
+    rfflearn.seed(args["--seed"])
 
     ### Create classifier instance.
     if args["kernel"]:
-        kf = skl.gaussian_process.kernels.RBF(1.0 / args["--kstd"]) + skl.gaussian_process.kernels.WhiteKernel(args["--estd"])
+        kf  = skl.gaussian_process.kernels.RBF(1.0 / args["--std_kernel"]) + skl.gaussian_process.kernels.WhiteKernel(args["--std_error"])
         gpr = skl.gaussian_process.GaussianProcessRegressor(kernel = kf, random_state = args["--seed"])
     elif args["rff"]:
-        gpr = pyrff.RFFGPR(args["--kdim"], args["--std_kernel"], std_error = args["--std_error"])
+        gpr = rfflearn.RFFGPR(args["--kdim"], args["--std_kernel"], std_error = args["--std_error"])
+    elif args["orf"]:
+        gpr = rfflearn.ORFGPR(args["--kdim"], args["--std_kernel"], std_error = args["--std_error"])
 
     ### Load training data.
     with utils.Timer("Generating training/testing data: "):
@@ -102,15 +106,15 @@ if __name__ == "__main__":
     ### Parse input arguments.
     args = docopt.docopt(__doc__)
 
-    ### Add path to PyRFF.py.
-    ### The followings are not necessary if you copied PyRFF.py to the current directory
-    ### or other directory which is included in the Python path.
+    ### Add path to 'rfflearn/' directory.
+    ### The followings are not necessary if you copied 'rfflearn/' to the current
+    ### directory or other directory which is included in the Python path.
     current_dir = os.path.dirname(__file__)
-    module_path = os.path.join(current_dir, "../../source")
+    module_path = os.path.join(current_dir, "../../")
     sys.path.append(module_path)
 
-    import PyRFF as pyrff
-    import utils
+    import rfflearn.cpu   as rfflearn
+    import rfflearn.utils as utils
 
     ### Convert all arguments to an appropriate type.
     for k, v in args.items():
@@ -119,7 +123,6 @@ if __name__ == "__main__":
 
     ### Run main procedure.
     main(args)
-
 
 ##################################################### SOURCE FINISH ####################################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

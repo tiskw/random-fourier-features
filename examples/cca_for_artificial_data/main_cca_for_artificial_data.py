@@ -47,7 +47,7 @@ def generate_artificial_data(n_samples):
 def main(args):
 
     ### Fix seed for random fourier feature calclation
-    pyrff.seed(args["--seed"])
+    rfflearn.seed(args["--seed"])
 
     ### Generate dataset.
     with utils.Timer("Generate dataset: "):
@@ -63,11 +63,11 @@ def main(args):
 
     ### RFF CCA
     with utils.Timer("RFF CCA trainig and inference: "):
-        cca = pyrff.RFFCCA(args["--kdim"], args["--std_kernel"], n_components = 1)
+        cca = rfflearn.RFFCCA(args["--kdim"], args["--std_kernel"], n_components = 1)
         cca.fit(X, Y)
         rff_z1, rff_z2 = cca.transform(X, Y)
     score_rff = cca.score(X, Y)
-    print("Score of linear CCA:", score_rff)
+    print("Score of RFF CCA:", score_rff)
 
     mpl.figure(figsize = (8.4, 6.4))
 
@@ -108,15 +108,15 @@ if __name__ == "__main__":
     ### Parse input arguments.
     args = docopt.docopt(__doc__)
 
-    ### Add path to the PyRFF modules.
-    ### The followings are not necessary if you copied PyRFF.py to the current directory
-    ### or other directory which is included in the Python path.
+    ### Add path to 'rfflearn/' directory.
+    ### The followings are not necessary if you copied 'rfflearn/' to the current
+    ### directory or other directory which is included in the Python path.
     current_dir = os.path.dirname(__file__)
-    module_path = os.path.join(current_dir, "../../source")
+    module_path = os.path.join(current_dir, "../../")
     sys.path.append(module_path)
 
-    import PyRFF as pyrff
-    import utils
+    import rfflearn.cpu   as rfflearn
+    import rfflearn.utils as utils
 
     ### Convert all arguments to an appropriate type.
     for k, v in args.items():

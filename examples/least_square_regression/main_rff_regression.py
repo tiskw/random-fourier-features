@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
-# This Python script provides an example usage of RFFRegression class which is a class for
-# least square regression using RFF. Interface of RFFRegression is quite close to
+# This Python script provides an example usage of RFFRegression class which is a class
+# for least square regression using RFF. Interface of RFFRegression is quite close to
 # sklearn.linear_model.LinearRegression.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
@@ -13,16 +13,17 @@ Overview:
   Train Random Fourier Feature least square regression and plot results.
 
 Usage:
-    main_rff_regression.py [--kdim <int>] [--std_kernel <float>]
-                           [--n_train <int>] [--n_test <int>] [--seed <int>]
-    main_rff_regression.py -h|--help
+    main_rff_regression.py [--random_type <str>] [--kdim <int>] [--std_kernel <float>]
+                           [--rtype <str>] [--n_train <int>] [--n_test <int>] [--seed <int>]
+    main_rff_regression.py (-h | --help)
 
 Options:
-    --kdim <int>         Hyper parameter of RFF SVM (dimention of RFF).      [default: 8]
-    --std_kernel <float> Hyper parameter of RFF SVM (stdev of RFF).          [default: 0.5]
-    --n_train <int>      Number of training data points.                     [default: 21]
-    --n_test <int>       Number of test data points.                         [default: 101]
-    --seed <int>         Random seed.                                        [default: 111]
+    --rtype <str>        Random matrix type (rff ot orf).   [default: rff]
+    --kdim <int>         Dimention of RFF/ORF.              [default: 8]
+    --std_kernel <float> Standard deviation of RFF/ORF.     [default: 0.5]
+    --n_train <int>      Number of training data points.    [default: 21]
+    --n_test <int>       Number of test data points.        [default: 101]
+    --seed <int>         Random seed.                       [default: 111]
     -h, --help           Show this message.
 """
 
@@ -30,7 +31,7 @@ import os
 import sys
 
 import docopt
-import numpy             as np
+import numpy as np
 import matplotlib.pyplot as mpl
 
 
@@ -38,10 +39,12 @@ import matplotlib.pyplot as mpl
 def main(args):
 
     ### Fix seed for random fourier feature calclation
-    pyrff.seed(111)
+    rfflearn.seed(111)
 
     ### Create classifier instance
-    reg = pyrff.RFFRegression(dim_kernel = args["--kdim"], std = args["--std_kernel"])
+    if   args["--rtype"] == "rff": reg = rfflearn.RFFRegression(dim_kernel = args["--kdim"], std_kernel = args["--std_kernel"])
+    elif args["--rtype"] == "orf": reg = rfflearn.ORFRegression(dim_kernel = args["--kdim"], std_kernel = args["--std_kernel"])
+    else                         : raise RuntimeError("Error: 'random_type' must be 'rff' or 'orf'.")
 
     ### Prepare training data
     with utils.Timer("Creating dataset: "):
@@ -76,15 +79,15 @@ if __name__ == "__main__":
     ### Parse input arguments.
     args = docopt.docopt(__doc__)
 
-    ### Add path to PyRFF.py
-    ### The followings are not necessary if you copied PyRFF.py to the current directory
-    ### or other directory which is included in the Python path
+    ### Add path to 'rfflearn/' directory.
+    ### The followings are not necessary if you copied 'rfflearn/' to the current
+    ### directory or other directory which is included in the Python path.
     current_dir = os.path.dirname(__file__)
-    module_path = os.path.join(current_dir, "../../source")
+    module_path = os.path.join(current_dir, "../../")
     sys.path.append(module_path)
 
-    import PyRFF as pyrff
-    import utils
+    import rfflearn.cpu   as rfflearn
+    import rfflearn.utils as utils
 
     ### Convert all arguments to an appropriate type.
     for k, v in args.items():
@@ -93,7 +96,6 @@ if __name__ == "__main__":
 
     ### Run main procedure.
     main(args)
-
 
 #################################### SOURCE FINISH ##################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

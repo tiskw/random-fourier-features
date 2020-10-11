@@ -13,14 +13,15 @@ Overview:
   Before running this script, make sure to create MNIST dataset.
 
 Usage:
-    main_rff_svc_for_mnist_CPU.py [--input <str>] [--output <str>] [--pcadim <int>] [--kdim <int>]
-                                  [--std_kernel <float>] [--std_error <float>] [--seed <int>]
-    main_rff_svc_for_mnist_CPU.py -h|--help
+    main_rff_gpc_for_mnist_CPU.py [--input <str>] [--output <str>] [--pcadim <int>] [--rtype <str>]
+                                  [--kdim <int>] [--std_kernel <float>] [--std_error <float>] [--seed <int>]
+    main_rff_gpc_for_mnist_CPU.py (-h | --help)
 
 Options:
     --input <str>        Directory path to the MNIST dataset.                [default: ../../dataset/mnist]
     --output <str>       File path to the output pickle file.                [default: result.pickle]
     --pcadim <int>       Output dimention of Principal Component Analysis.   [default: 128]
+    --rtype <str>        Type of random matrix (rff or orf).                 [default: rff]
     --kdim <int>         Hyper parameter of RFF SVM (dimention of RFF).      [default: 128]
     --std_kernel <float> Hyper parameter of RFF SVM (stdev of RFF).          [default: 0.05]
     --std_error <float>  Hyper parameter of RFF SVM (stdev of RFF).          [default: 0.05]
@@ -62,10 +63,12 @@ def main(args):
     print("Program starts: args =", args)
 
     ### Fix seed for random fourier feature calclation.
-    pyrff.seed(args["--seed"])
+    rfflearn.seed(args["--seed"])
 
     ### Create classifier instance.
-    gpc = pyrff.RFFGPC(args["--kdim"], args["--std_kernel"], args["--std_error"])
+    if   args["--rtype"] == "rff": gpc = rfflearn.RFFGPC(args["--kdim"], args["--std_kernel"], args["--std_error"])
+    elif args["--rtype"] == "orf": gpc = rfflearn.ORFGPC(args["--kdim"], args["--std_kernel"], args["--std_error"])
+    else                         : raise RuntimeError("Error: 'random_type' must be 'rff' or 'orf'.")
 
     ### Load training data.
     with utils.Timer("Loading training data: "):
@@ -101,15 +104,15 @@ if __name__ == "__main__":
     ### Parse input arguments.
     args = docopt.docopt(__doc__)
 
-    ### Add path to the PyRFF modules.
-    ### The followings are not necessary if you copied PyRFF.py to the current directory
-    ### or other directory which is included in the Python path.
+    ### Add path to 'rfflearn/' directory.
+    ### The followings are not necessary if you copied 'rfflearn/' to the current
+    ### directory or other directory which is included in the Python path.
     current_dir = os.path.dirname(__file__)
-    module_path = os.path.join(current_dir, "../../source")
+    module_path = os.path.join(current_dir, "../../")
     sys.path.append(module_path)
 
-    import PyRFF as pyrff
-    import utils
+    import rfflearn.cpu   as rfflearn
+    import rfflearn.utils as utils
 
     ### Convert all arguments to an appropriate type.
     for k, v in args.items():
@@ -118,7 +121,6 @@ if __name__ == "__main__":
 
     ### Run main procedure.
     main(args)
-
 
 ##################################################### SOURCE FINISH ####################################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

@@ -9,18 +9,9 @@
 import sys
 import os
 
-### Add path to PyRFF.py
-### The followings are not necessary if you copied PyRFF.py to the current directory
-### or other directory which is included in the Python path
-current_dir = os.path.dirname(__file__)
-module_path = os.path.join(current_dir, "../../source")
-sys.path.append(module_path)
-
 import time
 import traceback
 import numpy as np
-import PyRFF as pyrff
-import utils
 
 
 ### Load train/test image data
@@ -44,11 +35,11 @@ def mat_transform_pca(Xs, dim = 100):
 def main():
 
     ### Fix seed for random fourier feature calclation
-    pyrff.seed(111)
+    rfflearn.seed(111)
 
     ### Create classifier instance
-    # svc = pyrff.RFFBatchSVC(dim = 1024, std = 0.10, num_epochs = 10, num_batches = 10, alpha = 0.05)
-    svc = pyrff.RFFBatchSVC(dim = 1024, std = 0.05, num_epochs = 10, num_batches = 3, alpha = 0.15)
+    # svc = rfflearn.RFFBatchSVC(dim_kernel = 1024, std_kernel = 0.10, num_epochs = 10, num_batches = 10, alpha = 0.05)
+    svc = rfflearn.RFFBatchSVC(dim_kernel = 1024, std_kernel = 0.05, num_epochs = 10, num_batches = 3, alpha = 0.15)
 
     ### Load training data
     with utils.Timer("Loading training data: "):
@@ -75,9 +66,19 @@ def main():
 
 
 if __name__ == "__main__":
-    try   : main()
-    except: traceback.print_exc()
 
+    ### Add path to 'rfflearn/' directory.
+    ### The followings are not necessary if you copied 'rfflearn/' to the current
+    ### directory or other directory which is included in the Python path.
+    current_dir = os.path.dirname(__file__)
+    module_path = os.path.join(current_dir, "../../")
+    sys.path.append(module_path)
+
+    import rfflearn.cpu   as rfflearn
+    import rfflearn.utils as utils
+
+    ### Run main procedure.
+    main()
 
 #################################### SOURCE FINISH ##################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

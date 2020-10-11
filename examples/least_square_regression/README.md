@@ -6,10 +6,10 @@ Our module for Random Fourier Features (PyRFFF.py) needs scikit-learn as a backe
 
 ## Usage
 
-If you don't have scikit-learn, please run the following as root to install it:
+If you don't have numpy, scipy or scikit-learn, please run the following as root to install them:
 
 ```console
-$ pip3 install scikit-learn
+$ pip3 install numpy scipy scikit-learn
 ```
 
 You can run the example code by the following command:
@@ -25,4 +25,3 @@ The following figure shows regression results for the function y = sin(x^2) with
 <div align="center">
   <img src="./figure_rff_regression.png" width="600" height="480" alt="Regression results for function y = sin(x^2) with RFF" />
 </div>
-
