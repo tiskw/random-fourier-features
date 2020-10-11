@@ -7,29 +7,31 @@ Also, this script supports GPU inference of RFF SVC (only one-versus-the-rest is
 
 ## Installation
 
-### Install Python packages
+See [this document](https://tiskw.gitbook.io/rfflearn/) for more details.
 
-The training end validation script requires `docopt`, `scikit-learn` and, if you will run the inference on GPU, `tensorflow-gpu`.
-If you don't have them, please run the following as root to install them:
+### Docker image (recommended)
 
-```console
-$ pip3 install docopt scikit-learn  # Necessary packages
-$ pip3 install tensorflow-gpu       # Required only for GPU inference
-```
-
-### Docker image (alternative)
-
-If you don't like to pollute your development environment, it is a good idea to run everything inside Docker.
+If you don't like to pollute your development environment, it is a good idea to run everything inside a Docker container.
 Scripts in this directory are executable on [this docker image](https://hub.docker.com/repository/docker/tiskw/tensorflow).
 
 ```console
-$ docker pull tiskw/tensorflow:2020-01-18    # Download docker image from DockerHub
+$ docker pull tiskw/tensorflow:2020-05-29    # Download docker image from DockerHub
 $ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO # Move to the root directory of this repository
-$ docker run --rm -it --runtime=nvidia -v `pwd`:/work -w /work -u `id -u`:`id -u` tiskw/tensorflow:2020-01-18 bash
-$ cd PATH_TO_THIS_DIRECTORY                  # Back to here (inside the docker container you launched).
+$ docker run --rm -it --runtime=nvidia -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/tensorflow:2020-01-18 bash
+$ cd examples/gpc_for_mnist/                 # Move to this directory
 ```
 
-If you don't need GPU support, `--runtime=nvidia` is not necessary.
+If you don't need GPU support, the option `--runtime=nvidia` is not necessary.
+
+### Install Python packages (alternative)
+
+The training end validation script requires `docopt`, `numpy`, `scipy`, `scikit-learn` and, if you need GPU support, `tensorflow-gpu`.
+If you don't have them, please run the following as root to install them:
+
+```console
+$ pip3 install docopt numpy scipy scikit-learn  # Necessary packages
+$ pip3 install tensorflow-gpu                   # Required only for GPU inference
+```
 
 
 ## Dataset Preparation
@@ -105,17 +107,17 @@ The following figure shows a tradeoff between the accuracy and inference time of
 </div>
 
 
-## Tips
+## Notes
 
 ### Training on GPU
 
-The module `PyRFF_GPU` contains GPU training implementation.
-You can try the GPU training by replacing `PyRFF` to `PyRFF_GPU` like the following:
+This module contains beta version of GPU training implementation.
+You can try the GPU training by replacing `rfflearn.cpu` to `rfflearn.gpu` like the following:
 
 ```python
-# import PyRFF as pyrff
-import PyRFF_GPU as pyrff
+# import rfflearn.cpu as rfflearn
+import rfflearn.gpu as rfflearn
 ```
 
 Now the GPU training does not show an enough high performance than the CPU training,
-but it's worth to try if you want to try higher RFF dimension than 1024.
+but it's worth to try if you want to try higher RFF dimension than 1024 or huge training dataset.

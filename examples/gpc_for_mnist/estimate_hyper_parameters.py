@@ -81,7 +81,7 @@ def main(args):
     init_val_s_k = args["--std_kernel"]
     init_val_s_e = args["--std_error"]
     init_val_sca = args["--scale"]
-    gpkpe = pyrff.GPKernelParameterEstimator(args["--epoch"], args["--batch_size"], args["--lr"], init_val_s_k, init_val_s_e, init_val_sca)
+    gpkpe = rfflearn.GPKernelParameterEstimator(args["--epoch"], args["--batch_size"], args["--lr"], init_val_s_k, init_val_s_e, init_val_sca)
     s_k, s_e, scale = gpkpe.fit(Xs_train.dot(T), ys_train)
 
     ### Save results.
@@ -95,19 +95,19 @@ if __name__ == "__main__":
     ### Parse input arguments.
     args = docopt.docopt(__doc__)
 
-    ### Add path to PyRFF.py.
-    ### The followings are not necessary if you copied PyRFF.py to the current directory
-    ### or other directory which is included in the Python path.
-    current_dir = os.path.dirname(__file__)
-    module_path = os.path.join(current_dir, "../../source")
-    sys.path.append(module_path)
-
     import numpy as np
     import sklearn as skl
     import tensorflow as tf
 
-    import PyRFF_GPU as pyrff
-    import utils
+    ### Add path to 'rfflearn/' directory.
+    ### The followings are not necessary if you copied 'rfflearn/' to the current
+    ### directory or other directory which is included in the Python path.
+    current_dir = os.path.dirname(__file__)
+    module_path = os.path.join(current_dir, "../../")
+    sys.path.append(module_path)
+
+    import rfflearn.gpu   as rfflearn
+    import rfflearn.utils as utils
 
     ### Convert all arguments to an appropriate type.
     for k, v in args.items():
@@ -116,7 +116,6 @@ if __name__ == "__main__":
 
     ### Run main procedure.
     main(args)
-
 
 ##################################################### SOURCE FINISH ####################################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

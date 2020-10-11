@@ -5,23 +5,26 @@
 # Interface of RFFSVC is quite close to sklearn.gaussian_process.GaussianProcessRegressor.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : March 15, 2020
+# Date  : October 11, 2020
 ##################################################### SOURCE START #####################################################
 
 """
 Overview:
-  An example of Gaussian Process Regression with Random Fourier Feature (RFF GPR).
+  An example of Gaussian Process Regression with Random Fourier Feature.
   As a comparison with the noemal GPR, this script has a capability to run the normal GPR under the same condition with RFF GPR.
 
 Usage:
     main_gpr_sparse_data.py kernel [--n_test <int>] [--n_train <int>] [--no_pred_std] [--seed <int>]
     main_gpr_sparse_data.py rff [--kdim <int>] [--std_kernel <float>] [--std_error <float>]
                                 [--n_test <int>] [--n_train <int>] [--no_pred_std] [--seed <int>]
-    main_gpr_sparse_data.py -h|--help
+    main_gpr_sparse_data.py orf [--kdim <int>] [--std_kernel <float>] [--std_error <float>]
+                                [--n_test <int>] [--n_train <int>] [--no_pred_std] [--seed <int>]
+    main_gpr_sparse_data.py (-h | --help)
 
 Options:
     kernel               Run normal Gaussian Process.
     rff                  Run Gaussian process with Random Fourier Features.
+    orf                  Run Gaussian process with Orthogonal Random Features.
     --kdim <int>         Hyper parameter of RFF SVM (dimention of RFF). [default: 16]
     --std_kernel <float> Hyper parameter of RFF SVM (stdev of RFF).     [default: 5.0]
     --std_error <float>  Hyper parameter of RFF SVM (stdev of error).   [default: 1.0]
@@ -51,14 +54,16 @@ def main(args):
     print("Program starts: args =", args)
 
     ### Fix seed for random fourier feature calclation.
-    pyrff.seed(args["--seed"])
+    rfflearn.seed(args["--seed"])
 
     ### Create classifier instance.
     if args["kernel"]:
-        kf = skl.gaussian_process.kernels.RBF(1.0 / args["--kstd"]) + skl.gaussian_process.kernels.WhiteKernel(args["--estd"])
+        kf  = skl.gaussian_process.kernels.RBF(1.0 / args["--std_kernel"]) + skl.gaussian_process.kernels.WhiteKernel(args["--std_error"])
         gpr = skl.gaussian_process.GaussianProcessRegressor(kernel = kf, random_state = args["--seed"])
     elif args["rff"]:
-        gpr = pyrff.RFFGPR(args["--kdim"], args["--std_kernel"], std_error = args["--std_error"])
+        gpr = rfflearn.RFFGPR(args["--kdim"], args["--std_kernel"], std_error = args["--std_error"])
+    elif args["orf"]:
+        gpr = rfflearn.ORFGPR(args["--kdim"], args["--std_kernel"], std_error = args["--std_error"])
 
     ### Load training data.
     with utils.Timer("Generating training/testing data: "):
@@ -82,6 +87,8 @@ def main(args):
             pred = pred.reshape((pred.shape[0],))
             pstd = pstd.reshape((pstd.shape[0],))
 
+    print("R2 score:", gpr.score(Xs_test, ys_test))
+
     ### Plot regression results.
     mpl.figure(0)
     mpl.title("Regression for function y = sin(x^2) using Gaussian Process w/ RFF")
@@ -102,15 +109,15 @@ if __name__ == "__main__":
     ### Parse input arguments.
     args = docopt.docopt(__doc__)
 
-    ### Add path to PyRFF.py.
-    ### The followings are not necessary if you copied PyRFF.py to the current directory
-    ### or other directory which is included in the Python path.
+    ### Add path to 'rfflearn/' directory.
+    ### The followings are not necessary if you copied 'rfflearn/' to the current
+    ### directory or other directory which is included in the Python path.
     current_dir = os.path.dirname(__file__)
-    module_path = os.path.join(current_dir, "../../source")
+    module_path = os.path.join(current_dir, "../../")
     sys.path.append(module_path)
 
-    import PyRFF as pyrff
-    import utils
+    import rfflearn.cpu   as rfflearn
+    import rfflearn.utils as utils
 
     ### Convert all arguments to an appropriate type.
     for k, v in args.items():
@@ -119,7 +126,6 @@ if __name__ == "__main__":
 
     ### Run main procedure.
     main(args)
-
 
 ##################################################### SOURCE FINISH ####################################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

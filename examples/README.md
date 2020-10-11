@@ -1,50 +1,74 @@
-# Example of PyRFF module
+# Example of RFFLearn module
 
-This directory contains the example code for the PyRFF and PyRFF_GPU module.
+This directory contains the example code for the `rfflearn.cpu` and `rfflearn.cpu` module.
 
-## Least Square Regression using Random Fourier Features
 
-An example of regression using random Fourier features.
+## Least Square Regression with Random Fourier Features
+
+An example of regression with random Fourier features.
 See [README.md](./least_square_regression/README.md) for more details.
 
 <div align="center">
   <img src="./least_square_regression/figure_rff_regression.png" width="640" height="480" alt="Regression results for function y = sin(x^2) with RFF" />
 </div>
 
-## Support Vector Classification using Random Fourier Features
 
-An example of support vector classification for [MNIST](http://yann.lecun.com/exdb/mnist/) dataset using random Fourier features.
-See [README.md](./svc_for_mnist/README.md) for more details.
+## Gaussian Process Regression with Random Fourier Features
 
-<div align="center">
-  <img src="./svc_for_mnist/figures/figure_Inference_Time_and_Accuracy_on_MNIST.png" width="600" height="371" alt="Inference Time vs Accuracy on MNIST" />
-</div>
-
-## Support Vector Classification using Random Fourier Features with Batch Learning
-
-An example of support vector classification with batch learning for [MNIST](http://yann.lecun.com/exdb/mnist/) dataset using random Fourier features.
-See [README.md](./svc_for_mnist_batch/README.md) for more details.
-
-However, you do not need to pay much attention to this example because
-[non-batch learning approach](./svc_for_mnist/README.md)
-(i.e. usual SVC training using all dataset) now shows higher performance than the batch learning approach.
-
-## Gaussian Process Regression using Random Fourier Features
-
-An example of Gaussian process regression using random Fourier features.
+An example of Gaussian process regression with random Fourier features.
 See [README.md](./gpr_sparse_data/README.md) for more details.
 
 <div align="center">
   <img src="./gpr_sparse_data/figure_gpr_sparse_data.png" width="640" height="480" alt="Regression results for function y = sin(x^2) with RFF" />
 </div>
 
-## Gaussian Process Classification using Random Fourier Features
 
-An example of the Gaussian process classification using random Fourier features.
+## Gaussian Process Classification with Random Fourier Features
+
+An example of the Gaussian process classification with random Fourier features.
 See [README.md](./gpc_for_mnist/README.md) for more details.
 
 <div align="center">
-  <img src="./gpc_for_mnist/figures/figure_inference_time_and_accuracy_on_MNIST.png" width="600" height="371" alt="Inference Time vs Accuracy on MNIST" />
+  <img src="./gpc_for_mnist/figures/figure_inference_time_and_accuracy_on_MNIST.png" width="656" height="371" alt="Inference Time vs Accuracy on MNIST" />
 </div>
 
 
+## Support Vector Classification with Random Fourier Features
+
+An example of support vector classification for [MNIST](http://yann.lecun.com/exdb/mnist/) dataset with random Fourier features.
+See [README.md](./svc_for_mnist/README.md) for more details.
+
+<div align="center">
+  <img src="./svc_for_mnist/figures/figure_Inference_Time_and_Accuracy_on_MNIST.png" width="600" height="371" alt="Inference Time vs Accuracy on MNIST" />
+</div>
+
+
+## Canonical Correlation Analysis with Random Fourier Features
+
+An example of canonical correlation analysis with random Fourier features.
+See [README.md](./cca_for_artificial_data/README.md) for more details.
+
+<div align="center">
+  <img src="./cca_for_artificial_data/figure_cca_for_artificial_data.png" width="840" height="640" alt="CCA results for artificial dataset" />
+</div>
+
+
+## Principal Component Analysis
+
+An example of principal component analysis for swiss roll dataset with random Fourier features.
+See [README.md](./cca_for_artificial_data/README.md) for more details.
+
+<div align="center">
+  <img src="./pca_for_swissroll/figure_pca_for_swissroll_3d.png" width="600" height="480" alt="3D plot of input data (10,000 points of swiss roll)" />
+  <img src="./pca_for_swissroll/figure_pca_for_swissroll_rffpca.png" width="600" height="480" alt="2D plot of 1st/2nd PC obtained by RFF PCA" />
+</div>
+
+
+## Support Vector Classification with Random Fourier Features with Batch Learning
+
+An example of support vector classification with batch learning for [MNIST](http://yann.lecun.com/exdb/mnist/) dataset with random Fourier features.
+See [README.md](./svc_for_mnist_batch/README.md) for more details.
+
+However, you do not need to pay much attention to this example because
+[non-batch learning approach](./svc_for_mnist/README.md)
+(i.e. usual SVC training using all dataset) now shows higher performance than the batch learning approach.

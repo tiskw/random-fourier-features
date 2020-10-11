@@ -16,7 +16,7 @@ Usage:
     main_rff_svc_for_mnist.py kernel [--input <str>] [--output <str>] [--pcadim <int>] [--kernel <str>] [--gamma <float>] [--C <float>] [--seed <int>] [--use_fft]
     main_rff_svc_for_mnist.py rff [--input <str>] [--output <str>] [--pcadim <int>] [--kdim <int>] [--stdev <float>] [--seed <int>] [--cpus <int>] [--use_fft]
     main_rff_svc_for_mnist.py orf [--input <str>] [--output <str>] [--pcadim <int>] [--kdim <int>] [--stdev <float>] [--seed <int>] [--cpus <int>] [--use_fft]
-    main_rff_svc_for_mnist.py -h|--help
+    main_rff_svc_for_mnist.py (-h | --help)
 
 Options:
     kernel           Run kernel SVM classifier.
@@ -28,8 +28,8 @@ Options:
     --kernel <str>   Hyper parameter of kernel SVM (type of kernel).     [default: rbf]
     --gamma <float>  Hyper parameter of kernel SVM (softness of kernel). [default: auto]
     --C <float>      Hyper parameter of kernel SVM (margin allowance).   [default: 1.0]
-    --kdim <int>     Hyper parameter of RFF SVM (dimention of RFF).      [default: 1024]
-    --stdev <float>  Hyper parameter of RFF SVM (stdev of RFF).          [default: 0.05]
+    --kdim <int>     Hyper parameter of RFF/ORF SVM (dimention of RFF).  [default: 1024]
+    --stdev <float>  Hyper parameter of RFF/ORF SVM (stdev of RFF).      [default: 0.05]
     --seed <int>     Random seed.                                        [default: 111]
     --cpus <int>     Number of available CPUs.                           [default: -1]
     --batch_size <int> Batch size in training/inference.                 [default: 256]
@@ -82,12 +82,12 @@ def main(args):
     print("Program starts: args =", args)
 
     ### Fix seed for random fourier feature calclation.
-    pyrff.seed(args["--seed"])
+    rfflearn.seed(args["--seed"])
 
     ### Create classifier instance.
     if   args["kernel"]: svc = skl.svm.SVC(kernel = args["--kernel"], gamma = args["--gamma"])
-    elif args["rff"]   : svc = pyrff.RFFSVC(dim_kernel = args["--kdim"], std = args["--stdev"], tol = 1.0E-3, n_jobs = args["--cpus"])
-    elif args["orf"]   : svc = pyrff.ORFSVC(dim_kernel = args["--kdim"], std = args["--stdev"], tol = 1.0E-3, n_jobs = args["--cpus"])
+    elif args["rff"]   : svc = rfflearn.RFFSVC(dim_kernel = args["--kdim"], std_kernel = args["--stdev"], tol = 1.0E-3, n_jobs = args["--cpus"])
+    elif args["orf"]   : svc = rfflearn.ORFSVC(dim_kernel = args["--kdim"], std_kernel = args["--stdev"], tol = 1.0E-3, n_jobs = args["--cpus"])
     else               : exit("Error: First argument must be 'kernel', 'rff' or 'orf'.")
 
     ### Load training data.
@@ -124,15 +124,15 @@ if __name__ == "__main__":
     ### Parse input arguments.
     args = docopt.docopt(__doc__)
 
-    ### Add path to PyRFF.py.
-    ### The followings are not necessary if you copied PyRFF.py to the current directory
-    ### or other directory which is included in the Python path.
+    ### Add path to 'rfflearn/' directory.
+    ### The followings are not necessary if you copied 'rfflearn/' to the current
+    ### directory or other directory which is included in the Python path.
     current_dir = os.path.dirname(__file__)
-    module_path = os.path.join(current_dir, "../../source")
+    module_path = os.path.join(current_dir, "../../")
     sys.path.append(module_path)
 
-    import PyRFF as pyrff
-    import utils
+    import rfflearn.cpu   as rfflearn
+    import rfflearn.utils as utils
 
     ### Convert all arguments to an appropriate type.
     for k, v in args.items():
@@ -141,7 +141,6 @@ if __name__ == "__main__":
 
     ### Run main procedure.
     main(args)
-
 
 ##################################################### SOURCE FINISH ####################################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

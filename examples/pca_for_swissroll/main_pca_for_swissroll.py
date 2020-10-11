@@ -13,12 +13,14 @@ Usage:
     main_rff_pca_for_swissroll.py linear [--samples <int>] [--seed <int>]
     main_rff_pca_for_swissroll.py kernel [--samples <int>] [--kernel <str>] [--gamma <float>] [--seed <int>]
     main_rff_pca_for_swissroll.py rff [--samples <int>] [--kdim <int>] [--stdev <float>] [--seed <int>]
-    main_rff_pca_for_swissroll.py -h|--help
+    main_rff_pca_for_swissroll.py orf [--samples <int>] [--kdim <int>] [--stdev <float>] [--seed <int>]
+    main_rff_pca_for_swissroll.py (-h | --help)
 
 Options:
     linear           Run linese PCA.
     kernel           Run kernel PCA.
     rff              Run RFF PCA.
+    orf              Run ORF PCA.
     --samples <int>  Number of swiss roll data points.                   [default: 10000]
     --kernel <str>   Hyper parameter of kernel SVM (type of kernel).     [default: rbf]
     --gamma <float>  Hyper parameter of kernel SVM (softness of kernel). [default: 1.0]
@@ -31,20 +33,11 @@ Options:
 import sys
 import os
 
-### Add path to PyRFF.py.
-### The followings are not necessary if you copied PyRFF.py to the current directory
-### or other directory which is included in the Python path.
-current_dir = os.path.dirname(__file__)
-module_path = os.path.join(current_dir, "../../source")
-sys.path.append(module_path)
-
 import docopt
 import numpy   as np
 import sklearn as skl
 import sklearn.datasets.samples_generator
 import matplotlib.pyplot as mpl
-import PyRFF   as pyrff
-import utils
 
 
 def main(args):
@@ -53,7 +46,7 @@ def main(args):
     print("Program starts: args =", args)
 
     ### Fix seed for random fourier feature calclation.
-    pyrff.seed(args["--seed"])
+    rfflearn.seed(args["--seed"])
 
     ### Create swiss roll data.
     with utils.Timer("Creating swiss roll data: "):
@@ -62,7 +55,8 @@ def main(args):
     ### Create PCA class instance.
     if   args["linear"]: pca = skl.decomposition.PCA(n_components=2)
     elif args["kernel"]: pca = skl.decomposition.KernelPCA(n_components = 2, kernel = args["--kernel"], gamma = args["--gamma"])
-    elif args["rff"]   : pca = pyrff.RFFPCA(n_components = 2, dim_kernel = args["--kdim"], std_kernel = args["--stdev"])
+    elif args["rff"]   : pca = rfflearn.RFFPCA(n_components = 2, dim_kernel = args["--kdim"], std_kernel = args["--stdev"])
+    elif args["orf"]   : pca = rfflearn.ORFPCA(n_components = 2, dim_kernel = args["--kdim"], std_kernel = args["--stdev"])
     else               : raise NotImplementedError("No PCA type selected.")
 
     ### Run PCA.
@@ -91,6 +85,16 @@ if __name__ == "__main__":
     ### Parse input arguments.
     args = docopt.docopt(__doc__)
 
+    ### Add path to 'rfflearn/' directory.
+    ### The followings are not necessary if you copied 'rfflearn/' to the current
+    ### directory or other directory which is included in the Python path.
+    current_dir = os.path.dirname(__file__)
+    module_path = os.path.join(current_dir, "../../")
+    sys.path.append(module_path)
+
+    import rfflearn.cpu   as rfflearn
+    import rfflearn.utils as utils
+
     ### Convert all arguments to an appropriate type.
     for k, v in args.items():
         try   : args[k] = eval(str(v))
@@ -98,7 +102,6 @@ if __name__ == "__main__":
 
     ### Run main procedure.
     main(args)
-
 
 ##################################################### SOURCE FINISH ####################################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker
