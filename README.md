@@ -32,10 +32,10 @@ For example, the following Python code is a sample usage of RFF regression class
 
 ```python
 >>> import numpy as np
->>> import PyRFF as pyrff                               # Import our module
+>>> import rfflearn.cpu as rfflearn                     # Import our module
 >>> X = np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]])  # Define input data
 >>> y = np.array([1, 1, 2, 2])                          # Defile label data
->>> svc = pyrff.RFFSVC().fit(X, y)                      # Training
+>>> svc = rfflearn.RFFSVC().fit(X, y)                   # Training
 >>> svc.score(X, y)                                     # Inference (on CPU)
 1.0
 >>> svc.predict(np.array([[-0.8, -1]]))
@@ -45,9 +45,9 @@ array([1])
 Also, you are able to run the inference on GPU by adding only two lines, if you have Tensorflow 2.x.
 
 ```python
->>> import PyRFF_GPU as pyrff_gpu    # Import additional module
->>> svc = pyrff_gpu.RFFSVC_GPU(svc)  # Convert to GPU model
->>> svc.score(X, y)                  # Inference on GPU
+>>> import rfflearn.gpu as rfflearn_gpu # Import our module
+>>> svc = rfflearn_gpu.RFFSVC(svc)      # Convert to GPU model
+>>> svc.score(X, y)                     # Inference on GPU
 1.0
 ```
 
