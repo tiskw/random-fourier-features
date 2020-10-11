@@ -3,7 +3,7 @@
 # Python module of regression and support vector machine using random fourier features.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : September 05, 2020
+# Date  : October 11, 2020
 ##################################################### SOURCE START #####################################################
 
 

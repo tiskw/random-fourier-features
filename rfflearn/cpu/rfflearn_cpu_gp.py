@@ -3,11 +3,12 @@
 # Python module of regression and support vector machine using random fourier features.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : September 05, 2020
+# Date  : October 11, 2020
 ##################################################### SOURCE START #####################################################
 
 
 import numpy as np
+import sklearn.metrics
 from .rfflearn_cpu_common import Base
 
 
@@ -38,10 +39,10 @@ class GPR(Base):
         self.set_weight(X.shape[1])
         F = self.conv(X).T
         p = np.array(self.a.dot(F)).T
-        if       return_std and     return_cov: return (p, self.std(F), self.conv(F))
-        elif     return_std and not return_cov: return (p, self.std(F))
-        elif not return_std and     return_cov: return (p, self.cov(F))
-        elif not return_std and not return_cov: return p
+        if return_std and return_cov: return (p, self.std(F), self.cov(F))
+        elif return_std             : return (p, self.std(F))
+        elif return_cov             : return (p, self.cov(F))
+        else                        : return  p
 
     ### Return predicted standard deviation.
     def std(self, F):
@@ -56,7 +57,7 @@ class GPR(Base):
     ### Return score.
     def score(self, X, y, **args):
         self.set_weight(X.shape[1])
-        return self.reg.score(self.conv(X), y, **args)
+        return sklearn.metrics.r2_score(y, self.predict(X))
 
 
 ### Gaussian Process Classification with random matrix (RFF/ORF).

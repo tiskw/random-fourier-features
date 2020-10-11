@@ -14,12 +14,12 @@ Overview:
 
 Usage:
     main_rff_svc_for_mnist.py cpu [--input <str>] [--model <str>] [--use_fft]
-    main_rff_svc_for_mnist.py tensorflow [--input <str>] [--model <str>] [--batch_size <int>] [--use_fft]
-    main_rff_svc_for_mnist.py -h|--help
+    main_rff_svc_for_mnist.py gpu [--input <str>] [--model <str>] [--batch_size <int>] [--use_fft]
+    main_rff_svc_for_mnist.py (-h | --help)
 
 Options:
     cpu                 Run inference on CPU.
-    tensorflow          Run inference on GPU using Tensorflow 2.
+    gpu                 Run inference on GPU.
     --input <str>       Directory path to the MNIST dataset.      [default: ../../dataset/mnist]
     --model <str>       File path to the output pickle file.      [default: result.pickle]
     --batch_size <int>  Batch size for GPU inference.             [default: 2000]
@@ -51,17 +51,17 @@ def main(args):
         svc = result["svc"]
         T   = result["pca"]
 
-    ### If GPU inference, convert PyRFF.RFFSVC -> PyRFF_GPU.RFFSVC_GPU and overwrite 'svc' instance.
-    if args["tensorflow"]:
-        svc = pyrff_gpu.RFFSVC(batch_size = args["--batch_size"]).init_from_RFFSVC_cpu(svc, T)
+    ### If GPU inference, convert rfflearn.cpu.SVC -> rfflearn.gpu.SVC and overwrite 'svc' instance.
+    if args["gpu"]:
+        svc = rfflearn.RFFSVC(svc, T, batch_size = args["--batch_size"])
 
     ### Calculate score for test data.
     with utils.Timer("SVM prediction time for 1 image: ", unit = "us", devide_by = ys_test.shape[0]):
 
         ### In case of GPU inference, Calculation of PCA ".dot(T)" is not necessary because PCA matrix T is
         ### embedded to GPU computation graph as a preprocessing matrix for faster calculation.
-        if   args["cpu"]       : score = 100 * svc.score(Xs_test.dot(T), ys_test)
-        elif args["tensorflow"]: score = 100 * svc.score(Xs_test,        ys_test)
+        if   args["cpu"]: score = 100 * svc.score(Xs_test.dot(T), ys_test)
+        elif args["gpu"]: score = 100 * svc.score(Xs_test,        ys_test)
 
     print("Score = %.2f [%%]" % score)
 
@@ -71,16 +71,16 @@ if __name__ == "__main__":
     ### Parse input arguments.
     args = docopt.docopt(__doc__)
 
-    ### Add path to PyRFF.py.
-    ### The followings are not necessary if you copied PyRFF.py to the current directory
-    ### or other directory which is included in the Python path.
+    ### Add path to 'rfflearn/' directory.
+    ### The followings are not necessary if you copied 'rfflearn/' to the current
+    ### directory or other directory which is included in the Python path.
     current_dir = os.path.dirname(__file__)
-    module_path = os.path.join(current_dir, "../../source")
+    module_path = os.path.join(current_dir, "../../")
     sys.path.append(module_path)
 
-    if   args["cpu"]       : import PyRFF as pyrff
-    elif args["tensorflow"]: import PyRFF_GPU  as pyrff_gpu
-    import utils
+    if   args["cpu"]: import rfflearn.cpu as rfflearn
+    elif args["gpu"]: import rfflearn.gpu as rfflearn
+    import rfflearn.utils as utils
 
     ### Import utility functions from training script.
     from train_rff_svc_for_mnist import vectorise_MNIST_images
@@ -94,7 +94,6 @@ if __name__ == "__main__":
 
     ### Run main procedure.
     main(args)
-
 
 ##################################################### SOURCE FINISH ####################################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

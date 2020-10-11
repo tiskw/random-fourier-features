@@ -86,6 +86,8 @@ def main(args):
             pred = pred.reshape((pred.shape[0],))
             pstd = pstd.reshape((pstd.shape[0],))
 
+    print("R2 score:", gpr.score(Xs_test, ys_test))
+
     ### Plot regression results.
     mpl.figure(0)
     mpl.title("Regression for function y = sin(x^2) using Gaussian Process w/ RFF")
