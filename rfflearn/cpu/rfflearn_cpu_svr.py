@@ -1,40 +1,41 @@
 #!/usr/bin/env python3
 #
-# Python module of canonical correlation analysis with random matrix for CPU.
+# Python module of support vector regression with random matrix for CPU.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # Date  : October 11, 2020
 ##################################################### SOURCE START #####################################################
 
 
-import sklearn.cross_decomposition
+import numpy as np
+import sklearn.svm
+import sklearn.multiclass
 from .rfflearn_cpu_common import Base
 
 
-### Canonival Correlation Analysis with random matrix (RFF/ORF)
-class CCA(Base):
+### Support vector regression with random matrix (RFF/ORF).
+class SVR(Base):
 
+    ### Constractor. Save hyper parameters as member variables and create LinearSVR instance.
     def __init__(self, rand_mat_type, dim_kernel = 128, std_kernel = 0.1, W = None, **args):
         super().__init__(rand_mat_type, dim_kernel, std_kernel, W)
-        self.cca = sklearn.cross_decomposition.CCA(**args)
+        self.svr = sklearn.svm.LinearSVR(**args)
 
-    ### Run training, that is, extract feature vectors and train CCA.
-    def fit(self, X, Y):
-        self.set_weight((X.shape[1], Y.shape[1]))
-        self.cca.fit(self.conv(X, 0), self.conv(Y, 1))
+    ### Run training, that is, extract feature vectors and train SVR.
+    def fit(self, X, y, **args):
+        self.set_weight(X.shape[1])
+        self.svr.fit(self.conv(X), y, **args)
         return self
 
     ### Return prediction results.
-    def predict(self, X, copy = True):
-        return self.cca.predict(self.conv(X, 0), copy)
+    def predict(self, X, **args):
+        self.set_weight(X.shape[1])
+        return self.svr.predict(self.conv(X), **args)
 
     ### Return evaluation score.
-    def score(self, X, Y, sample_weight = None):
-        return self.cca.score(self.conv(X, 0), self.conv(Y, 1), sample_weight)
-
-    ### Return transformed results.
-    def transform(self, X, Y = None, copy = True):
-        return self.cca.transform(self.conv(X, 0), None if Y is None else self.conv(Y, 1), copy)
+    def score(self, X, y, **args):
+        self.set_weight(X.shape[1])
+        return self.svr.score(self.conv(X), y, **args)
 
 
 ### The above functions/classes are not visible from users of this library,
@@ -42,14 +43,14 @@ class CCA(Base):
 ### version of the classes. These classes are visible from users.
 
 
-### Canonical correlation analysis with RFF.
-class RFFCCA(CCA):
+### Support vector machine with RFF.
+class RFFSVR(SVR):
     def __init__(self, *pargs, **kwargs):
         super().__init__("rff", *pargs, **kwargs)
 
 
-### Canonical correlation analysis with ORF.
-class ORFCCA(CCA):
+### Support vector machine with ORF.
+class ORFSVR(SVR):
     def __init__(self, *pargs, **kwargs):
         super().__init__("orf", *pargs, **kwargs)
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 #
-# Python module of regression and support vector machine using random fourier features.
+# Common functions/classes for the other classes.
+# All classes except "seed" function is not visible from users.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # Date  : October 11, 2020
@@ -11,7 +12,10 @@ import numpy as np
 import tensorflow as tf
 
 
-### Import Base class from CPU implementation.
+### Import "Base" class from CPU implementation.
+### The role of the "Base" class is generation of random matrix.
+### Under author's observation, generation of random matrix is not a heavy task,
+### therefore GPU inplementation of the "Base" class is not necessary.
 from ..cpu.rfflearn_cpu_common import Base
 
 

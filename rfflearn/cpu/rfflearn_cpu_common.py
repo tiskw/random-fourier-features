@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 #
-# Python module of regression and support vector machine using random fourier features.
+# Common functions/classes for the other classes.
+# All classes except 'seed' function is not visible from users.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # Date  : October 11, 2020

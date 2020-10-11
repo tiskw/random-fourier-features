@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 #
-# Python module of regression and support vector machine using random fourier features.
+# __init__.py file for the module 'rfflearn.cpu'.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : October 10, 2020
+# Date  : October 11, 2020
 ##################################################### SOURCE START #####################################################
 
 from .rfflearn_cpu_common     import seed

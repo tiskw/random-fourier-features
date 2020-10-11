@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 #
+# Collection of utility functions used in the example code of this module.
+#
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : May 2, 2020
+# Date  : October 11, 2020
 ######################################### SOURCE START ########################################
 
 import time

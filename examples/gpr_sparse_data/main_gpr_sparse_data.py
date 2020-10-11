@@ -5,12 +5,12 @@
 # Interface of RFFSVC is quite close to sklearn.gaussian_process.GaussianProcessRegressor.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : March 15, 2020
+# Date  : October 11, 2020
 ##################################################### SOURCE START #####################################################
 
 """
 Overview:
-  An example of Gaussian Process Regression with Random Fourier Feature (RFF GPR).
+  An example of Gaussian Process Regression with Random Fourier Feature.
   As a comparison with the noemal GPR, this script has a capability to run the normal GPR under the same condition with RFF GPR.
 
 Usage:
@@ -19,11 +19,12 @@ Usage:
                                 [--n_test <int>] [--n_train <int>] [--no_pred_std] [--seed <int>]
     main_gpr_sparse_data.py orf [--kdim <int>] [--std_kernel <float>] [--std_error <float>]
                                 [--n_test <int>] [--n_train <int>] [--no_pred_std] [--seed <int>]
-    main_gpr_sparse_data.py -h|--help
+    main_gpr_sparse_data.py (-h | --help)
 
 Options:
     kernel               Run normal Gaussian Process.
     rff                  Run Gaussian process with Random Fourier Features.
+    orf                  Run Gaussian process with Orthogonal Random Features.
     --kdim <int>         Hyper parameter of RFF SVM (dimention of RFF). [default: 16]
     --std_kernel <float> Hyper parameter of RFF SVM (stdev of RFF).     [default: 5.0]
     --std_error <float>  Hyper parameter of RFF SVM (stdev of error).   [default: 1.0]

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Python module of regression and support vector machine using random fourier features.
+# Python module of principal component analysis with random matrix for CPU.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # Date  : October 11, 2020

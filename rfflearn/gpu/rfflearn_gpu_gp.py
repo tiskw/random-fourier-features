@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Python module of regression and support vector machine using random fourier features.
+# Python module of Gaussian process with random matrix for GPU.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # Date  : October 11, 2020
@@ -23,43 +23,31 @@ class GPR(Base):
     def __init__(self, rand_mat_type, dim_kernel = 256, std_kernel = 0.1, std_error = 1.0, scale = 1.0, W = None):
         super().__init__(rand_mat_type, dim_kernel, std_kernel, W)
         self.s_e = std_error
-        self.sca = scale
 
     ### Training of Gaussian process using GPU.
     ###   - X_cpu (np.array, shape = [N, K]): training data
     ###   - y_cpu (np.array, shape = [N, C]): training label
-    ### where N is the number of training data, K is dimension of the input data, and C is the number of classes.
+    ### where N is the number of training data, K is dimension of the input data, and C is dimention of output data.
     def fit(self, X_cpu, y_cpu):
 
         ### Generate random matrix.
         self.set_weight(X_cpu.shape[1])
 
-        ### Convert the input label vector to the one hot format.
-        y_oh = np.eye(int(np.max(y_cpu) + 1))[y_cpu]
-
         ### Generate random matrix W and identity matrix I on CPU.
         I_cpu = np.eye(2 * self.dim)
 
-        ### Move matrices to GPU.
-        W = tf.constant(self.W, dtype = tf.float64)
-        I = tf.constant(I_cpu,  dtype = tf.float64)
-        X = tf.constant(X_cpu,  dtype = tf.float64)
-        y = tf.constant(y_oh,   dtype = tf.float64)
+        ### Derive posterior distribution 1/3 (on CPU).
+        s = (self.s_e)**2
+        F = self.conv(X_cpu).T
+        P = F @ F.T
 
-        ### Derive posterior distribution.
-        s   = (self.s_e)**2
-        c   = np.sqrt(self.sca)
-        Z   = tf.matmul(X, W)
-        F_T = c * tf.concat([tf.cos(Z), tf.sin(Z)], 1)
-        F   = tf.transpose(F_T)
-        P   = tf.matmul(F, F_T)
-        M   = I - tf.linalg.solve((P + s * I), P)
-        a   = tf.matmul(tf.matmul(tf.transpose(y), F_T), M) / s
-        S   = tf.matmul(P, M) / s
+        ### Derive posterior distribution 2/3 (on GPU).
+        P1 = tf.constant(P + s * I_cpu, dtype = tf.float64)
+        M  = I_cpu - tf.linalg.solve(P1, P).numpy()
 
-        ### Save parameters for posterior distribution as np.array.
-        self.a = a.numpy()
-        self.S = S.numpy()
+        ### Derive posterior distribution 3/3 (on CPU).
+        self.a = ((y_cpu.T @ F.T) @ M) / s
+        self.S = P @ M / s
 
     ### Inference of Gaussian process using GPU.
     ###   - X_cpu (np.array, shape = [N, K]): inference data
@@ -78,9 +66,9 @@ class GPR(Base):
         Z   = tf.matmul(X, W)
         F_T = tf.concat([tf.cos(Z), tf.sin(Z)], 1)
         F   = tf.transpose(F_T)
-        p   = tf.matmul(a, F)
-        p   = tf.transpose(p)
+        p   = tf.transpose(tf.matmul(a, F))
 
+        ### Move prediction value to CPU.
         y_cpu = p.numpy()
 
         ### Calculate covariance matrix and variance vector.
@@ -96,7 +84,7 @@ class GPR(Base):
     ### calculate score of the given inference data.
     ###   - X_cpu (np.array, shape = [N, K]): test data
     ###   - y_cpu (np.array, shape = [N, C]): test label
-    ### where N is the number of training data, K is dimension of the input data, and C is the number of classes.
+    ### where N is the number of training data, K is dimension of the input data, and C is dimention of output data.
     def score(self, X_cpu, y_cpu):
         return sklearn.metrics.r2_score(y_cpu, self.predict(X_cpu))
 
@@ -107,6 +95,14 @@ class GPR(Base):
 ###   - predict(self, X_cpu)     : run inference (this function also be able to return variance)
 ###   - score(self, X_cpu, y_cpu): run inference and return the overall accuracy
 class GPC(GPR):
+
+    ### Training of Gaussian process using GPU.
+    ###   - X_cpu (np.array, shape = [N, K]): test data
+    ###   - y_cpu (np.array, shape = [N,  ]): test label
+    ### where N is the number of training data, K is dimension of the input data.
+    def fit(self, X_cpu, y_cpu):
+        y_onehot_cpu = np.eye(int(np.max(y_cpu) + 1))[y_cpu]
+        return super().fit(X_cpu, y_onehot_cpu)
 
     ### Inference of Gaussian process using GPU.
     ###   - X_cpu (np.array, shape = [N, K]): inference data
@@ -126,8 +122,8 @@ class GPC(GPR):
 
     ### calculate score of the given inference data.
     ###   - X_cpu (np.array, shape = [N, K]): test data
-    ###   - y_cpu (np.array, shape = [N, C]): test label
-    ### where N is the number of training data, K is dimension of the input data, and C is the number of classes.
+    ###   - y_cpu (np.array, shape = [N,  ]): test label
+    ### where N is the number of training data, K is dimension of the input data.
     def score(self, X_cpu, y_cpu):
         return np.mean(self.predict(X_cpu) == y_cpu)
 
