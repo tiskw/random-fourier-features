@@ -1,11 +1,11 @@
 # Necessary packages
-numpy==1.18.4
-scipy==1.4.1
-scikit-learn==0.23.1
+numpy>=1.18.4
+scipy>=1.4.1
+scikit-learn>=0.23.1
 
 # Required only for GPU inference
-tensorflow-gpu==2.2.1
-tensorflow-addons==0.10.0
+tensorflow-gpu>=2.4.0
+tensorflow-addons>=0.10.0
 
 # Required only for sample code
-docopt==0.6.2
+docopt>=0.6.2
