@@ -32,7 +32,6 @@ Options:
     --stdev <float>  Hyper parameter of RFF/ORF SVM (stdev of RFF).      [default: 0.05]
     --seed <int>     Random seed.                                        [default: 111]
     --cpus <int>     Number of available CPUs.                           [default: -1]
-    --batch_size <int> Batch size in training/inference.                 [default: 256]
     --use_fft        Apply FFT to the MNIST images.                      [default: False]
     -h, --help       Show this message.
 """
