@@ -3,27 +3,27 @@
 This directory contains the example code for the `rfflearn.cpu` and `rfflearn.cpu` module.
 
 
-## Least Square Regression with Random Fourier Features
+## Least square regression with random Fourier features
 
 An example of regression with random Fourier features.
 See [README.md](./least_square_regression/README.md) for more details.
 
 <div align="center">
-  <img src="./least_square_regression/figure_rff_regression.png" width="640" height="480" alt="Regression results for function y = sin(x^2) with RFF" />
+  <img src="./least_square_regression/figure_rff_regression_plain.png" width="640" height="480" alt="Regression results for function y = sin(x^2) with RFF" />
 </div>
 
 
-## Gaussian Process Regression with Random Fourier Features
+## Gaussian process regression with random Fourier features
 
 An example of Gaussian process regression with random Fourier features.
 See [README.md](./gpr_sparse_data/README.md) for more details.
 
 <div align="center">
-  <img src="./gpr_sparse_data/figure_gpr_sparse_data.png" width="640" height="480" alt="Regression results for function y = sin(x^2) with RFF" />
+  <img src="./gpr_sparse_data/figure_rff_gpr_sparse_data.png" width="640" height="480" alt="Regression results for function y = sin(x^2) with RFF" />
 </div>
 
 
-## Gaussian Process Classification with Random Fourier Features
+## Gaussian process classification with random Fourier features
 
 An example of the Gaussian process classification with random Fourier features.
 See [README.md](./gpc_for_mnist/README.md) for more details.
@@ -33,7 +33,7 @@ See [README.md](./gpc_for_mnist/README.md) for more details.
 </div>
 
 
-## Support Vector Classification with Random Fourier Features
+## Support vector classification with random Fourier features
 
 An example of support vector classification for [MNIST](http://yann.lecun.com/exdb/mnist/) dataset with random Fourier features.
 See [README.md](./svc_for_mnist/README.md) for more details.
@@ -43,7 +43,7 @@ See [README.md](./svc_for_mnist/README.md) for more details.
 </div>
 
 
-## Canonical Correlation Analysis with Random Fourier Features
+## Canonical correlation analysis with random Fourier features
 
 An example of canonical correlation analysis with random Fourier features.
 See [README.md](./cca_for_artificial_data/README.md) for more details.
@@ -53,7 +53,7 @@ See [README.md](./cca_for_artificial_data/README.md) for more details.
 </div>
 
 
-## Principal Component Analysis
+## Principal component analysis with random Fourier features
 
 An example of principal component analysis for swiss roll dataset with random Fourier features.
 See [README.md](./cca_for_artificial_data/README.md) for more details.
@@ -64,7 +64,7 @@ See [README.md](./cca_for_artificial_data/README.md) for more details.
 </div>
 
 
-## Support Vector Classification with Random Fourier Features with Batch Learning
+## Support vector classification with random Fourier features with batch learning
 
 An example of support vector classification with batch learning for [MNIST](http://yann.lecun.com/exdb/mnist/) dataset with random Fourier features.
 See [README.md](./svc_for_mnist_batch/README.md) for more details.

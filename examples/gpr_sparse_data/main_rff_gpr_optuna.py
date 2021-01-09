@@ -81,7 +81,7 @@ def main(args):
 
     ### Draw figure and save it.
     with utils.Timer("Drawing figure: "):
-        mpl.Figure(figsize = (10, 5))
+        mpl.Figure()
         mpl.scatter(ys_valid_p, ys_valid, alpha = 0.5)
         mpl.plot([0, 50], [0, 50], "--", color = "#666666")
         mpl.title("Regression of Boston Housing Dataset (R2 = %.4f)" % score_r2)
@@ -90,20 +90,6 @@ def main(args):
         mpl.grid()
         mpl.savefig("figure_rff_gpr_optuna.png")
     print("  - Saved to 'figure_rff_gpr_optuna.png'")
-
-    ### Creating dataset: 0.008219 [s]
-    ### [I 2021-01-08 21:55:58,091] A new study created in memory with name: no-name-cd763e7f-9a1b-49b6-a8da-46cb5d7eb648
-    ### [I 2021-01-08 21:55:58,142] Trial 0 finished with value: -1110.7372899099666 and parameters: {'dim_kernel': 220, 'std_kernel': 0.014007208547971627, 'std_error': 0.00016845314401775879}. Best is trial 0 with value: -1110.7372899099666.
-    ### ...
-    ### [I 2021-01-08 21:56:11,042] Trial 299 finished with value: 0.8259286909822182 and parameters: {'dim_kernel': 130, 'std_kernel': 0.002716895283117994, 'std_error': 0.0008405473529950864}. Best is trial 220 with value: 0.9005600959806921.
-    ### Hyper parameter tuning: 12.953545 [s]
-    ###   - study.best_params: {'dim_kernel': 126, 'std_kernel': 0.0010301867891657549, 'std_error': 0.0006760934479075936}
-    ###   - study.best_value: 0.9005600959806921
-    ###   - study.best_model: <rfflearn.cpu.rfflearn_cpu_gp.RFFGPR object at 0x7fa2a0f62a90>
-    ### Prediction with the best model: 0.002151 [s]
-    ###   - R2 score of the best model:  0.9005600959806921
-    ### Drawing figure: 0.287364 [s]
-    ###   - Saved to 'figure_rff_regression_optuna.png'
 
 
 if __name__ == "__main__":
@@ -123,6 +109,7 @@ if __name__ == "__main__":
 
     ### Run main procedure.
     main(args)
+
 
 #################################### SOURCE FINISH ##################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

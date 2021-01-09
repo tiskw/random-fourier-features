@@ -3,7 +3,7 @@
 # Python module of Gaussian process with random matrix for GPU.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : October 11, 2020
+# Date  : January 08, 2021
 ######################################### SOURCE START ########################################
 
 
@@ -20,6 +20,7 @@ from .rfflearn_gpu_common import Base
 ###   - score(self, X_cpu, y_cpu): run inference and return the overall accuracy
 class GPR(Base):
 
+    ### Store necessary parameters (on CPU).
     def __init__(self, rand_mat_type, dim_kernel = 256, std_kernel = 0.1, std_error = 1.0, scale = 1.0, W = None):
         super().__init__(rand_mat_type, dim_kernel, std_kernel, W)
         self.s_e = std_error
@@ -49,12 +50,14 @@ class GPR(Base):
         self.a = ((y_cpu.T @ F.T) @ M) / s
         self.S = P @ M / s
 
+        return self
+
     ### Inference of Gaussian process using GPU.
     ###   - X_cpu (np.array, shape = [N, K]): inference data
     ###   - var   (boolean, scalar)         : returns variance vector if true
     ###   - cov   (boolean, scalar)         : returns covariance matrix if true
     ### where N is the number of training data and K is dimension of the input data.
-    def predict(self, X_cpu, return_var = False, return_cov = False):
+    def predict(self, X_cpu, return_std = False, return_cov = False):
 
         ### Move matrix to GPU.
         X = tf.constant(X_cpu,  dtype = tf.float64)
@@ -72,12 +75,12 @@ class GPR(Base):
         y_cpu = p.numpy()
 
         ### Calculate covariance matrix and variance vector.
-        if return_var or return_cov:
+        if return_std or return_cov:
             V_cpu = tf.matmul(tf.matmul(F_T, S), F).numpy()
-            v_cpu = np.diag(V)
+            s_cpu = np.sqrt(np.diag(V_cpu))
 
-        if return_var and return_cov: return (y_cpu, v_cpu, V_cpu)
-        elif return_var             : return (y_cpu, v_cpu)
+        if return_std and return_cov: return (y_cpu, s_cpu, V_cpu)
+        elif return_std             : return (y_cpu, s_cpu)
         elif return_cov             : return (y_cpu, V_cpu)
         else                        : return  y_cpu
 
@@ -86,6 +89,7 @@ class GPR(Base):
     ###   - y_cpu (np.array, shape = [N, C]): test label
     ### where N is the number of training data, K is dimension of the input data, and C is dimention of output data.
     def score(self, X_cpu, y_cpu):
+
         return sklearn.metrics.r2_score(y_cpu, self.predict(X_cpu))
 
 

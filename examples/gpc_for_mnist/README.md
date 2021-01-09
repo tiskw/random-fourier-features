@@ -1,6 +1,6 @@
-# Gaussian process classifier using Random Fourier Features for MNIST dataset
+# Gaussian Process Classifier using Random Fourier Features for MNIST Dataset
 
-This directory provides an example usage of the RFF Gaussian process classifier using MNIST dataset.
+This directory provides an example of the Gaussian process classifier with random Fourier features for MNIST dataset.
 
 The training script in this directory supports both CPU/GPU training.
 For the GPU training, you need to install Tensorflow 2.x (Tensorflow 1.x is not supported).
@@ -8,47 +8,44 @@ For the GPU training, you need to install Tensorflow 2.x (Tensorflow 1.x is not 
 
 ## Installation
 
-See [this document](https://tiskw.gitbook.io/rfflearn/) for more details.
+See [this document](https://tiskw.gitbook.io/rfflearn/tutorial#setting-up) for more details.
 
-### Docker image (recommended)
-
-If you don't like to pollute your development environment, it is a good idea to run everything inside a Docker container.
-Scripts in this directory are executable on [this docker image](https://hub.docker.com/repository/docker/tiskw/tensorflow).
-
-```console
-$ docker pull tiskw/tensorflow:2020-05-29    # Download docker image from DockerHub
-$ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO # Move to the root directory of this repository
-$ docker run --rm -it --runtime=nvidia -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/tensorflow:2020-01-18 bash
-$ cd examples/gpc_for_mnist/                 # Move to this directory
-```
-
-If you don't need GPU support, the option `--runtime=nvidia` is not necessary.
-
-### Install Python packages (alternative)
-
-The training end validation script requires `docopt`, `numpy`, `scipy`, `scikit-learn` and, if you need GPU support, `tensorflow-gpu`.
-If you don't have them, please run the following as root to install them:
+### Install on your environment (easier, but pollute your development environment)
 
 ```console
 $ pip3 install docopt numpy scipy scikit-learn  # Necessary packages
-$ pip3 install tensorflow-gpu                   # Required only for GPU inference
+$ pip3 install tensorflow-gpu                   # Required only for GPU training/inference
+$ pip3 install optuna                           # Required only for hyper parameter tuning
 ```
 
+### Docker image (recommended)
 
-## Dataset Preparation
+```console
+$ docker pull tiskw/tensorflow:2021-01-08
+$ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
+$ docker run --rm -it --gpus=all -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/tensorflow:2021-01-08 bash
+$ cd examples/gpr_sparse_data/
+```
 
-Also, you need to download and convert MNIST data before running the sample code by the following command:
+If you don't need GPU support, the option `--gpus=all` is not necessary.
+
+
+## Usage
+
+### Dataset preparation
+
+You need to download and convert MNIST data before running the training code.
+Please run the following commands:
 
 ```console
 $ cd ../../dataset/mnist
 $ python3 download_and_convert_mnist.py
 ```
 
-Original MNIST data will be automatically downloaded, converted to `.npy` file,
-and save them under `dataset/mnist/` directory.
+The MNIST dataset will be automatically downloaded, converted to `.npy` file
+and saved under `dataset/mnist/` directory.
 
-
-## Training and inference
+### Training and inference
 
 After generating `.npy` files of MNIST, run the training script by either of the following commands:
 
@@ -63,8 +60,7 @@ Default hyperparameter settings are recommended parameters for environment test.
 However, to get a higher score, you need to change the parameters by command options.
 See `--help` for details.
 
-
-## Results of Support Vector Classification with RFF
+### Results of Gaussian process classification with RFF
 
 In my computing environment (CPU: Intl Core i5 5250U, RAM: 4GB, GPU: GTX1050Ti), I've got the following results:
 
@@ -80,7 +76,7 @@ In my computing environment (CPU: Intl Core i5 5250U, RAM: 4GB, GPU: GTX1050Ti),
   <img src="./figures/figure_inference_time_and_accuracy_on_MNIST.png" width="656" height="371" alt="Inference Time vs Accuracy on MNIST" />
 </div>
 
-## Notes
+### Notes
 
 - The `score` in the above table means test accuracy of MNIST dataset and the `inference time` means inference time for one image.
 - Commonly used techniques like data normalization and dimension reduction using PCA are also used in the above analysis.

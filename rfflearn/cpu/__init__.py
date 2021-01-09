@@ -22,14 +22,14 @@ if pkgutil.get_loader("optuna") is not None:
 
     from ..tuner import tuner
 
-    RFFRegression_tuner = functools.partial(tuner.RFF_dim_std_tuner,     model = RFFRegression)
-    ORFRegression_tuner = functools.partial(tuner.RFF_dim_std_tuner,     model = RFFRegression)
-    RFFSVC_tuner        = functools.partial(tuner.RFF_dim_std_tuner,     model = RFFSVC)
-    ORFSVC_tuner        = functools.partial(tuner.RFF_dim_std_tuner,     model = ORFSVC)
-    RFFGPC_tuner        = functools.partial(tuner.RFF_dim_std_err_tuner, model = RFFGPC)
-    ORFGPC_tuner        = functools.partial(tuner.RFF_dim_std_err_tuner, model = ORFGPC)
-    RFFGPR_tuner        = functools.partial(tuner.RFF_dim_std_err_tuner, model = RFFGPR)
-    ORFGPR_tuner        = functools.partial(tuner.RFF_dim_std_err_tuner, model = ORFGPR)
+    RFFRegression_tuner = functools.partial(tuner.RFF_dim_std_tuner,     model_class = RFFRegression)
+    ORFRegression_tuner = functools.partial(tuner.RFF_dim_std_tuner,     model_class = RFFRegression)
+    RFFSVC_tuner        = functools.partial(tuner.RFF_dim_std_tuner,     model_class = RFFSVC)
+    ORFSVC_tuner        = functools.partial(tuner.RFF_dim_std_tuner,     model_class = ORFSVC)
+    RFFGPC_tuner        = functools.partial(tuner.RFF_dim_std_err_tuner, model_class = RFFGPC)
+    ORFGPC_tuner        = functools.partial(tuner.RFF_dim_std_err_tuner, model_class = ORFGPC)
+    RFFGPR_tuner        = functools.partial(tuner.RFF_dim_std_err_tuner, model_class = RFFGPR)
+    ORFGPR_tuner        = functools.partial(tuner.RFF_dim_std_err_tuner, model_class = ORFGPR)
 
 ##################################################### SOURCE FINISH ####################################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker
