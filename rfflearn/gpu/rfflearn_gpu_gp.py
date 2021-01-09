@@ -72,7 +72,9 @@ class GPR(Base):
         p   = tf.transpose(tf.matmul(a, F))
 
         ### Move prediction value to CPU.
+        ### If shape of y_cpu is (*, 1), then reshape to (*, ).
         y_cpu = p.numpy()
+        y_cpu = np.squeeze(y_cpu, axis = 1) if len(y_cpu.shape) > 1 and y_cpu.shape[1] == 1 else y_cpu
 
         ### Calculate covariance matrix and variance vector.
         if return_std or return_cov:

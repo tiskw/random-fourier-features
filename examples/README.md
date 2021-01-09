@@ -9,7 +9,7 @@ An example of regression with random Fourier features.
 See [README.md](./least_square_regression/README.md) for more details.
 
 <div align="center">
-  <img src="./least_square_regression/figure_rff_regression_plain.png" width="640" height="480" alt="Regression results for function y = sin(x^2) with RFF" />
+  <img src="./least_square_regression/figure_least_square_regression.png" width="640" height="480" alt="Regression results for function y = sin(x^2) with RFF" />
 </div>
 
 

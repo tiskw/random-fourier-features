@@ -38,25 +38,9 @@ $ python3 main_rff_regression_plain.py
 The following figure shows regression results for the function y = sin(x^2) where the dimension of RFF is 16.
 
 <div align="center">
-  <img src="./figure_rff_regression_plain.png" width="640" height="480" alt="Regression results for function y = sin(x^2) with RFF" />
-</div>
-
-### Hyper parameter tuning with Optuna
-
-The script file `main_rff_regression_optuna.py` provides an example of hyper parameter tuning using Optuna.
-We used the famouse Boston Housing dataset and tryed to predict the median of price (`MEDV`).
-
-```console
-$ python3 main_rff_regression_optuna.py
-```
-
-The following figure shows regression results for the the Boston Housing dataset where hyper parameters were tuned by Optuna.
-
-<div align="center">
-  <img src="./figure_rff_regression_optuna.png" width="640" height="480" alt="Regression results for the Boston Housing dataset with RFF" />
+  <img src="./figure_least_square_regression.png" width="640" height="480" alt="Regression results for function y = sin(x^2) with RFF" />
 </div>
 
 ### Training on GPU
 
 Open the script file, replace `rfflearn.cpu` as `rfflean.gpu` and run the script again.
-

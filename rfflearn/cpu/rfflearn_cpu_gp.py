@@ -35,10 +35,12 @@ class GPR(Base):
 
     ### Run prediction. The interface of this function imitate the interface of
     ### the 'sklearn.gaussian_process.GaussianProcessRegressor.predict'.
+    ### If shape of the vector p is (*, 1), then reshape to (*, ).
     def predict(self, X, return_var = False, return_std = False, return_cov = False):
         self.set_weight(X.shape[1])
         F = self.conv(X).T
         p = np.array(self.a.dot(F)).T
+        p = np.squeeze(p, axis = 1) if len(p.shape) > 1 and p.shape[1] == 1 else p
         if return_std and return_cov: return (p, self.std(F), self.cov(F))
         elif return_std             : return (p, self.std(F))
         elif return_cov             : return (p, self.cov(F))

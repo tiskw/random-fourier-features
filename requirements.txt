@@ -1,11 +1,17 @@
 # Necessary packages
 numpy>=1.18.4
 scipy>=1.4.1
-scikit-learn>=0.23.1
+scikit-learn>=0.24.0
 
-# Required only for GPU inference
+# Required for GPU training/inference
 tensorflow-gpu>=2.4.0
-tensorflow-addons>=0.10.0
+tensorflow-addons>=0.12.0
+
+# Required for auto hyper parameter tuning
+optuna>=2.3.0
+
+# Required for feature importance calculation
+shap>=0.37.0
 
 # Required only for sample code
 docopt>=0.6.2
