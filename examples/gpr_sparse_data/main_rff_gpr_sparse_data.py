@@ -5,7 +5,7 @@
 # Interface of RFFSVC is quite close to sklearn.gaussian_process.GaussianProcessRegressor.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : October 11, 2020
+# Date  : January 08, 2021
 ##################################################### SOURCE START #####################################################
 
 """
@@ -90,18 +90,20 @@ def main(args):
     print("R2 score:", gpr.score(Xs_test, ys_test))
 
     ### Plot regression results.
-    mpl.figure(0)
-    mpl.title("Regression for function y = sin(x^2) using Gaussian Process w/ RFF")
-    mpl.xlabel("X")
-    mpl.ylabel("Y")
-    mpl.plot(Xs_train, ys_train, ".")
-    mpl.plot(Xs_test,  ys_test,  ".")
-    mpl.plot(Xs_test,  pred,     "-")
-    if pstd is not None:
-        mpl.fill_between(Xs_test.reshape((Xs_test.shape[0],)),  pred - pstd, pred + pstd, facecolor = "#DDDDDD")
-    mpl.legend(["Training data", "Test data GT", "Prediction", "1-sigma area"])
-    mpl.grid()
-    mpl.show()
+    with utils.Timer("Drawing figure: "):
+        mpl.figure()
+        mpl.title("Regression for function y = sin(x^2) using Gaussian Process w/ RFF")
+        mpl.xlabel("X")
+        mpl.ylabel("Y")
+        mpl.plot(Xs_train, ys_train, ".")
+        mpl.plot(Xs_test,  ys_test,  ".")
+        mpl.plot(Xs_test,  pred,     "-")
+        if pstd is not None:
+            mpl.fill_between(Xs_test.reshape((Xs_test.shape[0],)),  pred - pstd, pred + pstd, facecolor = "#DDDDDD")
+        mpl.legend(["Training data", "Test data GT", "Prediction", "1-sigma area"])
+        mpl.grid()
+        mpl.savefig("figure_rff_gpr_sparse_data.png")
+    print("  - Saved to 'figure_rff_gpr_sparse_data.png'")
 
 
 if __name__ == "__main__":
@@ -126,6 +128,7 @@ if __name__ == "__main__":
 
     ### Run main procedure.
     main(args)
+
 
 ##################################################### SOURCE FINISH ####################################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

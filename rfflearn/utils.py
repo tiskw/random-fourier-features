@@ -7,6 +7,7 @@
 ######################################### SOURCE START ########################################
 
 import time
+import sys
 
 ### Class for measure elasped time using 'with' sentence.
 class Timer:
@@ -25,7 +26,6 @@ class Timer:
         if   self.time_unit == "ms": dt *= 1E3
         elif self.time_unit == "us": dt *= 1E6
         print("%s%f [%s]" % (self.message, dt, self.time_unit))
-
 
 ######################################### SOURCE FINISH #######################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

@@ -35,7 +35,7 @@ class GPR(Base):
 
     ### Run prediction. The interface of this function imitate the interface of
     ### the 'sklearn.gaussian_process.GaussianProcessRegressor.predict'.
-    def predict(self, X, return_std = False, return_cov = False):
+    def predict(self, X, return_var = False, return_std = False, return_cov = False):
         self.set_weight(X.shape[1])
         F = self.conv(X).T
         p = np.array(self.a.dot(F)).T

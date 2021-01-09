@@ -1,49 +1,47 @@
 # Support Vector Classifier using Random Fourier Features for MNIST dataset
 
-This python script provides an example for RFF SVC with MNIST dataset.
-Our module for Random Fourier Features (PyRFFF.py) needs scikit-learn as a backend of SVM solver therefore you need to install scikit-learn.
-Also, this script supports GPU inference of RFF SVC (only one-versus-the-rest is supported now). for running GPU inference, you need to install Tensorflow 2.x (Tensorflow 1.x is not supported).
+This directory provides an example of the support vector classifier with random Fourier features for MNIST dataset.
+
+The training script in this directory supports both CPU/GPU training.
+For the GPU training, you need to install Tensorflow 2.x (Tensorflow 1.x is not supported).
 
 
 ## Installation
 
-See [this document](https://tiskw.gitbook.io/rfflearn/) for more details.
+See [this document](https://tiskw.gitbook.io/rfflearn/tutorial#setting-up) for more details.
 
-### Docker image (recommended)
-
-If you don't like to pollute your development environment, it is a good idea to run everything inside a Docker container.
-Scripts in this directory are executable on [this docker image](https://hub.docker.com/repository/docker/tiskw/tensorflow).
-
-```console
-$ docker pull tiskw/tensorflow:2020-05-29    # Download docker image from DockerHub
-$ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO # Move to the root directory of this repository
-$ docker run --rm -it --runtime=nvidia -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/tensorflow:2020-01-18 bash
-$ cd examples/gpc_for_mnist/                 # Move to this directory
-```
-
-If you don't need GPU support, the option `--runtime=nvidia` is not necessary.
-
-### Install Python packages (alternative)
-
-The training end validation script requires `docopt`, `numpy`, `scipy`, `scikit-learn` and, if you need GPU support, `tensorflow-gpu`.
-If you don't have them, please run the following as root to install them:
+### Install on your environment (easier, but pollute your development environment)
 
 ```console
 $ pip3 install docopt numpy scipy scikit-learn  # Necessary packages
-$ pip3 install tensorflow-gpu                   # Required only for GPU inference
+$ pip3 install tensorflow-gpu                   # Required only for GPU training/inference
+$ pip3 install optuna                           # Required only for hyper parameter tuning
 ```
 
+### Docker image (recommended)
 
-## Dataset Preparation
+```console
+$ docker pull tiskw/tensorflow:2021-01-08
+$ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
+$ docker run --rm -it --gpus=all -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/tensorflow:2021-01-08 bash
+$ cd examples/gpr_sparse_data/
+```
 
-Also, you need to download and convert MNIST data before running the sample code by the following command:
+If you don't need GPU support, the option `--gpus=all` is not necessary.
+
+
+## Dataset preparation
+
+You need to download and convert MNIST data before running the training code.
+Please run the following commands:
 
 ```console
 $ cd ../../dataset/mnist
 $ python3 download_and_convert_mnist.py
 ```
 
-Original MNIST data will be automatically downloaded, converted to .npy file, and save them under `mnist/` directory.
+The MNIST dataset will be automatically downloaded, converted to `.npy` file
+and saved under `dataset/mnist/` directory.
 
 
 ## Training
@@ -51,13 +49,23 @@ Original MNIST data will be automatically downloaded, converted to .npy file, an
 After generating MNIST .npy files, run sample scripts by the following command:
 
 ```console
-$ python3 train_rff_svc_for_mnist.py kernel   # Run kernel SVC training
-$ python3 train_rff_svc_for_mnist.py rff      # Run SVC with RFF training
+$ python3 train_rff_svc_for_mnist.py kernel  # Run kernel SVC training
+$ python3 train_rff_svc_for_mnist.py rff     # Run RFFSVC training
 ```
 
-Default hyperparameter settings are recommended one, however, you can change the parameters by command option.
-The following command will generate `result.pickle` in which a trained model and command arguments are stored.
+Default hyper parameter settings are recommended one, however, you can change the parameters by command option.
+The above command will generate `result.pickle` in which a trained model, PCA matrix and command arguments are stored.
 See `train_rff_svc_for_mnist.py --help` for details.
+
+### Training on GPU
+
+This module contains beta version of GPU training implementation.
+You can try the GPU training by replacing `rfflearn.cpu` to `rfflearn.gpu` like the following:
+
+```python
+# import rfflearn.cpu as rfflearn
+import rfflearn.gpu as rfflearn
+```
 
 
 ## Inference
@@ -70,54 +78,40 @@ $ python3 valid_rff_svc_for_mnist.py tensorflow  # Inference on GPU using Tensor
 ```
 
 
-## Results of Support Vector Classification with RFF
+## Results of support vector classification with RFF
 
-In my computing environment (CPU: Intl Core i5 5250U, RAM: 4GB, GPU: GTX1050Ti), I've got the following results:
+I've got the following results on my computing environment (CPU: Intl Core i5 5250U, RAM: 4GB, GPU: GTX1050Ti):
 
-| Method                   | Training time (sec) | Inference time (us) | Score (%) |
+| Method                   | Training time [sec] | Inference time [us] | Score [%] |
 | :---------------------:  | :-----------------: | :-----------------: | :-------: |
-| Kernel SVM               | 177.8 sec           | 4644.9 us           | 96.3 %    |
-| SVM w/ RFF <br> d = 512  | 126.6 sec           | 39.0 us             | 96.5 %    |
-| SVM w/ RFF <br> d = 1024 | 226.7 sec           | 96.1 us             | 97.5 %    |
+| Kernel SVM               | 177.8 [sec]         | 4644.9 [us]         | 96.3 [%]  |
+| SVM w/ RFF <br> d = 512  | 126.6 [sec]         |   39.0 [us]         | 96.5 [%]  |
+| SVM w/ RFF <br> d = 1024 | 226.7 [sec]         |   96.1 [us]         | 97.5 [%]  |
 
 As for inference using GPU, I've got the following result:
 
-| Method     | Dimension of RFF | Device  | Batch size | Inference time (us) | Score (%) |
+| Method     | Dimension of RFF | Device  | Batch size | Inference time (us) | Score [%] |
 | :-------:  | :--------------: | :-----: | :---------:| :-----------------: | :-------: |
-| SVM w/ RFF | 512              | CPU     | -          | 39.0 us             | 96.5 %    |
-| SVM w/ RFF | 1024             | CPU     | -          | 96.1 us             | 97.5 %    |
-| SVM w/ RFF | 1024             | TitanXp | 2,000      | 2.38 us             | 97.5 %    |
+| SVM w/ RFF | 512              | CPU     | -          | 39.0 [us]           | 96.5 [%]  |
+| SVM w/ RFF | 1024             | CPU     | -          | 96.1 [us]           | 97.5 [%]  |
+| SVM w/ RFF | 1024             | TitanXp | 2,000      | 2.38 [us]           | 97.5 [%]  |
 
 <div align="center">
   <img src="./figures/figure_Inference_Time_and_Accuracy_on_MNIST.png" width="600" height="371" alt="Inference Time vs Accuracy on MNIST" />
 </div>
 
-Where score means test accuracy of MNIST dataset and inference time means inference time for one image.
+### Notes
 
-Commonly used techniques like data normalization and dimension reduction using PCA is also used in the above analysis.
-See comments in the Python script for details.
-
-The Score of RFF is slightly better than kernel SVM, moreover, the inference time of RFF is amazingly faster.
-On the other hand, the learning time of RFF can be longer than kernel SVM if the dimension of RFF is large.
-
-The following figure shows a tradeoff between the accuracy and inference time of RFF.
+- Score means test accuracy of MNIST dataset and inference time means inference time for one image.
+- Now the GPU training does not show an enough high performance than the CPU training,
+  but it's worth to try if you want faster training especially on higher RFF dimension than 1024 or huge training dataset.
+- Commonly used techniques like data normalization and dimension reduction using PCA is also used in the above analysis.
+  See comments in the Python script for details.
+- The Score of RFF is slightly better than kernel SVM, moreover, the inference time of RFF is amazingly faster.
+  On the other hand, the learning time of RFF can be longer than kernel SVM if the dimension of RFF is large.
+- The following figure shows a tradeoff between the accuracy and inference time of RFF.
 
 <div align="center">
   <img src="./figures/figure_rff_svc_for_mnist.png" width="480" height="320" alt="Accuracy for each dimention in RFF SVC" />
 </div>
 
-
-## Notes
-
-### Training on GPU
-
-This module contains beta version of GPU training implementation.
-You can try the GPU training by replacing `rfflearn.cpu` to `rfflearn.gpu` like the following:
-
-```python
-# import rfflearn.cpu as rfflearn
-import rfflearn.gpu as rfflearn
-```
-
-Now the GPU training does not show an enough high performance than the CPU training,
-but it's worth to try if you want to try higher RFF dimension than 1024 or huge training dataset.

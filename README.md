@@ -1,10 +1,12 @@
 # Random Fourier Features
 
-Python module of Random Fourier Features (RFF) for kernel method, like support vector classification [1], and Gaussian process.
-Features of this RFF module are:
+Python module of random Fourier features (RFF) for kernel method,
+like support vector machine [1], and Gaussian process model.
+Features of this module are:
 
-* interfaces of the module are quite close to the scikit-learn,
-* support vector classifier and Gaussian process regressor/classifier provides CPU/GPU training and inference.
+* interfaces of the module are quite close to the [scikit-learn](https://scikit-learn.org/),
+* support vector classifier and Gaussian process regressor/classifier provides CPU/GPU training and inference,
+* interface of [optuna](https://optuna.org/) for easier hyper parameter tuning,
 * this repository provides example code that shows RFF is useful for actual machine learning tasks.
 
 Now, this module supports
@@ -28,11 +30,12 @@ See [this document](https://tiskw.gitbook.io/rfflearn/) for more details.
 ## Minimal example
 
 Interfaces provided by our module is quite close to Scikit-learn.
-For example, the following Python code is a sample usage of RFF regression class:
+For example, the following Python code is a sample usage of `RFFSVC`
+(support vector machine with random Fourier features) class.
 
 ```python
 >>> import numpy as np
->>> import rfflearn.cpu as rfflearn                     # Import our module
+>>> import rfflearn.cpu as rfflearn                     # Import module
 >>> X = np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]])  # Define input data
 >>> y = np.array([1, 1, 2, 2])                          # Defile label data
 >>> svc = rfflearn.RFFSVC().fit(X, y)                   # Training
@@ -42,23 +45,46 @@ For example, the following Python code is a sample usage of RFF regression class
 array([1])
 ```
 
-Also, you are able to run the inference on GPU by adding only two lines, if you have Tensorflow 2.x.
+This module supports training/inference on GPU.
+For example, the following Python code is a sample usage of `RFFGPC`
+(Gaussian process classifier with random Fourier features) class.
+The following code requires GPU and tensorflow 2.x (tensorflow 1.x does not supported).
 
 ```python
->>> import rfflearn.gpu as rfflearn_gpu # Import our module
->>> svc = rfflearn_gpu.RFFSVC(svc)      # Convert to GPU model
->>> svc.score(X, y)                     # Inference on GPU
+>>> import numpy as np
+>>> import rfflearn.gpu as rfflearn                     # Import module
+>>> X = np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]])  # Define input data
+>>> y = np.array([1, 1, 2, 2])                          # Defile label data
+>>> gpc = rfflearn.RFFGPC().fit(X, y)                   # Training on GPU
+>>> gpc.score(X, y)                                     # Inference on GPU
 1.0
+>>> gpc.predict(np.array([[-0.8, -1]]))
+array([1])
+```
+
+This module also have interfaces to optuna:
+
+```python
+>>> import numpy as np
+>>> import rfflearn.cpu as rfflearn  # Import module
+>>> train_set = (np.array([[-1, -1], [1, 1]]), np.array([1, 2]))     # Define training data
+>>> valid_set = (np.array([[2, 1]]), np.array([2]))                  # Define validation data
+>>> study = rfflearn.RFFSVC_tuner(train_set, valid_set, n_trials=10) # Start parameter tuing
+>>> study.best_params                                                # Show best parameter
+{'dim_kernel': 879, 'std_kernel': 0.6135046243705738}
+>>> study.user_attrs["best_model"]                                   # Get best estimator
+<rfflearn.cpu.rfflearn_cpu_svc.RFFSVC object at 0x7ff754049898>
 ```
 
 See [examples](./examples/README.md) directory for more detailed examples.
 
 
-## MNIST using RFF and SVM
+## MNIST using random Fourier features
 
-I applied SVM with RFF to MNIST which is a famous benchmark dataset for the classification task,
+I applied SVC (support vector classifier) and GPC (Gaussian process classifire) with RFF to MNIST
+which is the famous benchmark dataset of the image classification task,
 and I've got better performance and much faster inference speed than kernel SVM.
-The following table gives a brief comparison of kernel SVM and SVM with RFF.
+The following table gives a brief comparison of kernel SVM, SVM with RFF and GPC with RFF.
 See the example of [RFF SVC module](./examples/svc_for_mnist/README.md)
 and [RFF GP module](./examples/gpc_for_mnist/README.md) for mode details.
 
@@ -78,7 +104,8 @@ and [RFF GP module](./examples/gpc_for_mnist/README.md) for mode details.
 
 ## Notes
 
-- Name of this module is changed to `rfflearn` on Oct 2020, because the same name as the previous name (PyRFF) already exists in PyPI.
+- Name of this module is changed from `pyrff` to `rfflearn` on Oct 2020,
+  because the package `pyrff` already exists in PyPI.
 - If a number of training data are huge, error message like
   `RuntimeError: The task could not be sent to the workers as it is too large for 'send_bytes'`.
   will be raised from the joblib library. The reason for this error is that sklearn.svm.LinearSVC uses
@@ -91,9 +118,9 @@ and [RFF GP module](./examples/gpc_for_mnist/README.md) for mode details.
 
 ## TODO
 
-- [ ] New function: implementation of batch RFF GP (but my GPU is poor to do that...)
+- [ ] New function: implementation of batch RFF GP (but my GPU is too poor to try this...)
 - [ ] New function: implementation of RFF Logistic GP
-- [X] Refactoring: modularization
+- [ ] New function: feature importance (e.g. [SHAP](https://arxiv.org/abs/1705.07874))
 
 
 ## Licence

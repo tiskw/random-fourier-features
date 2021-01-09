@@ -15,16 +15,15 @@ from .rfflearn_gpu_common import Base
 ### NOTE: Number of data (= X_cpu.shape[0]) must be a multiple of batch size.
 class SVC(Base):
 
-    def __init__(self, rand_mat_type, svc = None, M_pre = None, dim_kernel = None, std_kernel = None, batch_size = 5000, dtype = 'float32', *pargs, **kwargs):
-
-        ### Create parameters on CPU, then move the parameters to GPU.
-        ### There are two ways to initialize these parameters:
-        ###   (1) from scratch: generate parameters from scratch,
-        ###   (2) from rffsvc: copy parameters from RFFSVC (CPU) class instance.
-        ### The member variable 'self.initialized' indicate that the parameters are well initialized or not.
-        ### If the parameters are initialized by one of the ways other than (1), 'self.initialized' is set to True.
-        ### And if 'self.initialized' is still False when just before the training/inference,
-        ### then the parameters are initialized by the way (1).
+    ### Create parameters on CPU, then move the parameters to GPU.
+    ### There are two ways to initialize these parameters:
+    ###   (1) from scratch: generate parameters from scratch,
+    ###   (2) from rffsvc: copy parameters from RFFSVC (CPU) class instance.
+    ### The member variable 'self.initialized' indicate that the parameters are well initialized or not.
+    ### If the parameters are initialized by one of the ways other than (1), 'self.initialized' is set to True.
+    ### And if 'self.initialized' is still False when just before the training/inference,
+    ### then the parameters are initialized by the way (1).
+    def __init__(self, rand_mat_type, svc = None, M_pre = None, dim_kernel = 128, std_kernel = 0.1, W = None, batch_size = 5000, dtype = 'float32', *pargs, **kwargs):
 
         ### Save important variables.
         self.dim_kernel  = dim_kernel
@@ -32,9 +31,11 @@ class SVC(Base):
         self.batch_size  = batch_size
         self.dtype       = dtype
         self.initialized = False
+        self.W           = W
 
         ### Inisialize variables.
         if svc: self.init_from_RFFSVC_cpu(svc, M_pre)
+        else  : super().__init__(rand_mat_type, dim_kernel, std_kernel, W)
 
     ### Constractor: initialize parameters from scratch.
     def init_from_scratch(self, dim_input, dim_kernel, dim_output, std):
@@ -170,6 +171,8 @@ class SVC(Base):
             if not quiet and epoch % 10 == 0:
                 print(F"Epoch {epoch:>4}: Train loss = {self.losses.result().numpy():.4e}")
             self.losses.reset_states()
+
+        return self
 
     ### Function for running the Tensorflow model of RFF for one batch.
     ###   - X_cpu (np.array, shape = [N, K]): training data,
