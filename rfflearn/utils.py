@@ -27,5 +27,33 @@ class Timer:
         elif self.time_unit == "us": dt *= 1E6
         print("%s%f [%s]" % (self.message, dt, self.time_unit))
 
+
+### Map a real value in [0, 1] to a string color code according to the JET color map.
+### For example, colormap_jet(0.25) -> "#008080".
+def colormap_jet(value):
+
+    if value < 0.0:
+        r = round(0)
+        g = round(0)
+        b = round(255)
+    elif value < 0.5:
+        value = 2 * value
+        r = round(0)
+        g = round(255 * value)
+        b = round(255 * (1 - value))
+    elif value < 1.0:
+        value = 2 * value - 1
+        r = round(255 * value)
+        g = round(255 * (1 - value))
+        b = round(0)
+    else:
+        r = round(255)
+        g = round(0)
+        b = round(0)
+
+    return ("#%02x%02x%02x" % (r, g, b))
+
+
+
 ######################################### SOURCE FINISH #######################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

@@ -32,10 +32,10 @@ $ cd examples/optuna_and_shap_for_boston_housing/
 ## Usage
 
 One of the tipycal data analysis procedure is automatic hyper parameter tuning of a model and feature importance calculation.
-The sample script `main_optuna_and_shap_for_boston_housing.py` provides an example of the procedure using the Boston house-price dataset.
+The sample script `main_feature_importanves_for_boston_housing.py` provides an example of the procedure using the Boston house-price dataset.
 
 ```console
-$ python3 main_optuna_and_shap_for_boston_housing.py
+$ python3 main_feature_importanves_for_boston_housing.py
 ```
 
 The following figure shows regression result of house price and the list of important features.

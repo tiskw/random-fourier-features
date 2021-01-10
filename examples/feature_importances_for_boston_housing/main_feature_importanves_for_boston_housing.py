@@ -6,7 +6,7 @@
 
 """
 Overview:
-  Train Random Fourier Feature least square regression and plot results.
+    Calculation and visualization of feature importance.
 
 Usage:
     main_optuna_and_shap_for_boston_housing.py [--model_type <str>] [--n_trials <int>] [--seed <int>]
