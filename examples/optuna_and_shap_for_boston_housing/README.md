@@ -1,11 +1,10 @@
-# Auto Hyper Parameter Tuning and Feature Importance
+# Feature Importance of Trained Model
 
-This directory provides an example of automatic hyper parameter tuning
-and feature importance calculation that is one of the typical data analysis procedure.
-In here, we build a model for the Boston house-price dataset using automatic hyper parameter tuning
-and calculate the feature importances.
-The backend of the automatic hyper parameter tuning is [Optuna](https://optuna.org/),
-and feature importance is [SHAP](https://shap.readthedocs.io/en/latest/).
+This directory provides an example of feature importance calculation
+and visualization that is one of the typical data analysis procedure.
+In here, we build a model for the Boston house-price dataset using
+automatic hyper parameter tuning and calculate the feature importances.
+The backend of the SHAP feature importance is [SHAP library](https://shap.readthedocs.io/en/latest/).
 
 
 ## Installation
@@ -39,11 +38,12 @@ The sample script `main_optuna_and_shap_for_boston_housing.py` provides an examp
 $ python3 main_optuna_and_shap_for_boston_housing.py
 ```
 
-The following figure shows regression result of house price and the list of important features with violin plot.
+The following figure shows regression result of house price and the list of important features.
 
 <div align="center">
   <img src="./figure_boston_housing_regression.png" width="640" height="480" alt="Regression result of Boston housing dataset" />
-  <img src="./figure_boston_housing_feature_importance.png" width="840" height="640" alt="Feature impoetances of Boston housing dataset" />
+  <img src="./figure_boston_housing_shap_importance.png" width="840" height="640" alt="SHAP importances of Boston housing dataset" />
+  <img src="./figure_boston_housing_permutation_importance.png" width="640" height="480" alt="Permutation importances of Boston housing dataset" />
 </div>
 
 ### Training on GPU

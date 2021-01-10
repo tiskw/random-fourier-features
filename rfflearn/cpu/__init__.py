@@ -37,8 +37,8 @@ else: print("rfflearn.cpu: package 'optuna' not found. SKip loading optuna-relat
 ### Import shap-related modules if `shap` is available.
 if pkgutil.get_loader("shap") is not None:
 
-    from ..explainer.shap import shap_feature_importance
-    from ..explainer.shap import shap_plot
+    from ..explainer.shap        import shap_feature_importance, shap_plot
+    from ..explainer.permutation import permutation_feature_importance, permutation_plot
 
 else: print("rfflearn.cpu: package 'shap' not found. SKip loading shap-related functions.", file = sys.stderr)
 

@@ -30,7 +30,7 @@ def shap_feature_importance(model, Xs):
 ### because the shap.summary_plot is implemented very well!!
 def shap_plot(*pargs, **kwargs):
 
-    return shap.summary_plot(*pargs, **kwargs)
+    return shap.summary_plot(*pargs, **kwargs, plot_type = "violin", color = "coolwarm")
 
 
 ##################################################### SOURCE FINISH ####################################################

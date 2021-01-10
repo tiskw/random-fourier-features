@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : January 09, 2021
+# Date  : January 10, 2021
 #################################### SOURCE START ###################################
 
 """
@@ -27,6 +27,7 @@ import docopt
 import numpy as np
 import matplotlib.pyplot as mpl
 import sklearn.datasets
+import sklearn.inspection
 import sklearn.metrics
 import sklearn.model_selection
 import sklearn.preprocessing
@@ -93,10 +94,11 @@ def main(args):
     score_r2   = sklearn.metrics.r2_score(ys_valid, ys_valid_p)
     print("- R2 score of the best model: ", score_r2)
 
-    ### Calculate SHAP values.
+    ### Calculate feature importance (SHAP and permutation importance).
     shap_values = rfflearn.shap_feature_importance(best_model, Xs_valid)
+    perm_values = rfflearn.permutation_feature_importance(best_model, Xs_valid, ys_valid)
 
-    ### Draw figure and save it.
+    ### Draw regression result.
     mpl.figure(0)
     mpl.scatter(ys_valid_p, ys_valid, alpha = 0.5)
     mpl.plot([0, 50], [0, 50], "--", color = "#666666")
@@ -105,9 +107,15 @@ def main(args):
     mpl.ylabel("True price MEDV ($1000s)")
     mpl.grid()
 
-    ### Conduct prediction for the test data
+    ### Visualize SHAP importance.
     mpl.figure(1)
-    rfflearn.shap_plot(shap_values, Xs_valid, feature_names, plot_type = "violin", color = "coolwarm", show = False)
+    rfflearn.shap_plot(shap_values, Xs_valid, feature_names, show = False)
+
+    ### Visualize permurtation importance.
+    mpl.figure(2)
+    rfflearn.permutation_plot(perm_values, feature_names, show = False)
+
+    ### Show all figures.
     mpl.show()
 
 
