@@ -58,22 +58,6 @@ The following table is a summary of training and inference speed under my enviro
   <img src="./figure_rff_gpr_sparse_data.png" width="600" height="480" alt="Regression results for function y = sin(x^2) using Gaussian process w/ RFF" />
 </div>
 
-### Hyper parameter tuning using Optuna
-
-The script file `main_rff_regression_optuna.py` provides an example of hyper parameter tuning using Optuna.
-We used the famouse Boston Housing dataset and tryed to predict the median of price (`MEDV`).
-
-```console
-$ python3 main_rff_gpr_optuna.py
-```
-
-The following figure shows regression results for the the Boston Housing dataset where hyper parameters were tuned by Optuna.
-
-<div align="center">
-  <img src="./figure_rff_gpr_optuna.png" width="640" height="480" alt="Regression results for the Boston Housing dataset using Gaussian process w/ RFF" />
-</div>
-
 ### Training on GPU
 
 Open the script file, replace `rfflearn.cpu` as `rfflean.gpu` and run the script again.
-

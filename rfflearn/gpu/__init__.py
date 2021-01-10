@@ -3,18 +3,18 @@
 # __init__.py file for the module 'rfflearn.gpu'.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : January 08, 2021
+# Date  : January 09, 2021
 ##################################################### SOURCE START #####################################################
 
 import functools
 import pkgutil
 
-# Import RFF-related modules
+### Import RFF-related modules.
 from .rfflearn_gpu_common import seed
 from .rfflearn_gpu_svc    import RFFSVC, ORFSVC
 from .rfflearn_gpu_gp     import RFFGPR, ORFGPR, RFFGPC, ORFGPC, GPKernelParameterEstimator
 
-# Import optuna-related modules if `optuna` is available.
+### Import optuna-related modules if `optuna` is available.
 if pkgutil.get_loader("optuna") is not None:
 
     from ..tuner import tuner
@@ -25,6 +25,17 @@ if pkgutil.get_loader("optuna") is not None:
     ORFGPC_tuner = functools.partial(tuner.RFF_dim_std_err_tuner, model_class = ORFGPC)
     RFFGPR_tuner = functools.partial(tuner.RFF_dim_std_err_tuner, model_class = RFFGPR)
     ORFGPR_tuner = functools.partial(tuner.RFF_dim_std_err_tuner, model_class = ORFGPR)
+
+else: print("rfflearn.cpu: package 'optuna' not found. SKip loading optuna-related functions.", file = sys.stderr)
+
+### Import shap-related modules if `shap` is available.
+if pkgutil.get_loader("shap") is not None:
+
+    from ..explainer.shap import shap_feature_importance
+    from ..explainer.shap import shap_plot
+
+else: print("rfflearn.cpu: package 'shap' not found. SKip loading shap-related functions.", file = sys.stderr)
+
 
 ##################################################### SOURCE FINISH ####################################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

@@ -9,7 +9,7 @@ An example of regression with random Fourier features.
 See [README.md](./least_square_regression/README.md) for more details.
 
 <div align="center">
-  <img src="./least_square_regression/figure_rff_regression_plain.png" width="640" height="480" alt="Regression results for function y = sin(x^2) with RFF" />
+  <img src="./least_square_regression/figure_least_square_regression.png" width="640" height="480" alt="Regression results for function y = sin(x^2) with RFF" />
 </div>
 
 
@@ -56,11 +56,32 @@ See [README.md](./cca_for_artificial_data/README.md) for more details.
 ## Principal component analysis with random Fourier features
 
 An example of principal component analysis for swiss roll dataset with random Fourier features.
-See [README.md](./cca_for_artificial_data/README.md) for more details.
+See [README.md](./pca_for_swissroll/README.md) for more details.
 
 <div align="center">
-  <img src="./pca_for_swissroll/figure_pca_for_swissroll_3d.png" width="600" height="480" alt="3D plot of input data (10,000 points of swiss roll)" />
-  <img src="./pca_for_swissroll/figure_pca_for_swissroll_rffpca.png" width="600" height="480" alt="2D plot of 1st/2nd PC obtained by RFF PCA" />
+  <img src="./pca_for_swissroll/figure_pca_for_swissroll_3d.png" width="400" height="300" alt="3D plot of input data (10,000 points of swiss roll)" />
+  <img src="./pca_for_swissroll/figure_pca_for_swissroll_rffpca.png" width="400" height="300" alt="2D plot of 1st/2nd PC obtained by RFF PCA" />
+</div>
+
+
+## Automatic hyper parameter tuning using Optuna
+
+An example of automatic hyper parameter tuning functions that uses [Optuna](https://optuna.org/) as a backend.
+See [README.md](./optuna_for_boston_housing/README.md) for more details.
+
+<div align="center">
+  <img src="./optuna_for_boston_housing/figures/hyper_parameter_search.gif" width="500" height="400" alt="Animation of hyper parameter search behavior" />
+</div>
+
+
+## Feature importance of trained model and visualization of the importance
+
+An example of automatic hyper parameter tuning functions that uses [Optuna](https://optuna.org/) as a backend.
+See [README.md](./feature_importances_for_boston_housing/README.md) for more details.
+
+<div align="center">
+  <img src="./feature_importances_for_boston_housing/figure_boston_housing_shap_importance.png" width="400" height="300" alt="Permutation importances of Boston housing dataset" />
+  <img src="./feature_importances_for_boston_housing/figure_boston_housing_permutation_importance.png" width="400" height="300" alt="SHAP importances of Boston housing dataset" />
 </div>
 
 
