@@ -8,6 +8,7 @@
 
 import functools
 import pkgutil
+import sys
 
 ### Import RFF-related modules.
 from .rfflearn_gpu_common import seed
