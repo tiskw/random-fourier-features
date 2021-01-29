@@ -26,15 +26,12 @@ Options:
     -h, --help        Show this message.
 """
 
-
 import os
 import pickle
 import sys
 
 import docopt
-import numpy   as np
-import sklearn as skl
-
+import numpy as np
 
 ### Load train/test image data.
 def vectorise_MNIST_images(filepath):
@@ -42,19 +39,16 @@ def vectorise_MNIST_images(filepath):
     Xs = np.load(filepath) / 255.0
     return np.array([Xs[n, :, :].reshape((28 * 28, )) for n in range(Xs.shape[0])])
 
-
 ### Load train/test label data.
 def vectorise_MNIST_labels(filepath):
 
     return np.load(filepath)
-
 
 ### PCA analysis for dimention reduction.
 def mat_transform_pca(Xs, dim):
 
     _, V = np.linalg.eig(Xs.T.dot(Xs))
     return np.real(V[:, :dim])
-
 
 ### Main procedure.
 def main(args):
@@ -93,7 +87,6 @@ def main(args):
         with open(args["--output"], "wb") as ofp:
             pickle.dump({"svc":study.user_attrs["best_model"], "pca":T, "args":args}, ofp)
 
-
 if __name__ == "__main__":
 
     ### Parse input arguments.
@@ -111,7 +104,6 @@ if __name__ == "__main__":
 
     ### Run main procedure.
     main(args)
-
 
 ##################################################### SOURCE FINISH ####################################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

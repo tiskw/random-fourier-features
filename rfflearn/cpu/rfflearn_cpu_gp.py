@@ -3,7 +3,7 @@
 # Python module of Gaussian process with random matrix for CPU.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : October 11, 2020
+# Date  : January 24, 2021
 ##################################################### SOURCE START #####################################################
 
 
@@ -36,7 +36,7 @@ class GPR(Base):
     ### Run prediction. The interface of this function imitate the interface of
     ### the 'sklearn.gaussian_process.GaussianProcessRegressor.predict'.
     ### If shape of the vector p is (*, 1), then reshape to (*, ).
-    def predict(self, X, return_var = False, return_std = False, return_cov = False):
+    def predict(self, X, return_std = False, return_cov = False):
         self.set_weight(X.shape[1])
         F = self.conv(X).T
         p = np.array(self.a.dot(F)).T
@@ -80,9 +80,22 @@ class GPC(GPR):
         ys_onehot = np.eye(int(np.max(ys) + 1))[ys]
         return super().fit(Xs, ys_onehot)
 
-    def predict(self, Xs):
-        ps_onehot = super().predict(Xs)
-        return np.argmax(ps_onehot, axis = 1)
+    ### Inference of Gaussian process.
+    ###   - Xs         (np.array, shape = [N, K]): inference data
+    ###   - return_std (boolean, scalar)         : return standard deviation vector if true
+    ###   - return_cov (boolean, scalar)         : return covariance matrix if true
+    ### where N is the number of training data and K is dimension of the input data.
+    def predict(self, Xs, return_std = False, return_cov = False):
+
+        ### Run GPC prediction. Note that the returned value is one-hot vector.
+        res = super().predict(Xs, return_std, return_cov)
+
+        ### Convert one-hot vector to class index.
+        if return_std or return_cov: res[0] = np.argmax(res[0], axis = 1)
+        else                       : res    = np.argmax(res,    axis = 1)
+
+        return res
+
 
     def score(self, Xs, ys):
         return np.mean(self.predict(Xs) == ys)
@@ -105,6 +118,12 @@ class ORFGPR(GPR):
         super().__init__("orf", *pargs, **kwargs)
 
 
+### Gaussian process regression with QRF.
+class QRFGPR(GPR):
+    def __init__(self, *pargs, **kwargs):
+        super().__init__("qrf", *pargs, **kwargs)
+
+
 ### Gaussian process classifier with RFF.
 class RFFGPC(GPC):
     def __init__(self, *pargs, **kwargs):
@@ -115,6 +134,12 @@ class RFFGPC(GPC):
 class ORFGPC(GPC):
     def __init__(self, *pargs, **kwargs):
         super().__init__("orf", *pargs, **kwargs)
+
+
+### Gaussian process classifier with QRF.
+class QRFGPC(GPC):
+    def __init__(self, *pargs, **kwargs):
+        super().__init__("qrf", *pargs, **kwargs)
 
 
 ##################################################### SOURCE FINISH ####################################################

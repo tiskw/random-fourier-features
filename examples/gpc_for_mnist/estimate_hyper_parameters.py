@@ -6,7 +6,7 @@
 #   - standers deviation of the measurement error (s_e)
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : May 25, 2020
+# Date  : January 29, 2021
 ##################################################### SOURCE START #####################################################
 
 """
@@ -39,10 +39,8 @@ Options:
 import os
 import pickle
 import sys
-import time
 
 import docopt
-
 
 ### Load train/test image data.
 def vectorise_MNIST_images(filepath):
@@ -50,19 +48,16 @@ def vectorise_MNIST_images(filepath):
     Xs = np.load(filepath)
     return np.array([Xs[n, :, :].reshape((28 * 28, )) for n in range(Xs.shape[0])]) / 255.0 - 0.5
 
-
 ### Load train/test label data.
 def vectorise_MNIST_labels(filepath):
 
     return np.load(filepath)
-
 
 ### PCA analysis for dimention reduction.
 def mat_transform_pca(Xs, dim):
 
     _, V = np.linalg.eig(Xs.T.dot(Xs))
     return np.real(V[:, :dim])
-
 
 ### Main procedure.
 def main(args):
@@ -89,15 +84,12 @@ def main(args):
         with open(args["--output"], "wb") as ofp:
             pickle.dump({"pca":T, "s_k":s_k, "s_e":s_e, "scale":scale, "args":args}, ofp)
 
-
 if __name__ == "__main__":
 
     ### Parse input arguments.
     args = docopt.docopt(__doc__)
 
     import numpy as np
-    import sklearn as skl
-    import tensorflow as tf
 
     ### Add path to 'rfflearn/' directory.
     ### The followings are not necessary if you copied 'rfflearn/' to the current
@@ -106,8 +98,7 @@ if __name__ == "__main__":
     module_path = os.path.join(current_dir, "../../")
     sys.path.append(module_path)
 
-    import rfflearn.gpu   as rfflearn
-    import rfflearn.utils as utils
+    import rfflearn.gpu as rfflearn
 
     ### Convert all arguments to an appropriate type.
     for k, v in args.items():

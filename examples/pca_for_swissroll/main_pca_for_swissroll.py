@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : September 13, 2020
+# Date  : January 29, 2021
 ##################################################### SOURCE START #####################################################
 
 """
@@ -34,11 +34,9 @@ import sys
 import os
 
 import docopt
-import numpy   as np
 import sklearn as skl
-import sklearn.datasets.samples_generator
+import sklearn.datasets
 import matplotlib.pyplot as mpl
-
 
 def main(args):
 
@@ -50,7 +48,7 @@ def main(args):
 
     ### Create swiss roll data.
     with utils.Timer("Creating swiss roll data: "):
-        X, color = skl.datasets.samples_generator.make_swiss_roll(args["--samples"], random_state = args["--seed"])
+        X, color = skl.datasets.make_swiss_roll(args["--samples"], random_state = args["--seed"])
 
     ### Create PCA class instance.
     if   args["linear"]: pca = skl.decomposition.PCA(n_components=2)
@@ -78,7 +76,6 @@ def main(args):
     mpl.grid()
 
     mpl.show()
-
 
 if __name__ == "__main__":
 

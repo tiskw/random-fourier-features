@@ -42,6 +42,39 @@ def get_orf_matrix(dim_in, dim_out, std):
     return W[:dim_in, :dim_out]
 
 
+### Generate random matrix for random Fourier features.
+def get_qrf_matrix(dim_in, dim_out, std):
+
+    ### Parameters for quasi random numbers generation.
+    QUASI_MC_SKIP = 1000
+    QUASI_MC_LEAP = 100
+
+    ### Implementation of Box-Muller method for converting
+    ### uniform random sequence to normal random sequence.
+    def box_muller_method(xs, ys):
+        zs1 = np.sqrt(-2 * np.log(xs)) * np.cos(2 * np.pi * ys)
+        zs2 = np.sqrt(-2 * np.log(xs)) * np.sin(2 * np.pi * ys)
+        return np.array([zs1, zs2])
+
+    import torch
+
+    ### Generate sobol sequence engine and throw away the first several values.
+    sobol = torch.quasirandom.SobolEngine(dim_in, scramble = True)
+    sobol.fast_forward(QUASI_MC_SKIP)
+
+    ### Generate uniform random matrix.
+    W = np.zeros((dim_in, dim_out))
+    for index in range(dim_out):
+        W[:, index] = sobol.draw(1).numpy()
+        sobol.fast_forward(QUASI_MC_LEAP)
+
+    ### Convert the uniform random matrix to normal random matrix.
+    for index in range(0, dim_out, 2):
+        W[:, index:index+2]  = box_muller_method(W[:, index], W[:, index+1]).T
+
+    return std * W
+
+
 ### This function returns a function which generate RFF/ORF matrix.
 ### The usage of the returned value of this function are:
 ###     f(dim_input:int) -> np.array with shape (dim_input, dim_kernel)
@@ -49,6 +82,7 @@ def get_matrix_generator(rand_mat_type, std, dim_kernel):
 
     if   rand_mat_type == "rff": return functools.partial(get_rff_matrix, std = std, dim_out = dim_kernel)
     elif rand_mat_type == "orf": return functools.partial(get_orf_matrix, std = std, dim_out = dim_kernel)
+    elif rand_mat_type == "qrf": return functools.partial(get_qrf_matrix, std = std, dim_out = dim_kernel)
     else                       : raise RuntimeError("matrix_generator: 'rand_mat_type' must be 'rff' or 'orf'.")
 
 
@@ -66,7 +100,9 @@ class Base:
     ### Apply random matrix to the given input vectors 'X' and create feature vectors.
     ### NOTE: This function can manipulate multiple random matrix. If argument 'index'
     ###       is given, then use self.W[index] as a random matrix, otherwise use self.W itself.
-    def conv(self, X, index = None):
+    ### NOTE: Computation of `ts` is equivarent with ts = X @ W, however, for reducing
+    ###       memory consumption, split X to smaller matrices and concatenate after multiplication wit W.
+    def conv(self, X, index = None, chunk_size = 1024):
         W  = self.W if index is None else self.W[index]
         ts = X @ W
         return np.bmat([np.cos(ts), np.sin(ts)])

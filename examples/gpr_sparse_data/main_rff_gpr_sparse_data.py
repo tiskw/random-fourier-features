@@ -5,7 +5,7 @@
 # Interface of RFFSVC is quite close to sklearn.gaussian_process.GaussianProcessRegressor.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : January 08, 2021
+# Date  : January 29, 2021
 ##################################################### SOURCE START #####################################################
 
 """
@@ -35,9 +35,7 @@ Options:
     -h, --help           Show this message.
 """
 
-
 import os
-import pickle
 import sys
 
 import docopt
@@ -45,7 +43,6 @@ import matplotlib.pyplot as mpl
 import numpy             as np
 import sklearn           as skl
 import sklearn.gaussian_process
-
 
 ### Main procedure.
 def main(args):
@@ -105,7 +102,6 @@ def main(args):
         mpl.savefig("figure_rff_gpr_sparse_data.png")
     print("  - Saved to 'figure_rff_gpr_sparse_data.png'")
 
-
 if __name__ == "__main__":
 
     ### Parse input arguments.
@@ -128,7 +124,6 @@ if __name__ == "__main__":
 
     ### Run main procedure.
     main(args)
-
 
 ##################################################### SOURCE FINISH ####################################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

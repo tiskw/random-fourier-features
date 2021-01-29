@@ -4,7 +4,7 @@
 # SVM classifier using RFF. Interface of RFFSVC is quite close to sklearn.svm.SVC.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : September 13, 2020
+# Date  : January 24, 2021
 ##################################################### SOURCE START #####################################################
 
 """
@@ -13,21 +13,25 @@ Overview:
   As a comparison with Kernel SVM, this script has a capability to run a Kernel SVM as the same condition with RFF SVM.
 
 Usage:
-    main_rff_svc_for_mnist.py kernel [--input <str>] [--output <str>] [--pcadim <int>] [--kernel <str>] [--gamma <float>] [--C <float>] [--seed <int>] [--use_fft]
-    main_rff_svc_for_mnist.py rff [--input <str>] [--output <str>] [--pcadim <int>] [--kdim <int>] [--stdev <float>] [--seed <int>] [--cpus <int>] [--use_fft]
-    main_rff_svc_for_mnist.py orf [--input <str>] [--output <str>] [--pcadim <int>] [--kdim <int>] [--stdev <float>] [--seed <int>] [--cpus <int>] [--use_fft]
+    main_rff_svc_for_mnist.py kernel [--input <str>] [--output <str>] [--pcadim <int>] [--kernel <str>]
+                                     [--gamma <float>] [--C <float>] [--seed <int>] [--use_fft]
+    main_rff_svc_for_mnist.py cpu [--input <str>] [--output <str>] [--pcadim <int>] [--rtype <str>]
+                                  [--kdim <int>] [--stdev <float>] [--seed <int>] [--cpus <int>] [--use_fft]
+    main_rff_svc_for_mnist.py gpu [--input <str>] [--output <str>] [--pcadim <int>] [--rtype <str>]
+                                  [--kdim <int>] [--stdev <float>] [--seed <int>] [--cpus <int>] [--use_fft]
     main_rff_svc_for_mnist.py (-h | --help)
 
 Options:
     kernel           Run kernel SVM classifier.
-    rff              Run RFF SVM classifier.
-    orf              Run ORF SVM classifier.
+    cpu              Run RFF SVM on CPU.
+    gpu              Run RFF SVM on GPU.
     --input <str>    Directory path to the MNIST dataset.                [default: ../../dataset/mnist]
     --output <str>   File path to the output pickle file.                [default: result.pickle]
-    --pcadim <int>   Output dimention of Principal Component Analysis.   [default: 256]
+    --pcadim <int>   Output dimention of Principal Component Analysis.   [default: 128]
     --kernel <str>   Hyper parameter of kernel SVM (type of kernel).     [default: rbf]
     --gamma <float>  Hyper parameter of kernel SVM (softness of kernel). [default: auto]
     --C <float>      Hyper parameter of kernel SVM (margin allowance).   [default: 1.0]
+    --rtype <str>    Type of random matrix (rff/orf/qrf).                [default: rff]
     --kdim <int>     Hyper parameter of RFF/ORF SVM (dimention of RFF).  [default: 1024]
     --stdev <float>  Hyper parameter of RFF/ORF SVM (stdev of RFF).      [default: 0.05]
     --seed <int>     Random seed.                                        [default: 111]
@@ -35,7 +39,6 @@ Options:
     --use_fft        Apply FFT to the MNIST images.                      [default: False]
     -h, --help       Show this message.
 """
-
 
 import os
 import pickle
@@ -50,7 +53,7 @@ import sklearn as skl
 def vectorise_MNIST_images(filepath, apply_fft = False):
 
     # Load dataset and normalize.
-    Xs = np.load(filepath) / 255.0
+    Xs = np.load(filepath) / 255.0 - 0.5
 
     if apply_fft:
         Fs = np.zeros((Xs.shape[0], 2 * Xs.shape[1] * Xs.shape[2]))
@@ -84,10 +87,11 @@ def main(args):
     rfflearn.seed(args["--seed"])
 
     ### Create classifier instance.
-    if   args["kernel"]: svc = skl.svm.SVC(kernel = args["--kernel"], gamma = args["--gamma"])
-    elif args["rff"]   : svc = rfflearn.RFFSVC(dim_kernel = args["--kdim"], std_kernel = args["--stdev"], tol = 1.0E-3, n_jobs = args["--cpus"])
-    elif args["orf"]   : svc = rfflearn.ORFSVC(dim_kernel = args["--kdim"], std_kernel = args["--stdev"], tol = 1.0E-3, n_jobs = args["--cpus"])
-    else               : exit("Error: First argument must be 'kernel', 'rff' or 'orf'.")
+    if   args["kernel"]          : svc = skl.svm.SVC(kernel = args["--kernel"], gamma = args["--gamma"])
+    elif args["--rtype"] == "rff": svc = rfflearn.RFFSVC(dim_kernel = args["--kdim"], std_kernel = args["--stdev"], tol = 1.0E-3, n_jobs = args["--cpus"])
+    elif args["--rtype"] == "orf": svc = rfflearn.ORFSVC(dim_kernel = args["--kdim"], std_kernel = args["--stdev"], tol = 1.0E-3, n_jobs = args["--cpus"])
+    elif args["--rtype"] == "qrf": svc = rfflearn.QRFSVC(dim_kernel = args["--kdim"], std_kernel = args["--stdev"], tol = 1.0E-3, n_jobs = args["--cpus"])
+    else                         : exit("Error: First argument must be 'kernel', 'rff' or 'orf'.")
 
     ### Load training data.
     with utils.Timer("Loading training data: "):
@@ -130,7 +134,8 @@ if __name__ == "__main__":
     module_path = os.path.join(current_dir, "../../")
     sys.path.append(module_path)
 
-    import rfflearn.cpu   as rfflearn
+    if   args["cpu"]: import rfflearn.cpu as rfflearn
+    elif args["gpu"]: import rfflearn.gpu as rfflearn
     import rfflearn.utils as utils
 
     ### Convert all arguments to an appropriate type.
@@ -140,6 +145,7 @@ if __name__ == "__main__":
 
     ### Run main procedure.
     main(args)
+
 
 ##################################################### SOURCE FINISH ####################################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

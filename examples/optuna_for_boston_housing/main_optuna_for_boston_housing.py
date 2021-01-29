@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : January 10, 2021
+# Date  : January 29, 2021
 #################################### SOURCE START ###################################
 
 """
@@ -19,7 +19,6 @@ Options:
     -h, --help          Show this message.
 """
 
-
 import os
 import subprocess
 import sys
@@ -32,7 +31,6 @@ import sklearn.metrics
 import sklearn.model_selection
 import sklearn.preprocessing
 
-
 ### Create Boston housing dataset instance.
 def generate_boston_housing_dataset():
 
@@ -44,12 +42,11 @@ def generate_boston_housing_dataset():
         = sklearn.model_selection.train_test_split(data["data"], data["target"], test_size = 0.2, random_state = 111)
 
     ### Data standardization.
-    scaler  = sklearn.preprocessing.StandardScaler().fit(Xs_train)
-    X_train = scaler.transform(Xs_train)
-    X_valid = scaler.transform(Xs_valid)
+    scaler   = sklearn.preprocessing.StandardScaler().fit(Xs_train)
+    Xs_train = scaler.transform(Xs_train)
+    Xs_valid = scaler.transform(Xs_valid)
 
     return (Xs_train, Xs_valid, ys_train, ys_valid, data.feature_names)
-
 
 ### Main procedure
 def main(args):
@@ -119,7 +116,6 @@ def main(args):
     subprocess.run(command, shell = True)
     print("figures/hyper_parameter_search.gif")
 
-
 if __name__ == "__main__":
 
     ### Parse input arguments.
@@ -132,12 +128,10 @@ if __name__ == "__main__":
     module_path = os.path.join(current_dir, "../../")
     sys.path.append(module_path)
 
-    import rfflearn.cpu   as rfflearn
-    import rfflearn.utils as utils
+    import rfflearn.cpu as rfflearn
 
     ### Run main procedure.
     main(args)
-
 
 #################################### SOURCE FINISH ##################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

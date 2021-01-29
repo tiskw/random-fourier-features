@@ -3,11 +3,10 @@
 # Collection of utility functions used in the example code of this module.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : October 11, 2020
+# Date  : January 29, 2021
 ######################################### SOURCE START ########################################
 
 import time
-import sys
 
 ### Class for measure elasped time using 'with' sentence.
 class Timer:
@@ -26,7 +25,6 @@ class Timer:
         if   self.time_unit == "ms": dt *= 1E3
         elif self.time_unit == "us": dt *= 1E6
         print("%s%f [%s]" % (self.message, dt, self.time_unit))
-
 
 ### Map a real value in [0, 1] to a string color code according to the JET color map.
 ### For example, colormap_jet(0.25) -> "#008080".
@@ -52,8 +50,6 @@ def colormap_jet(value):
         b = round(0)
 
     return ("#%02x%02x%02x" % (r, g, b))
-
-
 
 ######################################### SOURCE FINISH #######################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker
