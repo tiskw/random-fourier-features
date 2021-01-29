@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : September 13, 2020
+# Date  : January 29, 2021
 ##################################################### SOURCE START #####################################################
 
 """
@@ -34,11 +34,9 @@ import sys
 import os
 
 import docopt
-import numpy   as np
 import sklearn as skl
 import sklearn.datasets
 import matplotlib.pyplot as mpl
-
 
 def main(args):
 
@@ -79,7 +77,6 @@ def main(args):
 
     mpl.show()
 
-
 if __name__ == "__main__":
 
     ### Parse input arguments.
@@ -92,8 +89,7 @@ if __name__ == "__main__":
     module_path = os.path.join(current_dir, "../../")
     sys.path.append(module_path)
 
-    # import rfflearn.cpu   as rfflearn
-    import rfflearn.gpu   as rfflearn
+    import rfflearn.cpu   as rfflearn
     import rfflearn.utils as utils
 
     ### Convert all arguments to an appropriate type.
@@ -103,7 +99,6 @@ if __name__ == "__main__":
 
     ### Run main procedure.
     main(args)
-
 
 ##################################################### SOURCE FINISH ####################################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

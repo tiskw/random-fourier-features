@@ -7,12 +7,9 @@
 import os
 import pickle
 import subprocess
-import shutil
 import hashlib
 import tarfile
 import numpy as np
-import cv2   as cv
-
 
 ### Download a file from the given URL and check SHA256.
 ### This function returns True if and only if the SHA256 of the downloaded file is same as the ground truth.
@@ -32,12 +29,10 @@ def download_cifar10(filepath):
     subprocess.run(command, shell = True)
     return has_correct_sha256sum(filepath, sha_256_gt)
 
-
 ### Read file and unpickle from Tar and TarInfo data.
 def read_and_unpickle(tar, tarinfo):
 
     return pickle.loads(tar.extractfile(tarinfo).read(), encoding = "bytes")
-
 
 ### This function extract all images from one batch data of CIFAR10.
 ### Each batch data contains 10,000 images and labels.
@@ -49,13 +44,11 @@ def parse_cifar_images(batch):
     Xs_batch[:,:,:, 2] = batch[b"data"][:,    0:1024].reshape((10000, 32, 32))
     return Xs_batch
 
-
 ### This function extract all labels from one batch data of CIFAR10.
 ### Each batch data contains 10,000 images and labels.
 def parse_cifar_labels(batch):
 
     return np.array(batch[b"labels"], dtype = np.uint8)
-
 
 ### Load and return CIFAR10 dataset as numpy array which is compatible with OpenCV image
 ### that has shape (height, width, channel) and the channel order is Blue-Green-Red.
@@ -101,7 +94,6 @@ def create_dataset(filepath):
     np.save("CIFAR10_test_images.npy",  Xs_valid)
     np.save("CIFAR10_test_labels.npy",  ys_valid)
 
-
 if __name__  == "__main__":
 
     ### Create file path of the local cache of the CIFAR10 archive.
@@ -109,7 +101,6 @@ if __name__  == "__main__":
     filepath    = os.path.join(current_dir, "cifar-10-python.tar.gz")
 
     create_dataset(filepath)
-
 
 ##################################################### SOURCE FINISH ####################################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 #
-# Python script
-#
-# Author: 
-# Date  : Oct 13, 2018
-#################################### SOURCE START ###################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
+# Date  : January 24, 2021
+##################################################### SOURCE START #####################################################
 
-import numpy             as np
 import matplotlib.pyplot as mpl
 
 if __name__ == "__main__":
@@ -41,4 +38,3 @@ if __name__ == "__main__":
 
 #################################### SOURCE FINISH ##################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker
-# Ganerated by grasp version 0.0

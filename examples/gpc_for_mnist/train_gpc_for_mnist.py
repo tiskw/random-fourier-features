@@ -5,7 +5,7 @@
 # sklearn.gaussian_process.GaussianProcessClassifier.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : October 11, 2020
+# Date  : January 29, 2021
 ##################################################### SOURCE START #####################################################
 
 """
@@ -38,26 +38,21 @@ import pickle
 import sys
 
 import docopt
-import numpy   as np
-import sklearn as skl
-
+import numpy as np
 
 ### Load train/test image data.
 def vectorise_MNIST_images(filepath):
     Xs = np.load(filepath)
     return np.array([Xs[n, :, :].reshape((28 * 28, )) for n in range(Xs.shape[0])]) / 255.0 - 0.5
 
-
 ### Load train/test label data.
 def vectorise_MNIST_labels(filepath):
     return np.load(filepath)
-
 
 ### PCA analysis for dimention reduction.
 def mat_transform_pca(Xs, dim):
     _, V = np.linalg.eig(Xs.T.dot(Xs))
     return np.real(V[:, :dim])
-
 
 ### Main procedure.
 def main(args):
@@ -102,7 +97,6 @@ def main(args):
         with open(args["--output"], "wb") as ofp:
             pickle.dump({"gpc": gpc, "pca": T, "args": args}, ofp)
 
-
 if __name__ == "__main__":
 
     ### Parse input arguments.
@@ -126,7 +120,6 @@ if __name__ == "__main__":
 
     ### Run main procedure.
     main(args)
-
 
 ##################################################### SOURCE FINISH ####################################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

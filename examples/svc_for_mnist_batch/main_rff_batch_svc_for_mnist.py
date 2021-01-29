@@ -9,27 +9,21 @@
 import sys
 import os
 
-import time
-import traceback
 import numpy as np
-
 
 ### Load train/test image data
 def vectorise_MNIST_images(filepath):
     Xs = np.load(filepath)
     return np.array([Xs[n, :, :].reshape((28 * 28, )) for n in range(Xs.shape[0])]) / 255.0
 
-
 ### Load train/test label data
 def vectorise_MNIST_labels(filepath):
     return np.load(filepath)
-
 
 ### PCA analysis for dimention reduction
 def mat_transform_pca(Xs, dim = 100):
     _, V = np.linalg.eig(Xs.T.dot(Xs))
     return np.real(V[:, :dim])
-
 
 ### Main procedure
 def main():
@@ -64,7 +58,6 @@ def main():
         score = 100 * svc.score(Xs_test.dot(T), ys_test)
     print("Score = %.2f [%%]" % score)
 
-
 if __name__ == "__main__":
 
     ### Add path to 'rfflearn/' directory.
@@ -82,4 +75,3 @@ if __name__ == "__main__":
 
 #################################### SOURCE FINISH ##################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker
-# Ganerated by grasp version 0.0

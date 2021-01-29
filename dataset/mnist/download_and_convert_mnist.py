@@ -49,7 +49,7 @@ def convert_image_data(filepath_input, filepath_output):
     image_data = data[16:]
 
     if identifier != 2051:
-        print("Input file '%s' does not seems to be MNIST image file." % filepath)
+        print("Input file '%s' does not seems to be MNIST image file." % filepath_input)
 
     images = np.zeros((num_images, image_rows, image_cols))
 
@@ -81,7 +81,7 @@ def convert_label_data(filepath_input, filepath_output):
     num_images = int.from_bytes(data[ 4: 8], BYTE_ORDER)
 
     if identifier != 2049:
-        print("Input file '%s' does not seems to be MNIST image file." % filepath)
+        print("Input file '%s' does not seems to be MNIST image file." % filepath_input)
 
     labels = np.array([int(b) for b in data[8:]]).reshape((num_images, ))
 

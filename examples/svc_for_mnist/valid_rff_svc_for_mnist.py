@@ -4,7 +4,7 @@
 # SVM classifier using RFF. Interface of RFFSVC is quite close to sklearn.svm.SVC.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : February 08, 2020
+# Date  : January 29, 2021
 ##################################################### SOURCE START #####################################################
 
 """
@@ -32,9 +32,7 @@ import pickle
 import sys
 
 import docopt
-import numpy   as np
-import sklearn as skl
-
+import numpy as np
 
 ### Inference using CPU.
 def main(args):
@@ -65,7 +63,6 @@ def main(args):
 
     print("Score = %.2f [%%]" % score)
 
-
 if __name__ == "__main__":
 
     ### Parse input arguments.
@@ -85,7 +82,6 @@ if __name__ == "__main__":
     ### Import utility functions from training script.
     from train_rff_svc_for_mnist import vectorise_MNIST_images
     from train_rff_svc_for_mnist import vectorise_MNIST_labels
-    from train_rff_svc_for_mnist import mat_transform_pca
 
     ### Convert all arguments to an appropriate type.
     for k, v in args.items():
