@@ -15,6 +15,7 @@ See [this document](https://tiskw.gitbook.io/rfflearn/tutorial#setting-up) for m
 
 ```console
 $ pip3 install docopt numpy scipy scikit-learn  # Necessary packages
+$ pip3 install torch                            # Required only for GPU training/inference
 $ pip3 install optuna                           # Required for hyper parameter tuning
 $ pip3 install shap                             # Required for feature importance
 ```
@@ -22,9 +23,9 @@ $ pip3 install shap                             # Required for feature importanc
 ### Docker image (recommended)
 
 ```console
-$ docker pull tiskw/tensorflow:2021-01-08
+$ docker pull tiskw/pytorch:2021-01-23
 $ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
-$ docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/tensorflow:2021-01-08 bash
+$ docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:2021-01-23 bash
 $ cd examples/optuna_and_shap_for_boston_housing/
 ```
 
