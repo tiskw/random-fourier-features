@@ -3,7 +3,7 @@
 This directory provides an example of the support vector classifier with random Fourier features for MNIST dataset.
 
 The training script in this directory supports both CPU/GPU training.
-For the GPU training, you need to install Tensorflow 2.x (Tensorflow 1.x is not supported).
+For the GPU training and inference, you need [PyTorch](https://pytorch.org/).
 
 
 ## Installation
@@ -14,16 +14,16 @@ See [this document](https://tiskw.gitbook.io/rfflearn/tutorial#setting-up) for m
 
 ```console
 $ pip3 install docopt numpy scipy scikit-learn  # Necessary packages
-$ pip3 install tensorflow-gpu                   # Required only for GPU training/inference
+$ pip3 install torch                            # Required only for GPU training/inference
 $ pip3 install optuna                           # Required only for hyper parameter tuning
 ```
 
 ### Docker image (recommended)
 
 ```console
-$ docker pull tiskw/tensorflow:2021-01-08
+$ docker pull tiskw/pytorch:2021-01-23
 $ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
-$ docker run --rm -it --gpus=all -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/tensorflow:2021-01-08 bash
+$ docker run --rm -it --gpus=all -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:2021-01-23 bash
 $ cd examples/gpr_sparse_data/
 ```
 
@@ -49,8 +49,8 @@ and saved under `dataset/mnist/` directory.
 After generating MNIST .npy files, run sample scripts by the following command:
 
 ```console
-$ python3 train_rff_svc_for_mnist.py kernel  # Run kernel SVC training
-$ python3 train_rff_svc_for_mnist.py rff     # Run RFFSVC training
+$ python3 train_rff_svc_for_mnist.py kernel           # Run kernel SVC training
+$ python3 train_rff_svc_for_mnist.py cpu --rtype rff  # Run RFFSVC training on CPU
 ```
 
 Default hyper parameter settings are recommended one, however, you can change the parameters by command option.
@@ -60,11 +60,10 @@ See `train_rff_svc_for_mnist.py --help` for details.
 ### Training on GPU
 
 This module contains beta version of GPU training implementation.
-You can try the GPU training by replacing `rfflearn.cpu` to `rfflearn.gpu` like the following:
+You can try the GPU training by the following command:
 
-```python
-# import rfflearn.cpu as rfflearn
-import rfflearn.gpu as rfflearn
+```console
+$ python3 train_rff_svc_for_mnist.py gpu --rtype rff  # Run kernel SVC training on GPU
 ```
 
 
@@ -73,8 +72,8 @@ import rfflearn.gpu as rfflearn
 You can run inference by the following command:
 
 ```console
-$ python3 valid_rff_svc_for_mnist.py cpu         # Inference on CPU using scikit-learn
-$ python3 valid_rff_svc_for_mnist.py tensorflow  # Inference on GPU using Tensorflow
+$ python3 valid_rff_svc_for_mnist.py cpu  # Inference on CPU using scikit-learn
+$ python3 valid_rff_svc_for_mnist.py gpu  # Inference on GPU using PyTorch
 ```
 
 

@@ -1,6 +1,6 @@
 # Example of RFFLearn module
 
-This directory contains the example code for the `rfflearn.cpu` and `rfflearn.cpu` module.
+This directory contains the example code for the `rfflearn.cpu` and `rfflearn.gpu` module.
 
 
 ## Least square regression with random Fourier features

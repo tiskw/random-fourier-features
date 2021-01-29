@@ -13,15 +13,16 @@ See [this document](https://tiskw.gitbook.io/rfflearn/tutorial#setting-up) for m
 
 ```console
 $ pip3 install docopt numpy scipy scikit-learn  # Necessary packages
+$ pip3 install torch                            # Required only for GPU training/inference
 $ pip3 install optuna                           # Required only for hyper parameter tuning
 ```
 
 ### Docker image (recommended)
 
 ```console
-$ docker pull tiskw/tensorflow:2021-01-08
+$ docker pull tiskw/pytorch:2021-01-23
 $ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
-$ docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/tensorflow:2021-01-08 bash
+$ docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:2021-01-23 bash
 $ cd examples/gpr_sparse_data/
 ```
 
@@ -52,3 +53,6 @@ In my computing environment (CPU: Intl Core i5 5250U, RAM: 4GB), I've got the fo
 | Kernel PCA            | 6.01 sec            |
 | RFF PCA <br> d = 1024 | 0.88 sec            |
 
+### Training on GPU
+
+Open the script file, replace `rfflearn.cpu` as `rfflean.gpu` and run the script again.

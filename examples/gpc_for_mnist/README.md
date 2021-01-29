@@ -3,7 +3,7 @@
 This directory provides an example of the Gaussian process classifier with random Fourier features for MNIST dataset.
 
 The training script in this directory supports both CPU/GPU training.
-For the GPU training, you need to install Tensorflow 2.x (Tensorflow 1.x is not supported).
+For the GPU training and inference, you need [PyTorch](https://pytorch.org/).
 
 
 ## Installation
@@ -14,20 +14,20 @@ See [this document](https://tiskw.gitbook.io/rfflearn/tutorial#setting-up) for m
 
 ```console
 $ pip3 install docopt numpy scipy scikit-learn  # Necessary packages
-$ pip3 install tensorflow-gpu                   # Required only for GPU training/inference
+$ pip3 install torch                            # Required only for GPU training/inference
 $ pip3 install optuna                           # Required only for hyper parameter tuning
 ```
 
 ### Docker image (recommended)
 
 ```console
-$ docker pull tiskw/tensorflow:2021-01-08
+$ docker pull tiskw/pytorch:2021-01-23
 $ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
-$ docker run --rm -it --gpus=all -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/tensorflow:2021-01-08 bash
-$ cd examples/gpr_sparse_data/
+$ docker run --rm -it --gpus=all -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:2021-01-23 bash
+$ cd examples/gpc_for_mnist/
 ```
 
-If you don't need GPU support, the option `--gpus=all` is not necessary.
+If you need GPU support, add the option `--gpus=all` to the above `docker run` command.
 
 
 ## Usage

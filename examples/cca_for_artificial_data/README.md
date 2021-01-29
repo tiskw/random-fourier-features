@@ -17,10 +17,10 @@ $ pip3 install optuna                           # Required only for hyper parame
 ### Docker image (recommended)
 
 ```console
-$ docker pull tiskw/tensorflow:2021-01-08
+$ docker pull tiskw/pytorch:2021-01-23
 $ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
-$ docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/tensorflow:2021-01-08 bash
-$ cd examples/gpr_sparse_data/
+$ docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:2021-01-23 bash
+$ cd examples/cca_for_artificial_data/
 ```
 
 
@@ -32,7 +32,7 @@ $ python3 main_cca_for_artificial_data.py
 
 ### Results of canonical correlation analysis with RFF
 
-The input data X and Y have shape (number_of_samples, dimention) = (500, 2),
+The input data X and Y have shape `(number_of_samples, dimention) = (500, 2)`,
 and the data is composed of 2 parts, correlated and noise part.
 As shown in the following figure, `X[:, 0]` and `Y[:, 0]` have strong correlation,
 however, `X[:, 1]` and `Y[:, 1]` are completely independent.

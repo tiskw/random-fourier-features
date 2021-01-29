@@ -1,24 +1,26 @@
 # Random Fourier Features
 
 This repository provides Python module `rfflearn`
-which is a library of random Fourier features (RFF) for kernel method,
-like support vector machine [1], and Gaussian process model.
+which is a library of random Fourier features [1, 2] for kernel method,
+like support vector machine and Gaussian process model.
 Features of this module are:
 
 * interfaces of the module are quite close to the [scikit-learn](https://scikit-learn.org/),
 * support vector classifier and Gaussian process regressor/classifier provides CPU/GPU training and inference,
 * interface to [optuna](https://optuna.org/) for easier hyper parameter tuning,
-* this repository provides example code that shows RFF is useful for actual machine learning tasks.
+* this repository provides [example code](./examples/README.md) that shows RFF is useful for actual machine learning tasks.
 
 Now, this module supports the following methods:
 
-* canonical correlation analysis (`rfflearn.cpu.RFFCCA`).
-* Gaussian process regression (`rfflearn.cpu.RFFGPR`,`rfflearn.gpu.RFFGPR`)
-* Gaussian process classification (`rfflearn.cpu.RFFGPC`,`rfflearn.gpu.RFFGPC`)
-* principal component analysis (`rfflearn.cpu.RFFPCA`).
-* regression (`rfflearn.cpu.RFFRegression`),
-* support vector classification (`rfflearn.cpu.RFFSVC`, `rfflearn.gpu.RFFSVC`),
-* support vector regression (`rfflearn.cpu.RFFSVR`).
+| Method                          | CPU support                  | GPU support           |
+| ------------------------------- | ---------------------------- | --------------------- |
+| canonical correlation analysis  | `rfflearn.cpu.RFFCCA`        | -                     |
+| Gaussian process regression     | `rfflearn.cpu.RFFGPR`        | `rfflearn.gpu.RFFGPR` |
+| Gaussian process classification | `rfflearn.cpu.RFFGPC`        | `rfflearn.gpu.RFFGPC` |
+| principal component analysis    | `rfflearn.cpu.RFFPCA`        | `rfflearn.gpu.RFFPCA` |
+| regression                      | `rfflearn.cpu.RFFRegression` | -                     |
+| support vector classification   | `rfflearn.cpu.RFFSVC`        | `rfflearn.gpu.RFFSVC` |
+| support vector regression       | `rfflearn.cpu.RFFSVR`        | -                     |
 
 RFF can be applicable for many other machine learning algorithms, I will provide other functions soon.
 
@@ -27,16 +29,20 @@ For more information, see the [user manual of rfflearn](https://tiskw.gitbook.io
 
 ## Requirements and installations
 
-```python
+The author recommend to use [docker](https://www.docker.com/) for building development environment.
+See [this document](https://tiskw.gitbook.io/rfflearn/tutorial#setting-up) for more details.
+
+If you don't mind to pollute your own environment (or you are already inside a docker container),
+just run the following command for installing required packages:
+
+```console
 pip3 install -r requirements.txt
 ```
-
-See [this document](https://tiskw.gitbook.io/rfflearn/tutorial#setting-up) for more details.
 
 
 ## Minimal example
 
-Interfaces provided by our module is quite close to Scikit-learn.
+Interfaces provided by our module is quite close to scikit-learn.
 For example, the following Python code is a sample usage of `RFFSVC`
 (support vector machine with random Fourier features) class.
 
@@ -55,7 +61,7 @@ array([1])
 This module supports training/inference on GPU.
 For example, the following Python code is a sample usage of `RFFGPC`
 (Gaussian process classifier with random Fourier features) on GPU.
-The following code requires tensorflow 2.x (tensorflow 1.x does not supported).
+The following code requires PyTorch (>= 1.7.0).
 
 ```python
 >>> import numpy as np
