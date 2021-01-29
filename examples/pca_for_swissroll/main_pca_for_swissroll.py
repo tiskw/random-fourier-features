@@ -36,7 +36,7 @@ import os
 import docopt
 import numpy   as np
 import sklearn as skl
-import sklearn.datasets.samples_generator
+import sklearn.datasets
 import matplotlib.pyplot as mpl
 
 
@@ -50,7 +50,7 @@ def main(args):
 
     ### Create swiss roll data.
     with utils.Timer("Creating swiss roll data: "):
-        X, color = skl.datasets.samples_generator.make_swiss_roll(args["--samples"], random_state = args["--seed"])
+        X, color = skl.datasets.make_swiss_roll(args["--samples"], random_state = args["--seed"])
 
     ### Create PCA class instance.
     if   args["linear"]: pca = skl.decomposition.PCA(n_components=2)
@@ -92,7 +92,8 @@ if __name__ == "__main__":
     module_path = os.path.join(current_dir, "../../")
     sys.path.append(module_path)
 
-    import rfflearn.cpu   as rfflearn
+    # import rfflearn.cpu   as rfflearn
+    import rfflearn.gpu   as rfflearn
     import rfflearn.utils as utils
 
     ### Convert all arguments to an appropriate type.
@@ -102,6 +103,7 @@ if __name__ == "__main__":
 
     ### Run main procedure.
     main(args)
+
 
 ##################################################### SOURCE FINISH ####################################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

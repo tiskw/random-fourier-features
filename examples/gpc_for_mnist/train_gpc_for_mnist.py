@@ -22,12 +22,12 @@ Usage:
 
 Options:
     --input <str>        Directory path to the MNIST dataset.                [default: ../../dataset/mnist]
-    --output <str>       File path to the output pickle file.                [default: result.pickle]
-    --pcadim <int>       Output dimention of Principal Component Analysis.   [default: 128]
-    --rtype <str>        Type of random matrix (rff or orf).                 [default: rff]
+    --output <str>       File path to the output pickle file.                [default: result_mnist.pickle]
+    --pcadim <int>       Output dimention of Principal Component Analysis.   [default: 1024]
+    --rtype <str>        Type of random matrix (rff/orf/qrf).                [default: rff]
     --kdim <int>         Hyper parameter of RFF SVM (dimention of RFF).      [default: 128]
     --std_kernel <float> Hyper parameter of RFF SVM (stdev of RFF).          [default: 0.05]
-    --std_error <float>  Hyper parameter of RFF SVM (stdev of RFF).          [default: 0.05]
+    --std_error <float>  Hyper parameter of RFF SVM (stdev of error).        [default: 0.05]
     --seed <int>         Random seed.                                        [default: 111]
     --cpus <int>         Number of available CPUs.                           [default: -1]
     -h, --help           Show this message.
@@ -71,6 +71,7 @@ def main(args):
     ### Create classifier instance.
     if   args["--rtype"] == "rff": gpc = rfflearn.RFFGPC(args["--kdim"], args["--std_kernel"], args["--std_error"])
     elif args["--rtype"] == "orf": gpc = rfflearn.ORFGPC(args["--kdim"], args["--std_kernel"], args["--std_error"])
+    elif args["--rtype"] == "qrf": gpc = rfflearn.QRFGPC(args["--kdim"], args["--std_kernel"], args["--std_error"])
     else                         : raise RuntimeError("Error: 'random_type' must be 'rff' or 'orf'.")
 
     ### Load training data.
@@ -125,6 +126,7 @@ if __name__ == "__main__":
 
     ### Run main procedure.
     main(args)
+
 
 ##################################################### SOURCE FINISH ####################################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

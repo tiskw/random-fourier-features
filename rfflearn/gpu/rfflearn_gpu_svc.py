@@ -3,12 +3,12 @@
 # Python module of support vector classification with random matrix for CPU.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : October 11, 2020
+# Date  : January 29, 2021
 ######################################### SOURCE START ########################################
 
 import numpy as np
-import tensorflow as tf
-import tensorflow_addons as tfa
+import torch
+
 from .rfflearn_gpu_common import Base
 
 ### This class provides the RFF based SVC classification using GPU.
@@ -23,7 +23,7 @@ class SVC(Base):
     ### If the parameters are initialized by one of the ways other than (1), 'self.initialized' is set to True.
     ### And if 'self.initialized' is still False when just before the training/inference,
     ### then the parameters are initialized by the way (1).
-    def __init__(self, rand_mat_type, svc = None, M_pre = None, dim_kernel = 128, std_kernel = 0.1, W = None, batch_size = 5000, dtype = 'float32', *pargs, **kwargs):
+    def __init__(self, rand_mat_type, svc = None, M_pre = None, dim_kernel = 128, std_kernel = 0.1, W = None, batch_size = 5000, dtype = 'float64', *pargs, **kwargs):
 
         ### Save important variables.
         self.dim_kernel  = dim_kernel
@@ -48,8 +48,8 @@ class SVC(Base):
         ###   - A: Coefficients of Linear SVC.               (shape = [dim_kernel, dim_output]).
         ###   - b: Intercepts of Linear SVC.                 (shape = [1,          dim_output]).
         self.W_cpu = self.W
-        self.A_cpu = np.random.randn(2 * dim_kernel, dim_output)
-        self.b_cpu = np.random.randn(1,              dim_output)
+        self.A_cpu = 0.1 * np.random.randn(2 * dim_kernel, dim_output)
+        self.b_cpu = 0.1 * np.random.randn(1,              dim_output)
 
         ### Create GPU variables and build GPU model.
         self.build()
@@ -89,54 +89,40 @@ class SVC(Base):
         ### Run build procedure if and only if all variables is available.
         if all(v is not None for v in [self.W_cpu, self.A_cpu, self.b_cpu]):
 
-            ### Create pseudo input on CPU for GPU variable creation.
-            self.X_cpu = np.zeros((self.batch_size, self.W_cpu.shape[0]), dtype = self.dtype)
-            self.y_cpu = np.zeros((self.batch_size, self.A_cpu.shape[1]), dtype = self.dtype)
-
             ### Create GPU variables.
-            self.X_gpu = tf.Variable(self.X_cpu, dtype = self.dtype)
-            self.y_gpu = tf.Variable(self.y_cpu, dtype = self.dtype)
-            self.W_gpu = tf.constant(self.W_cpu, dtype = self.dtype)
-            self.A_gpu = tf.Variable(self.A_cpu, dtype = self.dtype)
-            self.b_gpu = tf.Variable(self.b_cpu, dtype = self.dtype)
+            self.W_gpu = torch.tensor(self.W_cpu, dtype = torch.float64, requires_grad = False)
+            self.A_gpu = torch.tensor(self.A_cpu, dtype = torch.float64, requires_grad = True)
+            self.b_gpu = torch.tensor(self.b_cpu, dtype = torch.float64, requires_grad = True)
+
+            self.params = [self.A_gpu, self.b_gpu]
 
             ### Run a inference for building the model (because we are in the eager-mode here).
-            _ = self.predict_proba_batch(self.X_cpu)
+            # _ = self.predict_proba_batch(self.X_cpu)
 
     ### Train the model for one batch.
     ###   - X_cpu (np.array, shape = [N, K]): training data,
     ### where N is the number of training data, K is dimension of the input data.
-    @tf.function
     def fit_batch(self, X_gpu, y_gpu, opt):
 
         ### Calclate loss function under the GradientTape.
-        with tf.GradientTape() as tape:
-            tape.watch([self.A_gpu, self.b_gpu])
-            z = tf.matmul(X_gpu, self.W_gpu)
-            z = tf.concat([tf.cos(z), tf.sin(z)], 1)
-            p = tf.matmul(z, self.A_gpu) + self.b_gpu
-            v = tf.math.reduce_mean(tf.math.maximum(tf.cast(0, self.dtype), 1 - y_gpu * p))
+        z = torch.matmul(X_gpu, self.W_gpu)
+        z = torch.cat([torch.cos(z), torch.sin(z)], 1)
+        p = torch.matmul(z, self.A_gpu) + self.b_gpu
+        v = torch.mean(torch.sum(torch.max(torch.zeros_like(y_gpu), 1 - y_gpu * p), dim = 1))
 
-        ### Derive gradient for all variables and apply gradient decent optimizer.
-        dv_dA, dv_db = tape.gradient(v, [self.A_gpu, self.b_gpu])
-        opt.apply_gradients(zip([dv_dA, dv_db], [self.A_gpu, self.b_gpu]))
+        ### Derive gradient for all variables.
+        v.backward()
 
-        ### Register loss value to the metric.
-        self.losses(v)
+        with torch.no_grad():
+            opt.step()
 
-    def fit(self, X_cpu, y_cpu, epoch_max = 1000, opt = "RAdam", learning_rate = 0.1, weight_decay = 1.0E-8, quiet = False):
+        return float(v.cpu())
 
-        ### Get optimizer.
-        if   opt == "SGD"    : opt = tf.keras.optimizers.SGD(learning_rate)
-        elif opt == "RMSProp": opt = tf.keras.optimizers.RMSprop(learning_rate)
-        elif opt == "Adam"   : opt = tf.keras.optimizers.Adam(learning_rate)
-        elif opt == "AdamW"  : opt = tfa.optimizers.AdamW(learning_rate, weight_decay = weight_decay)
-        elif opt == "RAdam"  : opt = tfa.optimizers.RectifiedAdam(learning_rate, weight_decay = weight_decay)
+    def fit(self, X_cpu, y_cpu, epoch_max = 100, opt = "adamw", learning_rate = 1.0E-4, weight_decay = 1.0E-8, quiet = False):
 
         ### Get hyper parameters.
         dim_input  = X_cpu.shape[1]
         dim_output = np.max(y_cpu) + 1
-        num_data   = X_cpu.shape[0]
 
         ### Convert the label to +1/-1 format.
         X_cpu = X_cpu.astype(self.dtype)
@@ -146,43 +132,42 @@ class SVC(Base):
         if not self.initialized:
             self.init_from_scratch(dim_input, self.dim_kernel, dim_output, self.std)
 
-        ### Create dataset instance for training.
-        data_train = tf.data.Dataset.from_tensor_slices((X_cpu, y_cpu)).shuffle(num_data).batch(self.batch_size)
+        ### Get optimizer.
+        if   opt == "sgd"    : opt = torch.optim.SGD(self.params, learning_rate)
+        elif opt == "rmsprop": opt = torch.optim.RMSprop(self.params, learning_rate)
+        elif opt == "adam"   : opt = torch.optim.Adam(self.params, learning_rate)
+        elif opt == "adamw"  : opt = torch.optim.Adam(self.params, learning_rate, weight_decay = weight_decay, amsgrad = True)
 
-        ### Loss matric.
-        self.losses = tf.keras.metrics.Mean(name='train_loss')
+        ### Create dataset instance for training.
+        train_dataset = torch.utils.data.TensorDataset(torch.tensor(X_cpu), torch.tensor(y_cpu))
+        train_loader  = torch.utils.data.DataLoader(train_dataset, batch_size = self.batch_size, shuffle = True)
+
+        ### Variable to store loss values in one epoch.
+        losses = []
 
         for epoch in range(epoch_max):
 
-            ### Learning rate decay.
-            ### TODO: Modify to be changable by user.
-            if   epoch == 200: opt.learning_rate = 0.01
-            elif epoch == 700: opt.learning_rate = 0.001
-
             ### Train one epoch.
-            for Xs_batch, ys_batch in data_train:
-                self.fit_batch(Xs_batch, ys_batch, opt)
-
-            ### Exit training loop if loss value is close to machine epsilone.
-            if self.losses.result().numpy() < 1.0E-10:
-                break
+            for step, (Xs_batch, ys_batch) in enumerate(train_loader):
+                loss = self.fit_batch(Xs_batch, ys_batch, opt)
+                losses.append(loss)
 
             ### Print training log.
             if not quiet and epoch % 10 == 0:
-                print(F"Epoch {epoch:>4}: Train loss = {self.losses.result().numpy():.4e}")
-            self.losses.reset_states()
+                print(f"Epoch {epoch:>4}: Train loss = {np.mean(losses):.4e}")
+
+            ### Clear loss values.            
+            losses.clear()
 
         return self
 
     ### Function for running the Tensorflow model of RFF for one batch.
     ###   - X_cpu (np.array, shape = [N, K]): training data,
     ### where N is the number of training data, K is dimension of the input data.
-    @tf.function
     def predict_proba_batch(self, X_cpu):
-        self.X_gpu.assign(X_cpu)
-        z = tf.matmul(self.X_gpu, self.W_gpu)
-        z = tf.concat([tf.cos(z), tf.sin(z)], 1)
-        return tf.matmul(z, self.A_gpu) + self.b_gpu
+        z = torch.matmul(torch.tensor(X_cpu), self.W_gpu)
+        z = torch.cat([torch.cos(z), torch.sin(z)], 1)
+        return (torch.matmul(z, self.A_gpu) + self.b_gpu).detach().numpy()
 
     ### Run prediction and return probability (features).
     ###   - X_cpu (np.array, shape = [N, K]): training data,
@@ -198,7 +183,7 @@ class SVC(Base):
             raise ValueError("rfflearn.gpu.SVC: Number of input data must be a multiple of batch size")
 
         ### Run prediction for each batch, concatenate them and return.
-        Xs = [self.predict_proba_batch(X_cpu[bs*n:bs*(n+1), :].astype(self.dtype)).numpy() for n in range(bn)]
+        Xs = [self.predict_proba_batch(X_cpu[bs*n:bs*(n+1), :].astype(self.dtype)) for n in range(bn)]
         return np.concatenate(Xs)
 
     ### Run prediction and return log-probability.
@@ -220,23 +205,24 @@ class SVC(Base):
     def score(self, X_cpu, y_cpu, **args):
         return np.mean(y_cpu == self.predict(X_cpu))
 
-
 ### The above functions/classes are not visible from users of this library,
 ### becasue of the complicated usage. The following classes are simplified
 ### version of the classes. These classes are visible from users.
-
 
 ### Gaussian process regression with RFF.
 class RFFSVC(SVC):
     def __init__(self, *pargs, **kwargs):
         super().__init__("rff", *pargs, **kwargs)
 
-
 ### Gaussian process regression with ORF.
 class ORFSVC(SVC):
     def __init__(self, *pargs, **kwargs):
         super().__init__("orf", *pargs, **kwargs)
 
+### Gaussian process regression with quasi-RRF.
+class QRFSVC(SVC):
+    def __init__(self, *pargs, **kwargs):
+        super().__init__("qrf", *pargs, **kwargs)
 
 ######################################### SOURCE FINISH #######################################
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

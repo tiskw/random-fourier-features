@@ -3,7 +3,7 @@
 # __init__.py file for the module 'rfflearn.cpu'.
 #
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : January 09, 2021
+# Date  : January 24, 2021
 ##################################################### SOURCE START #####################################################
 
 import functools
@@ -13,8 +13,8 @@ import sys
 ### Import RFF-related modules.
 from .rfflearn_cpu_common     import seed
 from .rfflearn_cpu_regression import RFFRegression, ORFRegression
-from .rfflearn_cpu_svc        import RFFSVC, ORFSVC, RFFBatchSVC, ORFBatchSVC
-from .rfflearn_cpu_gp         import RFFGPR, ORFGPR, RFFGPC, ORFGPC
+from .rfflearn_cpu_svc        import RFFSVC, ORFSVC, QRFSVC, RFFBatchSVC, ORFBatchSVC, QRFBatchSVC
+from .rfflearn_cpu_gp         import RFFGPR, ORFGPR, QRFGPR, RFFGPC, ORFGPC, QRFGPC
 from .rfflearn_cpu_pca        import RFFPCA, ORFPCA
 from .rfflearn_cpu_cca        import RFFCCA, ORFCCA
 

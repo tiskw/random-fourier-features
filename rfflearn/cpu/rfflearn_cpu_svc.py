@@ -146,6 +146,12 @@ class ORFSVC(SVC):
         super().__init__("orf", *pargs, **kwargs)
 
 
+### Support vector machine with QRF.
+class QRFSVC(SVC):
+    def __init__(self, *pargs, **kwargs):
+        super().__init__("qrf", *pargs, **kwargs)
+
+
 ### Support vector machine with RFF.
 class RFFBatchSVC(BatchSVC):
     def __init__(self, *pargs, **kwargs):
@@ -156,6 +162,12 @@ class RFFBatchSVC(BatchSVC):
 class ORFBatchSVC(BatchSVC):
     def __init__(self, *pargs, **kwargs):
         super().__init__("orf", *pargs, **kwargs)
+
+
+### Support vector machine with QRF.
+class QRFBatchSVC(BatchSVC):
+    def __init__(self, *pargs, **kwargs):
+        super().__init__("qrf", *pargs, **kwargs)
 
 
 ##################################################### SOURCE FINISH ####################################################
