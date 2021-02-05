@@ -97,7 +97,7 @@ and [RFF GP module](./examples/gpc_for_mnist/README.md) for mode details.
 | RFF GPC (GPU)  | 5120          | 115.0 us            | 98.2 %    |
 
 <div align="center">
-  <img src="./figures/Inference_Time_and_Accuracy_on_MNIST_SVC_and_GPC.png" width="763" height="371" alt="Accuracy for each epochs in RFF SVC" />
+  <img src="./figures/Inference_Time_and_Accuracy_on_MNIST_SVC_and_GPC.png" width="659" height="351" alt="Accuracy for each epochs in RFF SVC/GPC" />
 </div>
 
 
@@ -125,12 +125,6 @@ and the following is the visualization results obtained by `rfflearn.shap_featur
   Default settings are `n_jobs = -1` which means automatically detect available CPUs and use them.
   (This bug information was reported by Mr. Katsuya Terahata @ Toyota Research Institute Advanced Development.
   Thank you so much for the reporting!)
-
-
-## TODO
-
-- [ ] New function: implementation of batch RFF GP (but my GPU is too poor to try this...)
-- [ ] New function: implementation of RFF Logistic GP
 
 
 ## Licence
