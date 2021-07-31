@@ -23,7 +23,7 @@ class SVC(Base):
     ### If the parameters are initialized by one of the ways other than (1), 'self.initialized' is set to True.
     ### And if 'self.initialized' is still False when just before the training/inference,
     ### then the parameters are initialized by the way (1).
-    def __init__(self, rand_mat_type, svc = None, M_pre = None, dim_kernel = 128, std_kernel = 0.1, W = None, batch_size = 5000, dtype = 'float64', *pargs, **kwargs):
+    def __init__(self, rand_mat_type, svc = None, M_pre = None, dim_kernel = 128, std_kernel = 0.1, W = None, batch_size = 200, dtype = 'float64', *pargs, **kwargs):
 
         ### Save important variables.
         self.dim_kernel  = dim_kernel
@@ -32,6 +32,10 @@ class SVC(Base):
         self.dtype       = dtype
         self.initialized = False
         self.W           = W
+
+        ### Automatically detect device.
+        ### This module assumes that GPU is available, but works if not available.
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
         ### Inisialize variables.
         if svc: self.init_from_RFFSVC_cpu(svc, M_pre)
@@ -48,8 +52,8 @@ class SVC(Base):
         ###   - A: Coefficients of Linear SVC.               (shape = [dim_kernel, dim_output]).
         ###   - b: Intercepts of Linear SVC.                 (shape = [1,          dim_output]).
         self.W_cpu = self.W
-        self.A_cpu = 0.1 * np.random.randn(2 * dim_kernel, dim_output)
-        self.b_cpu = 0.1 * np.random.randn(1,              dim_output)
+        self.A_cpu = 0.01 * np.random.randn(2 * dim_kernel, dim_output)
+        self.b_cpu = 0.01 * np.random.randn(1,              dim_output)
 
         ### Create GPU variables and build GPU model.
         self.build()
@@ -90,14 +94,11 @@ class SVC(Base):
         if all(v is not None for v in [self.W_cpu, self.A_cpu, self.b_cpu]):
 
             ### Create GPU variables.
-            self.W_gpu = torch.tensor(self.W_cpu, dtype = torch.float64, requires_grad = False)
-            self.A_gpu = torch.tensor(self.A_cpu, dtype = torch.float64, requires_grad = True)
-            self.b_gpu = torch.tensor(self.b_cpu, dtype = torch.float64, requires_grad = True)
+            self.W_gpu = torch.tensor(self.W_cpu, dtype = torch.float64, device = self.device, requires_grad = False)
+            self.A_gpu = torch.tensor(self.A_cpu, dtype = torch.float64, device = self.device, requires_grad = True)
+            self.b_gpu = torch.tensor(self.b_cpu, dtype = torch.float64, device = self.device, requires_grad = True)
 
             self.params = [self.A_gpu, self.b_gpu]
-
-            ### Run a inference for building the model (because we are in the eager-mode here).
-            # _ = self.predict_proba_batch(self.X_cpu)
 
     ### Train the model for one batch.
     ###   - X_cpu (np.array, shape = [N, K]): training data,
@@ -118,7 +119,7 @@ class SVC(Base):
 
         return float(v.cpu())
 
-    def fit(self, X_cpu, y_cpu, epoch_max = 100, opt = "adamw", learning_rate = 1.0E-4, weight_decay = 1.0E-8, quiet = False):
+    def fit(self, X_cpu, y_cpu, epoch_max = 300, opt = "sgd", learning_rate = 1.0E-2, weight_decay = 10.0, quiet = False):
 
         ### Get hyper parameters.
         dim_input  = X_cpu.shape[1]
@@ -133,10 +134,10 @@ class SVC(Base):
             self.init_from_scratch(dim_input, self.dim_kernel, dim_output, self.std)
 
         ### Get optimizer.
-        if   opt == "sgd"    : opt = torch.optim.SGD(self.params, learning_rate)
+        if   opt == "sgd"    : opt = torch.optim.SGD(self.params, learning_rate, weight_decay = weight_decay)
         elif opt == "rmsprop": opt = torch.optim.RMSprop(self.params, learning_rate)
         elif opt == "adam"   : opt = torch.optim.Adam(self.params, learning_rate)
-        elif opt == "adamw"  : opt = torch.optim.Adam(self.params, learning_rate, weight_decay = weight_decay, amsgrad = True)
+        elif opt == "adamw"  : opt = torch.optim.AdamW(self.params, learning_rate, weight_decay = weight_decay, amsgrad = True)
 
         ### Create dataset instance for training.
         train_dataset = torch.utils.data.TensorDataset(torch.tensor(X_cpu), torch.tensor(y_cpu))
@@ -149,7 +150,7 @@ class SVC(Base):
 
             ### Train one epoch.
             for step, (Xs_batch, ys_batch) in enumerate(train_loader):
-                loss = self.fit_batch(Xs_batch, ys_batch, opt)
+                loss = self.fit_batch(Xs_batch.to(self.device), ys_batch.to(self.device), opt)
                 losses.append(loss)
 
             ### Print training log.
@@ -165,9 +166,9 @@ class SVC(Base):
     ###   - X_cpu (np.array, shape = [N, K]): training data,
     ### where N is the number of training data, K is dimension of the input data.
     def predict_proba_batch(self, X_cpu):
-        z = torch.matmul(torch.tensor(X_cpu), self.W_gpu)
+        z = torch.matmul(torch.tensor(X_cpu, device = self.device), self.W_gpu)
         z = torch.cat([torch.cos(z), torch.sin(z)], 1)
-        return (torch.matmul(z, self.A_gpu) + self.b_gpu).detach().numpy()
+        return (torch.matmul(z, self.A_gpu) + self.b_gpu).detach().cpu().numpy()
 
     ### Run prediction and return probability (features).
     ###   - X_cpu (np.array, shape = [N, K]): training data,
