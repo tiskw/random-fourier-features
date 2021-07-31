@@ -76,6 +76,10 @@ $ python3 valid_rff_svc_for_mnist.py cpu  # Inference on CPU using scikit-learn
 $ python3 valid_rff_svc_for_mnist.py gpu  # Inference on GPU using PyTorch
 ```
 
+Note that run inference of GPU-tranined model on CPU is not supported. Supported combinations are:
+- trained on CPU, inference on CPU,
+- trained on CPU, inference on GPU,
+- trained on GPU, inference on GPU.
 
 ## Results of support vector classification with RFF
 
