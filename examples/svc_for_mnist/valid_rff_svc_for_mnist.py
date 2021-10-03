@@ -49,17 +49,27 @@ def main(args):
         svc = result["svc"]
         T   = result["pca"]
 
+    ### CPU inference of GPU-trained model is not supported.
+    if args["cpu"] and ("_gpu_" in str(type(svc))):
+        raise RuntimeError("CPU inference of GPU-trained model is not supported\n"
+                           "Did you try to run inference on CPU using a model trained on GPU?\n"
+                           "Sorry, that is not supported now. Please infer on GPU, or retrain on CPU.")
+
     ### If GPU inference, convert rfflearn.cpu.SVC -> rfflearn.gpu.SVC and overwrite 'svc' instance.
-    if args["gpu"]:
+    ### the variable 'pca' is used to judge that the PCA matric 'T' is embedded to 'svc' or not.
+    if (not isinstance(svc, rfflearn.RFFSVC)) and args["gpu"]:
         svc = rfflearn.RFFSVC(svc, T, batch_size = args["--batch_size"])
+        pca = False
+    else:
+        pca = True
 
     ### Calculate score for test data.
     with utils.Timer("SVM prediction time for 1 image: ", unit = "us", devide_by = ys_test.shape[0]):
 
         ### In case of GPU inference, Calculation of PCA ".dot(T)" is not necessary because PCA matrix T is
         ### embedded to GPU computation graph as a preprocessing matrix for faster calculation.
-        if   args["cpu"]: score = 100 * svc.score(Xs_test.dot(T), ys_test)
-        elif args["gpu"]: score = 100 * svc.score(Xs_test,        ys_test)
+        if pca: score = 100 * svc.score(Xs_test.dot(T), ys_test)
+        else  : score = 100 * svc.score(Xs_test,        ys_test)
 
     print("Score = %.2f [%%]" % score)
 
