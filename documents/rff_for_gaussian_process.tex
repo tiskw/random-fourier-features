@@ -1,0 +1,408 @@
+% TeX Source
+%
+% Author: Tetsuya Ishikawa <tiskw111gmail.com>
+% Date  : October 16, 2021
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% SOURCE START %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[twocolumn, a4paper, 10pt]{article}
+\usepackage{tiskw}
+
+\begin{document}
+
+\title{Random Fourier Features for Gaussian Process Model}
+\author{Tetsuya Ishikawa \\ \normalsize\texttt{tiskw111@gmail.com}}
+\maketitle
+
+\section*{Abstract}\titlebar
+% {{{
+
+This article describes the procedure for applying random Fourier features~\cite{Rasmussen2006}
+to the Gaussian process model~\cite{Rahimi2007}. This makes it possible to speed up the training
+and inference of the Gaussian process model, and to apply the model to larger data.
+
+The Gaussian process model~\cite{Rahimi2007} is one of the supervised machine learning frameworks
+designed on a probability space, and is widely used for regression and classification tasks, like
+support vector machine and random forest. The major difference between Gaussian process models and
+other machine learning models is that the Gaussian process model is a \textit{stochastic} model.
+In other words, since the Gaussian process model is formulated as a stochastic model,
+it can provide not only the predicted value but also a measure of uncertainty for the prediction.
+This is a very useful property that can improve the explainability of machine learning model.
+
+On the other hand, the Gaussian process model is also known for its high computational cost
+of training and inrefence. If the total number of training data is $N \in \mathbb{Z}^{+}$,
+the computational cost required for training the Gaussian process model is $O(N^3)$, and
+computational cost required for inference is $O(N^2)$, where $O$ is the
+\textit{Bachmann–Landau notation}. The problem is that the computational cost is given by
+a power of the total number of training data $N$, which can be an obstacle when appliying
+the model to large-scale data. This comes from the fact that the Gaussian process model has
+the same mathematical structure as the kernel method, in other words,
+the kernel support vector machine also has the same problem.
+
+One of the methods to speed up the kernel method is random Fourier features~\cite{Rasmussen2006}
+(hereinafter abbreviated as RFF). This method can significantly reduces the computational cost
+while keeping the flexibility of the kernel method by approximating the kernel function as the inner
+product of finite dimensional vectors. Specifically, the compurational cost required for training
+can be reduced to $O(N D^2)$, and the amount of calculation required for inference can be reduced
+to $O(D^2)$. However, $D \in \mathbb{Z}^{+}$ is a hyperparameter of RFF and can be specified
+independently of the total number of training data $N$.
+
+Since the Gaussian process model has the same mathematical structure as the kernel method,
+RFF can be applied to the Gaussian process model as well. This evolves the Gaussian process model
+into a more powerful, easy-to-use, and highly reliable ML tool.
+
+However, when applying RFF to a Gaussian process model, some mathematical techniques are required
+that are not straightforward. However, unfortunately, there seems to be no articles in the world
+that mentions it's difficulties and solutions, so I left an explanation of the procedure.
+
+If you preffer the Japanese version of this document, see this repository
+\footnote{\texttt{https://github.com/tiskw/mathematical-articles}}.
+
+% }}}
+
+\section{Gaussian Process Model Revisited}\titlebar
+% {{{
+
+This section gives an overview of the Gaussian process model. Unfortunately, this document
+does not cover details such as the formulation and derivation of Gaussian process models,
+so if you are interested in the details, please refer \cite{Rasmussen2006}.
+
+Let $\mathcal{D} = \{(\bs{x}_n, y_n)\}_{n=1}^{N}$ be a training data, and $\sigma \in \mathbb{R}^{+}$
+be a standard deviation of the label observation error, where $\bs{x}_n \in \mathbb{R}^M$, $y_n \in \mathbb{R}$.
+The Gaussian process model describes the prediction as a probability variable that follows normal distribution.
+If the test date is $\bs{\xi} \in \mathbb{R}^M$, the expectation and standard deviation is given by:
+\begin{equation}
+    m (\bs{\xi}) = \widehat{m} (\bs{\xi}) + \left( \bs{y} - \widehat{\bs{m}} \right)\tran
+    \left (\bs{K} + \sigma^2 \bs{I} \right)^{-1} \bs{k} (\bs {\xi}),
+    \label{eqn:gp_exp} \\
+\end{equation}
+and the covariance of the test data $\bs{\xi}_1$, $\bs{\xi}_2$ is given by:
+\begin{equation}
+    v (\bs{\xi}_1, \bs{\xi}_2) = k (\bs{\xi}_1, \bs{\xi}_2)
+    - \bs{k} (\bs{\xi}_1)\tran \left( \bs{K} - \sigma^2 \bs{I} \right)^{-1} \bs{k} (\bs{\xi}_2),
+    \label{eqn:gp_cov}
+\end{equation}
+where the function $k: \mathbb{R}^M \times \mathbb{R}^M \to \mathbb{R}$ is a kernel function,
+the matrix $\bs{K} \in \mathbb{R}^{N \times N}$ is a kernel matrix defined as
+\begin {equation}
+    \bs{K} = \begin{pmatrix}
+        k (\bs{x}_1, \bs{x}_1) & \cdots & k (\bs{x}_1, \bs{x}_N) \\
+        \vdots & \ddots & \vdots \\
+        k (\bs{x}_N, \bs{x}_1) & \cdots & k (\bs{x}_N, \bs{x}_N) \\
+    \end{pmatrix},
+\end{equation}
+and the vector $\bs{k} (\bs {\xi}) \in \mathbb{R}^N$ and
+the vector $\bs{y} \in \mathbb{R}^N$ is defined as
+\begin{equation}
+    \bs{k} (\bs{\xi}) = \begin{pmatrix}
+        k (\bs{\xi}, \bs{x}_1) \\
+        \vdots \\
+        k (\bs{\xi}, \bs{x}_N) \\
+    \end{pmatrix},
+    \hspace{10pt}
+    \bs{y} = \begin{pmatrix}
+        y_1 \\ \vdots \\ y_N \\
+    \end{pmatrix},
+\end{equation}
+respectively.
+Also, $\widehat{m} (\bs{\xi})$ is the prior distribution of the prediction, and
+$\widehat{\bs{m}} = (\widehat{m} (\bs{x}_1), \ldots, \widehat{m} (\bs{x}_N))\tran$ is
+the prior distribution of the predicted values of the training data. If you don't need to set
+prior distribution, it's common to set $\widehat{m} (\cdot) = 0$ and $\widehat{\bs{m}} = \bs{0}$.
+
+You can compute the variance of the prediction of the test data $\bs{\xi}$
+by substituting $\bs{\xi}_1 = \bs{\xi}_2 = \bs{\xi}$ into the equation (\ref{eqn:gp_cov}),
+\begin{equation}
+    v (\bs{\xi}, \bs{\xi}) = k (\bs{\xi}, \bs{\xi})
+    - \bs{k} (\bs{\xi})\tran \left( \bs{K} - \sigma^2 \bs{I} \right)^{-1} \bs{k} (\bs{\xi}).
+\end{equation}
+
+% }}}
+
+\section{RFF Revisited}\titlebar
+% {{{
+
+This section, we revisit random Fourier features. Unfortunately, this article don't have
+enough space to explain the details, therefore if you would like to know more details,
+please refer to the original paper \cite{Rahimi2007}.
+
+Let the function $k: \mathbb{R}^M \times \mathbb{R}^M \to \mathbb{R}$ be the kernel function.
+In RFF, the kernel function can be approximated as
+\begin{equation}
+    k (\bs{x}_1, \bs{x}_2) \simeq \bs{\phi} ({\bs{x}_1})\tran \bs{\phi} ({\bs{x}_2) }),
+    \label{eqn:rff_kernel_approx}
+\end{equation}
+where the dimension $D$ of the vector $\bs{\phi} (\bs{x}_1)$ is a hyperparamter of RFF.
+The larger the dimension $D$, the higher the approximation accuracy of the equation
+(\ref{eqn:rff_kernel_approx}), while the larger the dimension $D$, the greater compurational cost.
+
+For example, in the case of the RBF kernel
+\begin{equation}
+    k (\bs{x}_1, \bs{x}_2) = \exp \left (- \gamma \| \bs{x}_1 - \bs{x}_2 \|^2 \right),
+\end{equation}
+which is famous as one of the kernel functions, the vector $\bs{\phi} (\bs{x})$ is given by
+\begin{equation}
+    \bs{\phi} (\bs{x}) = \begin{pmatrix}
+        \cos \bs{Wx} \\
+        \sin \bs{Wx}
+    \end{pmatrix},
+\end{equation}
+where, the matrix $\bs{W} \in \mathbb{R}^{D/2 \times M} $ is a random matrix in which each element
+is sampled from the normal distribution $\mathcal{N} (0, \frac{1}{4 \gamma})$.
+
+% }}}
+
+\section{Gaussian process model and RFF}\titlebar
+% {{{
+
+In this section, we apply RFF to the Gaussian process model
+and theoretically confirm the effect of speeding up.
+
+\subsection{Computational complexity of Gaussian process model before applying RFF}
+
+First, let's check the computational cost required for training and inferring a normal Gaussian
+process model. As a premise, it is assumed that the number of training data $N \in \mathbb{Z}^{+}$
+is sufficiently larger than the dimension $M \in \mathbb{Z}^{+}$ of the input vector and 
+dimention $D \in \mathbb{Z}^{+}$ which is a hyperparameter of RFF. Here, the bottleneck of
+training computational cost is obviously the calculation of the inverse matrix
+$\left (\bs{K} + \sigma^2 \bs{I} \right)^{-1}$ in the formulas (\ref{eqn:gp_exp}) and (\ref{eqn:gp_cov}).
+Since the size of this matrix is $N \times N$, the computational cost for training is $O(N^3)$.
+
+Next, the bottleneck of the inference is matrix multiplications
+$\left (\bs{y} -\widehat{\bs{m}} \right)\tran \left( \bs{K} + \sigma^2 \bs{I} \right)^{-1}$ or
+$\bs{k} (\bs{\xi}_1)\tran \left( \bs{K} - \sigma^2 \bs{I} \right)^{-1} \bs{k} (\bs{\xi}_2)$,
+and either of these computational cost is $O(N)$.
+
+\subsection{Applying RFF to expectation of prediction}
+
+Now, let's apply RFF to the Gaussian process model. First of all, if you substitute the RFF
+approximation formula (\ref{eqn:gp_cov}) into the formula of expectation of the prediction
+in the Gaussian process (\ref{eqn:gp_exp}), you'll get
+\begin{equation}
+    m (\bs{\xi}) = \widehat{m} (\bs{\xi}) + \left( \bs{y} - \widehat{\bs{m}} \right)\tran
+    \left( \bs{\Phi}\tran \bs{\Phi} + \sigma^2 \bs{I} \right)^{-1} \bs{\Phi}\tran \bs{\phi} (\bs{\xi}),
+    \label{eqn:rffgp_exp_naive}
+\end{equation}
+where the matrix $\bs{\Phi} \in \mathbb{R}^{D \times N}$ is defined as
+$\bs{\Phi} = (\bs{\phi} (\bs{x}_1), \ldots, \bs{\phi} (\bs{x}_N))$.
+However, this has not yet speeded up. The complexity bottleneck of the above expression
+(\ref{eqn:rffgp_exp_naive}) is still the inverse of the $N \times N$ matrix
+$\left( \bs{\Phi}\tran \bs{\Phi} + \sigma^2 \bs{I} \right)^{-1}$.
+
+Now we will add a bit of contrivance to the equation (\ref{eqn:rffgp_exp_naive}).
+At first, let us introduce the \textit{matrix inversion lemma} (it's also referred as
+\textit{binominal inverse lemma}) which is a useful formula for expansion of matrix inverse.  
+
+\begin{theorem}[Matrix Inversion Lemma]
+    Let
+    $\bs{A} \in \mathbb{R^{N \times N}}$,
+    $\bs{B} \in \mathbb{R^{N \times M}}$,
+    $\bs{C} \in \mathbb{R^{M \times N}}$,
+    and
+    $\bs{D} \in \mathbb{R^{M \times M}}$
+    be real matrices. Then the equation
+    \begin{equation}
+        \left( \bs{A} + \bs{BDC} \right)^{-1} = \bs {A}^{-1} - \bs{A}^{-1} \bs{B}
+        \left( \bs{D}^{-1} + \bs{CA}^{-1} \bs{B} \right)^{-1} \bs{CA}^{-1}
+        \label{eqn:matrix_inversion_lemma}
+    \end{equation}
+    holds, where the matrix $\bs{A}$ and $\bs{D}$ are regular matrices.
+\end{theorem}
+
+The proof of the matrix inversion lemma is given at the end of this article,
+and let us move on to the utilization of the lemma to the equation (\ref{eqn:rffgp_exp_naive}).
+
+By replacing $\bs{A} = \sigma^2 \bs{I}$, $\bs{B} = \bs{\Phi}\tran$, $\bs{C} = \bs{\Phi}$,
+and $\bs{D} = \bs{I}$ on the equation (\ref{eqn:matrix_inversion_lemma}),
+we obtain the following equation:
+\begin{equation}
+    \left( \bs{\Phi}\tran \bs{\Phi} + \sigma^2 \bs{I} \right)^{-1}
+    = \frac{1}{\sigma^2} \left (\bs{I} - \bs{\Phi}\tran
+    \left( \bs{\Phi \Phi}\tran + \sigma^2 \bs{I} \right)^{-1} \bs{\Phi} \right),
+    \label{eqn:rffgp_exp_solving}
+\end{equation}
+where $\bs{P} = \bs{\Phi \Phi}\tran \in \mathbb{R}^{D \times D}$.
+Then multiply $\bs{\Phi}$ from the right the to the above equation (\ref{eqn:rffgp_exp_solving}),
+we get
+\begin{equation}
+    \left( \bs{\Phi}\tran \bs{\Phi} + \sigma^2 \bs{I} \right)^{-1} \bs{\Phi}
+    = \frac{1}{\sigma^2} \bs{\Phi}\tran
+    \left( \bs{I} - \left( \bs{P} + \sigma^2 \bs{I} \right)^{-1} \bs{P} \right).
+    \label{eqn:rff_key_eqn}
+\end{equation}
+Therefore, the expression (\ref{eqn:rffgp_exp_naive}) can be written as
+\begin{equation}
+    m (\bs{\xi}) = \widehat{m} (\bs{\xi}) + \frac{1}{\sigma^2}
+    \left( \bs{y} - \widehat{\bs{m}} \right)\tran \bs{\Phi}\tran \bs{S},
+    \label{eqn:rffgp_exp}
+\end{equation}
+where
+\begin{equation}
+    \bs{S} = \bs{I} - \left( \bs{P} + \sigma^2 \bs{I} \right)^{-1} \bs{P}.
+    \label{eqn:rffgp_exp_cache}
+\end{equation}
+
+Clever readers would have already noticed that the bottleneck has been resolved.
+The inverse matrix $(\bs{K} + \sigma^2 \bs{I})^{-1}$, which was the bottleneck of
+the expression (\ref{eqn:rffgp_exp_naive}), became $(\bs {P} + \sigma^2 \bs{I})^{-1}$
+in the expressions (\ref{eqn:rffgp_exp}) and (\ref{eqn:rffgp_exp_cache}) where the size of
+the inverse matrix is $D \times D$. Normally, the RFF dimension $D$ is set sufficiently
+smaller than the number of training data $N$, therefore the inverse matrix
+$(\bs {P} + \sigma^2 \bs{I})^{-1}$ is no longer a bottleneck of computational cost.
+The bottleneck of the expressions (\ref{eqn:rffgp_exp}) and (\ref{eqn:rffgp_exp_cache})
+is the matrix product $\bs{P} = \bs{\Phi \Phi}\tran$, whoes computational cost is $O(ND^2)$.
+Therefore we've achieved a considerable speedup of the training of the Gaussian process model
+by applying RFF because the calculational cost before RFF is $O(N^3)$.
+
+\subsection{Applying RFF to covariance of prediction}
+
+Next, we apply RFF to the covariance of the prediction (\ref{eqn:gp_cov}).
+By substitute RFF approximation (\ref{eqn:rff_key_eqn}) to the expression (\ref{eqn:gp_cov}),
+we obtain
+\begin{align}
+    v (\bs{\xi}_1, \bs{\xi}_2)
+    & = \bs{\phi} (\bs{\xi}_1)\tran \bs{\phi} (\bs{\xi}_2)
+    - \frac{1}{\sigma^2} \bs{\phi} (\bs{\xi}_1)\tran \bs{PS} \bs{\phi} (\bs{\xi}_2) \notag \\
+    & = \bs{\phi} (\bs{\xi}_1)\tran
+    \left( \bs{I} - \frac{1}{\sigma^2} \bs{PS} \right)
+    \bs{\phi} (\bs{\xi}_2),
+    \label{eqn:rffgp_cov}
+\end{align}
+The bottleneck of the expression (\ref{eqn:rffgp_cov}) is, as the same as the expectation of the
+prediction, the matrix product $\bs{P} = \bs{\Phi \Phi}\tran$ whoes calculation cost is $O(ND^2)$.
+
+The procedure of training and inference of the Gaussian process model after applying RFF is
+descrived in algorithm \ref{alg:rffgp_train} and \ref{alg:rffgp_infer} as pseudo code.
+Note that the prior distribution of the Gaussian process model is set to 0 for the sake of
+simplicity in Algorithm \ref{alg:rffgp_train} and \ref{alg:rffgp_infer}.
+
+\begin{algorithm}[t]
+    \caption{\bf Training of the GP model after RFF}
+    \label{alg:rffgp_train}
+    \KwData{$\mathcal{D} = \left\{ (\bs{x}_n, y_n) \right\}_{n=1}^{N}$, \, $\sigma \in \mathbb{R}^{+}$}
+    \KwResult{$\bs{c}_\mathrm{m} \in \mathbb{R}^D$, \, $\bs{C}_\mathrm{v} \in \mathbb{R}^{D \times D}$}
+    $\bs{y} \gets (y_1, \ldots, y_N)\tran$ \\
+    $\bs{\Phi} \gets (\bs{\phi}(\bs{x}_1), \ldots, \bs{\phi}(\bs{x}_N))$ \\
+    $\bs{P} \gets \bs{\Phi\Phi}\tran$ \\
+    $\bs{S} \gets \bs{I} - \left( \bs{P} + \sigma^2 \bs{I} \right)^{-1} \bs{P}$ \\
+    $\bs{c}_\mathrm{m} \gets \frac{1}{\sigma^2} \bs{y}\tran \bs{\Phi}\tran \bs{S}$
+    \hfill\Comment{{\footnotesize Cache for expectation}\hspace*{-48pt}\mbox{}}
+    $\bs{C}_\mathrm{v} \gets \bs{I} - \frac{1}{\sigma^2} \bs{PS}$
+    \hfill\Comment{{\footnotesize Cache for covariance}\hspace*{-45pt}\mbox{}}
+\end{algorithm}
+
+\begin{algorithm}[t]
+    \caption{\bf Inference of the GP model after RFF}
+    \label{alg:rffgp_infer}
+    \KwData{$\bs{\xi} \in \mathbb{R}^M$, \, $\bs{c}_\mathrm{m} \in \mathbb{R}^D$, \, $\bs{C}_\mathrm{v} \in \mathbb{R}^{D \times D}$}
+    \KwResult{$\mu \in \mathbb{R}$, $\eta \in \mathbb{R}$}
+    $\bs{z} \gets \bs{\phi}(\bs{\xi})$ \\
+    $\mu \gets \bs{c}_\mathrm{m} \bs{z}$
+    \hfill\Comment{{\footnotesize Inference of expectation}\hspace*{-70pt}\mbox{}}
+    $\eta \gets \bs{z}\tran \bs{C}_\mathrm{v} \bs{z}$
+    \hfill\Comment{{\footnotesize Inference of covariance}\hspace*{-58pt}\mbox{}}
+\end{algorithm}
+
+Finally, the calculational cost after applying RFF is summarized in the table
+\ref{tab:gp_complexity}, where $N \in \mathbb{Z}^{+}$ is the number of training data
+and $D \in \mathbb{Z}^{+}$ is the dimension of RFF.
+
+\begin{table}[t]
+    \caption{Computational cost of the GP model before/after RFF}
+    \label{tab:gp_complexity}
+    \begin{center}\begin{tabular}{ccc}
+        \hline
+         & Training & Inference \\
+        \hline
+        Before RFF & $O(N^3)$   & $O(N)$   \\  
+        After RFF  & $O(N D^2)$ & $O(D^2)$ \\
+        \hline
+    \end{tabular}\end{center}
+\end{table}
+
+% }}}
+
+\appendix
+
+\section{Appendices}\titlebar
+% {{{
+
+\subsection{Proof of matrix inversion lemma}
+
+The matrix inversion lemma is reprinted and proved.
+
+\begin{theorem}[Matrix Inversion Lemma]
+    Let
+    $\bs{A} \in \mathbb{R^{N \times N}}$,
+    $\bs{B} \in \mathbb{R^{N \times M}}$,
+    $\bs{C} \in \mathbb{R^{M \times N}}$,
+    and
+    $\bs{D} \in \mathbb{R^{M \times M}}$
+    be real matrices. Then the equation
+    \begin{equation}
+        \left( \bs{A} + \bs{BDC} \right)^{-1} = \bs {A}^{-1} - \bs{A}^{-1} \bs{B}
+        \left( \bs{D}^{-1} + \bs{CA}^{-1} \bs{B} \right)^{-1} \bs{CA}^{-1}
+    \end{equation}
+    holds, where the matrix $\bs{A}$ and $\bs{D}$ are regular matrices.
+\end{theorem}
+\begin{proof}
+The following equation holds:
+\begin{align*}
+    \begin{pmatrix}
+        \bs{A} & \bs{B} \\
+        \bs{C} & \bs{D}
+    \end{pmatrix}^{-1}
+    &= \begin{pmatrix}
+        \bs{A}^{-1} + \bs{A}^{-1} \bs{BSCA}^{-1} & - \bs{A}^{-1} \bs{BS} \\
+        - \bs {SCA}^{-1}                         & \bs {S}
+    \end{pmatrix} \\
+    &= \begin{pmatrix}
+        \bs{T}                & -\bs{TBD}^{-1} \\
+        - \bs{D}^{-1} \bs{CT} & \bs{D}^{-1} + \bs{D}^{-1} \bs{CTBD}^{-1}
+    \end{pmatrix},
+\end{align*}
+where
+\begin{align}
+    \bs{T} &= \left( \bs{D} - \bs {CA}^{-1} \bs{B} \right)^{-1}, \\
+    \bs{S} &= \left( \bs{A} - \bs {BD}^{-1} \bs{C} \right)^{-1}.
+\end{align}
+It is easy to verify the above equation from a direct calculation.
+By comparing the corresponding parts of the above block matrix, we get
+\begin{align}
+    \bs{T} &= \bs{A}^{-1} + \bs{A}^{-1} \bs{BSCA}^{-1},
+    \label{eqn:binomial_theorem_proof_1} \\
+    \bs{S} &= \bs{D}^{-1} + \bs{D}^{-1} \bs{CTBD}^{-1}, \\
+    - \bs{A}^{-1} \bs{BS} &= - \bs{TBD}^{-1}, \\
+    - \bs{SCA}^{-1} &= - \bs{D}^{-1} \bs{CT},
+\end{align}
+By replacing with
+\begin{center}
+    $\bs{A} \to \bs{D}^{-1}$, \hspace{5pt}
+    $\bs{B} \to -\bs{C}$, \hspace{5pt}
+    $\bs{C} \to \bs{B}$, \hspace{5pt}
+    $\bs{D} \to \bs{A}$,
+\end{center}
+in the equation (\ref{eqn:binomial_theorem_proof_1}), we get the formula to be proved.
+\end{proof}
+
+% }}}
+
+\pagebreak
+
+\begin{thebibliography}{9}
+% {{{
+
+    \bibitem{Rahimi2007}
+    A.~Rahimi and B.~Recht, 
+    ``Random Features for Large-Scale Kernel Machines'',
+    Neural Information Processing Systems, 2007.
+
+    \bibitem{Rasmussen2006}
+    C.~Rasmussen and C.~Williams, ``Gaussian Processes for Machine Learning'', MIT Press, 2006.
+
+% }}}
+\end{thebibliography}
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% SOURCE FINISH %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% vim: expandtab tabstop=4 shiftwidth=4
