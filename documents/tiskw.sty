@@ -1,0 +1,67 @@
+% TeX Style File
+%
+% Author: Tetsuya Ishikawa <tiskw111gmail.com>
+% Date  : September 03, 2021
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% SOURCE START %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[width=190truemm,height=260truemm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{helvet}
+\usepackage{fourier}
+\usepackage{graphicx}
+\usepackage{thmbox}
+\usepackage{csquotes}
+\usepackage{algorithm2e}
+\usepackage{algorithmic}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+
+\pagestyle{fancy}
+\lhead{}
+\rhead{}
+\cfoot{-- {\thepage} --}
+\rfoot{\small\tt\textcolor{lightgray}{T.~Ishikawa}}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\RestyleAlgo{ruled}
+\SetKwComment{Comment}{/* }{ */}
+
+\makeatletter
+\def\@maketitle{\begin{center}
+{\huge\bf\@title\par}
+\vspace{10mm}
+{\large\bf{\@author}\par}
+\end{center}\par\vskip 1.5em}
+\makeatother
+
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+\newcommand{\mbar}{\hspace{1pt}\bigm|\hspace{1pt}}
+\newcommand{\tran}{^{\mkern-1.5mu\mathsf{T}}\hspace{0.5pt}}
+\DeclareMathOperator*{\sgn}{sgn}
+\DeclareMathOperator*{\Sgn}{Sgn}
+\DeclareMathOperator*{\argmin}{argmin}
+
+\newtheorem[M]{theorem}{Theorem}[section]
+\newtheorem[M]{definition}[theorem]{Definition}
+\newtheorem[M]{lemma}[theorem]{Lemma}
+
+\renewenvironment{proof}%
+{\textit{Proof}:}%
+{\hfill$\blacksquare$\vspace*{8pt}}
+
+\newenvironment{note}%
+{\begin{displayquote}\footnotesize\textsf{NOTE:}}%
+{\end{displayquote}}
+
+\newcommand{\titlebar}{
+\setlength\unitlength{1truemm}
+\vspace*{-19pt}
+\begin{picture}(88,0)(0,0)
+\put(-1,0){\line(1,0){94}}
+\put(93,0){\circle*{1}}
+\end{picture}\vspace*{3pt}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% SOURCE FINISH %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% vim: noexpandtab tabstop=4 shiftwidth=4
