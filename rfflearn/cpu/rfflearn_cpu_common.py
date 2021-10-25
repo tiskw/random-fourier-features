@@ -2,16 +2,11 @@
 #
 # Common functions/classes for the other classes.
 # All classes except 'seed' function is not visible from users.
-#
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : October 11, 2020
 ##################################################### SOURCE START #####################################################
-
 
 import functools
 import numpy as np
 import scipy.stats
-
 
 ### Fix random seed used in this script.
 def seed(seed):
@@ -19,12 +14,10 @@ def seed(seed):
     ### Now it is enough to fix the random seed of Numpy.
     np.random.seed(seed)
 
-
 ### Generate random matrix for random Fourier features.
 def get_rff_matrix(dim_in, dim_out, std):
 
     return  std * np.random.randn(dim_in, dim_out)
-
 
 ### Generate random matrix for orthogonal random features.
 def get_orf_matrix(dim_in, dim_out, std):
@@ -40,7 +33,6 @@ def get_orf_matrix(dim_in, dim_out, std):
 
     ### Trim unnecessary part.
     return W[:dim_in, :dim_out]
-
 
 ### Generate random matrix for random Fourier features.
 def get_qrf_matrix(dim_in, dim_out, std):
@@ -74,7 +66,6 @@ def get_qrf_matrix(dim_in, dim_out, std):
 
     return std * W
 
-
 ### This function returns a function which generate RFF/ORF matrix.
 ### The usage of the returned value of this function are:
 ###     f(dim_input:int) -> np.array with shape (dim_input, dim_kernel)
@@ -84,7 +75,6 @@ def get_matrix_generator(rand_mat_type, std, dim_kernel):
     elif rand_mat_type == "orf": return functools.partial(get_orf_matrix, std = std, dim_out = dim_kernel)
     elif rand_mat_type == "qrf": return functools.partial(get_qrf_matrix, std = std, dim_out = dim_kernel)
     else                       : raise RuntimeError("matrix_generator: 'rand_mat_type' must be 'rff' or 'orf'.")
-
 
 ### Base class of the following RFF/ORF related classes.
 class Base:
@@ -115,6 +105,6 @@ class Base:
         elif hasattr(dim_in, "__iter__"): self.W = tuple([self.mat(d) for d in dim_in])
         else                            : self.W = self.mat(dim_in)
 
-
 ##################################################### SOURCE FINISH ####################################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
 #
 # Python module of canonical correlation analysis with random matrix for CPU.
-#
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : October 11, 2020
 ##################################################### SOURCE START #####################################################
 
-
 import sklearn.cross_decomposition
-from .rfflearn_cpu_common import Base
 
+from .rfflearn_cpu_common import Base
 
 ### Canonival Correlation Analysis with random matrix (RFF/ORF)
 class CCA(Base):
@@ -36,23 +32,20 @@ class CCA(Base):
     def transform(self, X, Y = None, copy = True):
         return self.cca.transform(self.conv(X, 0), None if Y is None else self.conv(Y, 1), copy)
 
-
 ### The above functions/classes are not visible from users of this library,
 ### becasue of the complicated usage. The following classes are simplified
 ### version of the classes. These classes are visible from users.
-
 
 ### Canonical correlation analysis with RFF.
 class RFFCCA(CCA):
     def __init__(self, *pargs, **kwargs):
         super().__init__("rff", *pargs, **kwargs)
 
-
 ### Canonical correlation analysis with ORF.
 class ORFCCA(CCA):
     def __init__(self, *pargs, **kwargs):
         super().__init__("orf", *pargs, **kwargs)
 
-
 ##################################################### SOURCE FINISH ####################################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

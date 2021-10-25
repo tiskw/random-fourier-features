@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : January 10, 2021
+# Wrapper functions for the permutation feature importance.
+#
 ##################################################### SOURCE START #####################################################
 
 
@@ -45,4 +45,5 @@ def permutation_plot(permutation_importances, feature_names, show = True):
 
 
 ##################################################### SOURCE FINISH ####################################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

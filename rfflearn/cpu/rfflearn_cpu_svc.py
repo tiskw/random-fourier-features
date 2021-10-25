@@ -1,17 +1,13 @@
 #!/usr/bin/env python3
 #
 # Python module of support vector classification with random matrix for CPU.
-#
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : October 11, 2020
 ##################################################### SOURCE START #####################################################
-
 
 import numpy as np
 import sklearn.svm
 import sklearn.multiclass
-from .rfflearn_cpu_common import Base
 
+from .rfflearn_cpu_common import Base
 
 ### Support vector classification with random matrix (RFF/ORF).
 class SVC(Base):
@@ -54,7 +50,6 @@ class SVC(Base):
     def score(self, X, y, **args):
         self.set_weight(X.shape[1])
         return self.svm.score(self.conv(X), y, **args)
-
 
 ### Batch training extention of the support vector classification.
 class BatchSVC:
@@ -128,47 +123,40 @@ class BatchSVC:
         pred  = self.predict(X)
         return np.mean([(1 if pred[n, 0] == y[n] else 0) for n in range(X.shape[0])])
 
-
 ### The above functions/classes are not visible from users of this library,
 ### becasue of the complicated usage. The following classes are simplified
 ### version of the classes. These classes are visible from users.
-
 
 ### Support vector machine with RFF.
 class RFFSVC(SVC):
     def __init__(self, *pargs, **kwargs):
         super().__init__("rff", *pargs, **kwargs)
 
-
 ### Support vector machine with ORF.
 class ORFSVC(SVC):
     def __init__(self, *pargs, **kwargs):
         super().__init__("orf", *pargs, **kwargs)
-
 
 ### Support vector machine with QRF.
 class QRFSVC(SVC):
     def __init__(self, *pargs, **kwargs):
         super().__init__("qrf", *pargs, **kwargs)
 
-
 ### Support vector machine with RFF.
 class RFFBatchSVC(BatchSVC):
     def __init__(self, *pargs, **kwargs):
         super().__init__("rff", *pargs, **kwargs)
-
 
 ### Support vector machine with ORF.
 class ORFBatchSVC(BatchSVC):
     def __init__(self, *pargs, **kwargs):
         super().__init__("orf", *pargs, **kwargs)
 
-
 ### Support vector machine with QRF.
 class QRFBatchSVC(BatchSVC):
     def __init__(self, *pargs, **kwargs):
         super().__init__("qrf", *pargs, **kwargs)
 
-
 ##################################################### SOURCE FINISH ####################################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

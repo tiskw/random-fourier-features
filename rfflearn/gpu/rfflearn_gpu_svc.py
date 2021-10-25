@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 #
 # Python module of support vector classification with random matrix for CPU.
-#
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : January 29, 2021
 ######################################### SOURCE START ########################################
 
 import numpy as np
@@ -19,11 +16,12 @@ class SVC(Base):
     ### There are two ways to initialize these parameters:
     ###   (1) from scratch: generate parameters from scratch,
     ###   (2) from rffsvc: copy parameters from RFFSVC (CPU) class instance.
-    ### The member variable 'self.initialized' indicate that the parameters are well initialized or not.
-    ### If the parameters are initialized by one of the ways other than (1), 'self.initialized' is set to True.
-    ### And if 'self.initialized' is still False when just before the training/inference,
-    ### then the parameters are initialized by the way (1).
-    def __init__(self, rand_mat_type, svc = None, M_pre = None, dim_kernel = 128, std_kernel = 0.1, W = None, batch_size = 200, dtype = 'float64', *pargs, **kwargs):
+    ### The member variable 'self.initialized' indicate that the parameters are well initialized
+    ### or not. If the parameters are initialized by one of the ways other than (1),
+    ### 'self.initialized' is set to True. And if 'self.initialized' is still False when just
+    ### before the training/inference, then the parameters are initialized by the way (1).
+    def __init__(self, rand_mat_type, svc = None, M_pre = None, dim_kernel = 128, std_kernel = 0.1,
+                 W = None, batch_size = 200, dtype = 'float64', *pargs, **kwargs):
 
         ### Save important variables.
         self.dim_kernel  = dim_kernel
@@ -226,4 +224,5 @@ class QRFSVC(SVC):
         super().__init__("qrf", *pargs, **kwargs)
 
 ######################################### SOURCE FINISH #######################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

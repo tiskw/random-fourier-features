@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : January 09, 2021
+# Wrapper functions for the SHAP method.
+#
 ##################################################### SOURCE START #####################################################
 
 
@@ -34,4 +34,5 @@ def shap_plot(*pargs, **kwargs):
 
 
 ##################################################### SOURCE FINISH ####################################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

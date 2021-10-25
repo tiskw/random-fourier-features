@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
 #
 # Python module of principal component analysis with random matrix for CPU.
-#
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : October 11, 2020
 ##################################################### SOURCE START #####################################################
 
-
 import sklearn.decomposition
-from .rfflearn_cpu_common import Base
 
+from .rfflearn_cpu_common import Base
 
 ### Principal Component Analysis with random matrix (RFF/ORF).
 class PCA(Base):
@@ -53,23 +49,20 @@ class PCA(Base):
         self.set_weight(X.shape[1])
         return self.pca.transform(self.conv(X), *pargs, **kwargs)
 
-
 ### The above functions/classes are not visible from users of this library,
 ### becasue of the complicated usage. The following classes are simplified
 ### version of the classes. These classes are visible from users.
-
 
 ### Principal component analysis with RFF.
 class RFFPCA(PCA):
     def __init__(self, *pargs, **kwargs):
         super().__init__("rff", *pargs, **kwargs)
 
-
 ### Principal component analysis with ORF.
 class ORFPCA(PCA):
     def __init__(self, *pargs, **kwargs):
         super().__init__("orf", *pargs, **kwargs)
 
-
 ##################################################### SOURCE FINISH ####################################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker
