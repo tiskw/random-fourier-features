@@ -5,22 +5,21 @@ This python script provides examples of regression canonical correlation analysi
 
 ## Installation
 
-See [this document](https://tiskw.gitbook.io/rfflearn/tutorial#setting-up) for more details.
-
-### Install on your environment (easier, but pollute your development environment)
-
-```console
-$ pip3 install docopt numpy scipy scikit-learn  # Necessary packages
-$ pip3 install optuna                           # Required only for hyper parameter tuning
-```
+See [this document](../../SETUP.md) for more details.
 
 ### Docker image (recommended)
 
 ```console
-$ docker pull tiskw/pytorch:2021-01-23
+$ docker pull tiskw/pytorch:latest
 $ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
-$ docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:2021-01-23 bash
+$ docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash
 $ cd examples/cca_for_artificial_data/
+```
+
+### Install on your environment (easier, but pollute your development environment)
+
+```console
+$ pip3 install docopt numpy scipy scikit-learn
 ```
 
 
@@ -41,4 +40,3 @@ The linear CCA was failed to find the correlation, but CCA with random Fourier f
 <div align="center">
   <img src="./figure_cca_for_artificial_data.png" width="840" height="640" alt="CCA results for artificial dataset" />
 </div>
-

@@ -8,7 +8,7 @@ For the GPU training and inference, you need [PyTorch](https://pytorch.org/).
 
 ## Installation
 
-See [this document](https://tiskw.gitbook.io/rfflearn/tutorial#setting-up) for more details.
+See [this document](../..SETUP.md) for more details.
 
 ### Install on your environment (easier, but pollute your development environment)
 
@@ -21,9 +21,9 @@ $ pip3 install optuna                           # Required only for hyper parame
 ### Docker image (recommended)
 
 ```console
-$ docker pull tiskw/pytorch:2021-01-23
+$ docker pull tiskw/pytorch:latest
 $ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
-$ docker run --rm -it --gpus=all -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:2021-01-23 bash
+$ docker run --rm -it --gpus=all -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash
 $ cd examples/gpr_sparse_data/
 ```
 

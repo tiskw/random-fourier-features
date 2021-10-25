@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 #
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : January 29, 2021
+# Sample code for the tuner submodule.
 #################################### SOURCE START ###################################
 
 """
@@ -134,4 +133,5 @@ if __name__ == "__main__":
     main(args)
 
 #################################### SOURCE FINISH ##################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

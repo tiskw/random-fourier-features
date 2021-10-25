@@ -4,9 +4,6 @@
 #   - scale factor of the RBF kernel (scale)
 #   - standers deviation of the RBF kernel (s_k)
 #   - standers deviation of the measurement error (s_e)
-#
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : January 29, 2021
 ##################################################### SOURCE START #####################################################
 
 """
@@ -109,4 +106,5 @@ if __name__ == "__main__":
     main(args)
 
 ##################################################### SOURCE FINISH ####################################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

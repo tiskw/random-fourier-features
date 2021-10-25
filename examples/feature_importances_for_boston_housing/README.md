@@ -1,32 +1,31 @@
 # Feature Importance of Trained Model
 
-This directory provides an example of feature importance calculation
-and visualization that is one of the typical data analysis procedure.
-In here, we build a model for the Boston house-price dataset using
-automatic hyper parameter tuning and calculate the feature importances.
-The backend of the SHAP feature importance is [SHAP library](https://shap.readthedocs.io/en/latest/).
+This directory provides an example of feature importance calculation and visualization
+that is one of the typical data analysis procedure. In here, we build a model for
+the Boston house-price dataset using automatic hyper parameter tuning and calculate
+the feature importances. The backend of the SHAP feature importance is
+[SHAP library](https://shap.readthedocs.io/en/latest/).
 
 
 ## Installation
 
-See [this document](https://tiskw.gitbook.io/rfflearn/tutorial#setting-up) for more details.
+See [this document](../../SETUP.md) for more details.
+
+### Docker image (recommended)
+
+```console
+$ docker pull tiskw/pytorch:latest
+$ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
+$ docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash
+$ cd examples/optuna_and_shap_for_boston_housing/
+```
 
 ### Install on your environment (easier, but pollute your development environment)
 
 ```console
 $ pip3 install docopt numpy scipy scikit-learn  # Necessary packages
 $ pip3 install torch                            # Required only for GPU training/inference
-$ pip3 install optuna                           # Required for hyper parameter tuning
 $ pip3 install shap                             # Required for feature importance
-```
-
-### Docker image (recommended)
-
-```console
-$ docker pull tiskw/pytorch:2021-01-23
-$ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
-$ docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:2021-01-23 bash
-$ cd examples/optuna_and_shap_for_boston_housing/
 ```
 
 

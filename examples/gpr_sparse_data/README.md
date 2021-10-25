@@ -3,31 +3,30 @@
 This directory provides examples of Gaussian process regression with random Fourier features.
 
 The training script in this directory supports both CPU/GPU training.
-For the GPU training, you need to install Tensorflow 2.x (Tensorflow 1.x is not supported).
+For the GPU training, you need to install [PyTorch](https://pytorch.org/).
 
 
 ## Installation
 
-See [this document](https://tiskw.gitbook.io/rfflearn/tutorial#setting-up) for more details.
+See [this document](../../SETUP.md) for more details.
+
+### Docker image (recommended)
+
+```console
+$ docker pull tiskw/pytorch:latest
+$ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
+$ docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash
+$ cd examples/gpr_sparse_data/
+```
+
+If you need GPU support, add the option `--gpus=all` to the above `docker run` command.
 
 ### Install on your environment (easier, but pollute your development environment)
 
 ```console
 $ pip3 install docopt numpy scipy scikit-learn  # Necessary packages
 $ pip3 install torch                            # Required only for GPU training/inference
-$ pip3 install optuna                           # Required only for hyper parameter tuning
 ```
-
-### Docker image (recommended)
-
-```console
-$ docker pull tiskw/pytorch:2021-01-23
-$ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
-$ docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:2021-01-23 bash
-$ cd examples/gpr_sparse_data/
-```
-
-If you need GPU support, add the option `--gpus=all` to the above `docker run` command.
 
 
 ## Usage

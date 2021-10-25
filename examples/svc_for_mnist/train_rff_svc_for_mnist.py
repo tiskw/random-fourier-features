@@ -2,15 +2,13 @@
 #
 # This Python script provides an example usage of RFFSVC class which is a class for
 # SVM classifier using RFF. Interface of RFFSVC is quite close to sklearn.svm.SVC.
-#
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : January 24, 2021
 ##################################################### SOURCE START #####################################################
 
 """
 Overview:
   Train Random Fourier Feature SVM. Before running this script, make sure to create MNIST dataset.
-  As a comparison with Kernel SVM, this script has a capability to run a Kernel SVM as the same condition with RFF SVM.
+  As a comparison with Kernel SVM, this script has a capability to run a Kernel SVM as the same
+  condition with RFF SVM.
 
 Usage:
     main_rff_svc_for_mnist.py kernel [--input <str>] [--output <str>] [--pcadim <int>] [--kernel <str>]
@@ -48,7 +46,6 @@ import docopt
 import numpy   as np
 import sklearn as skl
 
-
 ### Load train/test image data.
 def vectorise_MNIST_images(filepath, apply_fft = False):
 
@@ -65,17 +62,14 @@ def vectorise_MNIST_images(filepath, apply_fft = False):
     else:
         return np.array([Xs[n, :, :].reshape((28 * 28, )) for n in range(Xs.shape[0])])
 
-
 ### Load train/test label data.
 def vectorise_MNIST_labels(filepath):
     return np.load(filepath)
-
 
 ### PCA analysis for dimention reduction.
 def mat_transform_pca(Xs, dim):
     _, V = np.linalg.eig(Xs.T.dot(Xs))
     return np.real(V[:, :dim])
-
 
 ### Main procedure.
 def main(args):
@@ -121,7 +115,6 @@ def main(args):
         with open(args["--output"], "wb") as ofp:
             pickle.dump({"svc":svc, "pca":T, "args":args}, ofp)
 
-
 if __name__ == "__main__":
 
     ### Parse input arguments.
@@ -146,6 +139,6 @@ if __name__ == "__main__":
     ### Run main procedure.
     main(args)
 
-
 ##################################################### SOURCE FINISH ####################################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

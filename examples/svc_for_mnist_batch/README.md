@@ -52,4 +52,3 @@ In my computing environment (CPU: Intl Core i5 5250U, RAM: 4GB), I've got the fo
 
 As the author pointed out at the top of this document, the above results are worse than [usual SVC training](../rff_svc_for_mnist/README.md).
 However, the author's guess is that batch learning exceeds non-batch learning in case of a larger and more complicated dataset than MNIST.
-

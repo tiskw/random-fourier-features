@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 #
-# Python script
-#
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : Oct 20, 2018
+# This python script provides an example of RFFSVC with batch learning
+# on the MNIST dataset.
 #################################### SOURCE START ###################################
 
 import sys
@@ -32,8 +30,7 @@ def main():
     rfflearn.seed(111)
 
     ### Create classifier instance
-    # svc = rfflearn.RFFBatchSVC(dim_kernel = 1024, std_kernel = 0.10, num_epochs = 10, num_batches = 10, alpha = 0.05)
-    svc = rfflearn.RFFBatchSVC(dim_kernel = 1024, std_kernel = 0.05, num_epochs = 10, num_batches = 3, alpha = 0.15)
+    svc = rfflearn.RFFBatchSVC(dim_kernel = 1024, std_kernel = 0.10, num_epochs = 10, num_batches = 10, alpha = 0.05)
 
     ### Load training data
     with utils.Timer("Loading training data: "):
@@ -74,4 +71,5 @@ if __name__ == "__main__":
     main()
 
 #################################### SOURCE FINISH ##################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

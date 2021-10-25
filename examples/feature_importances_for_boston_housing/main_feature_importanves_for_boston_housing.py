@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 #
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : January 29, 2021
+# Sample code for the explainer submodule.
 #################################### SOURCE START ###################################
 
 """
@@ -25,7 +24,6 @@ import sys
 import docopt
 import matplotlib.pyplot as mpl
 import sklearn.datasets
-import sklearn.inspection
 import sklearn.metrics
 import sklearn.model_selection
 import sklearn.preprocessing
@@ -132,4 +130,5 @@ if __name__ == "__main__":
     main(args)
 
 #################################### SOURCE FINISH ##################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

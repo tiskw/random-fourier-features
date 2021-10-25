@@ -160,7 +160,7 @@ class SVC(Base):
 
         return self
 
-    ### Function for running the Tensorflow model of RFF for one batch.
+    ### Function for running the PyTorch model of RFF for one batch.
     ###   - X_cpu (np.array, shape = [N, K]): training data,
     ### where N is the number of training data, K is dimension of the input data.
     def predict_proba_batch(self, X_cpu):
@@ -177,7 +177,7 @@ class SVC(Base):
         bs = self.batch_size
         bn = X_cpu.shape[0] // bs
 
-        ### Batch number must be a multiple of batch size because the Tensorflow Graph already built.
+        ### Batch number must be a multiple of batch size.
         if X_cpu.shape[0] % bs != 0:
             raise ValueError("rfflearn.gpu.SVC: Number of input data must be a multiple of batch size")
 
