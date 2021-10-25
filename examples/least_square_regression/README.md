@@ -5,22 +5,22 @@ This directory provides examples of regression with random Fourier features.
 
 ## Installation
 
-See [this document](https://tiskw.gitbook.io/rfflearn/tutorial#setting-up) for more details.
+See [this document](../../SETUP.md) for more details.
+
+### Docker image (recommended)
+
+```console
+$ docker pull tiskw/pytorch:latest
+$ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
+$ docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash
+$ cd examples/least_square_regression/
+```
 
 ### Install on your environment (easier, but pollute your development environment)
 
 ```console
 $ pip3 install docopt numpy scipy scikit-learn  # Necessary packages
 $ pip3 install optuna                           # Required only for hyper parameter tuning
-```
-
-### Docker image (recommended)
-
-```console
-$ docker pull tiskw/pytorch:2021-01-23
-$ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
-$ docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:2021-01-23 bash
-$ cd examples/least_square_regression/
 ```
 
 

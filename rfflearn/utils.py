@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 #
 # Collection of utility functions used in the example code of this module.
-#
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : January 29, 2021
 ######################################### SOURCE START ########################################
 
 import time
@@ -52,4 +49,5 @@ def colormap_jet(value):
     return ("#%02x%02x%02x" % (r, g, b))
 
 ######################################### SOURCE FINISH #######################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

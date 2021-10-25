@@ -2,9 +2,6 @@
 #
 # This Python script provides an example usage of RFFSVC class which is a class for
 # SVM classifier using RFF. Interface of RFFSVC is quite close to sklearn.svm.SVC.
-#
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : January 29, 2021
 ##################################################### SOURCE START #####################################################
 
 """
@@ -102,4 +99,5 @@ if __name__ == "__main__":
     main(args)
 
 ##################################################### SOURCE FINISH ####################################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

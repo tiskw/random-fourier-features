@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 #
 # Python module of Gaussian process with random matrix for GPU.
-#
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : January 29, 2021
 ######################################### SOURCE START ########################################
 
 import numpy as np
@@ -89,9 +86,9 @@ class GPR(Base):
         del X, W, a, S, Z, F, p
         if "cuda" in self.dev: torch.cuda.empty_cache()
 
-        if return_std and return_cov: return (y_cpu, s_cpu, V_cpu)
-        elif return_std             : return (y_cpu, s_cpu)
-        elif return_cov             : return (y_cpu, V_cpu)
+        if return_std and return_cov: return [y_cpu, s_cpu, V_cpu]
+        elif return_std             : return [y_cpu, s_cpu]
+        elif return_cov             : return [y_cpu, V_cpu]
         else                        : return  y_cpu
 
     ### calculate score of the given inference data.
@@ -175,4 +172,5 @@ class QRFGPC(GPC):
         super().__init__("qrf", *pargs, **kwargs)
 
 ######################################### SOURCE FINISH #######################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

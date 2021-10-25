@@ -3,9 +3,6 @@
 # This Python script provides an example usage of RFFGPC class which is a class for
 # Gaussian process classifier using RFF. Interface of RFFGPC is quite close to
 # sklearn.gaussian_process.GaussianProcessClassifier.
-#
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : January 29, 2021
 ##################################################### SOURCE START #####################################################
 
 """
@@ -23,11 +20,11 @@ Usage:
 Options:
     --input <str>        Directory path to the MNIST dataset.                [default: ../../dataset/mnist]
     --output <str>       File path to the output pickle file.                [default: result_mnist.pickle]
-    --pcadim <int>       Output dimention of Principal Component Analysis.   [default: 1024]
+    --pcadim <int>       Output dimention of Principal Component Analysis.   [default: 128]
     --rtype <str>        Type of random matrix (rff/orf/qrf).                [default: rff]
-    --kdim <int>         Hyper parameter of RFF SVM (dimention of RFF).      [default: 128]
-    --std_kernel <float> Hyper parameter of RFF SVM (stdev of RFF).          [default: 0.05]
-    --std_error <float>  Hyper parameter of RFF SVM (stdev of error).        [default: 0.05]
+    --kdim <int>         Hyper parameter of RFF SVM (dimention of RFF).      [default: 1024]
+    --std_kernel <float> Hyper parameter of RFF SVM (stdev of RFF).          [default: 0.1]
+    --std_error <float>  Hyper parameter of RFF SVM (stdev of error).        [default: 0.5]
     --seed <int>         Random seed.                                        [default: 111]
     --cpus <int>         Number of available CPUs.                           [default: -1]
     -h, --help           Show this message.
@@ -122,4 +119,5 @@ if __name__ == "__main__":
     main(args)
 
 ##################################################### SOURCE FINISH ####################################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

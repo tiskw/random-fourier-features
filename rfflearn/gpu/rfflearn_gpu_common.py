@@ -2,9 +2,6 @@
 #
 # Common functions/classes for the other classes.
 # All classes except "seed" function is not visible from users.
-#
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : January 29, 2021
 ######################################### SOURCE START ########################################
 
 import numpy as np
@@ -27,6 +24,8 @@ def seed(seed):
 def detect_device():
 
     ### Return current GPU's device string if GPU is available.
+    ### This implementation only support single GPU, and the last GPU will be
+    ### automatically selected.
     if torch.cuda.is_available():
         return "cuda:%d" % torch.cuda.current_device()
 
@@ -34,4 +33,5 @@ def detect_device():
     else: return "cpu"
 
 ######################################### SOURCE FINISH #######################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

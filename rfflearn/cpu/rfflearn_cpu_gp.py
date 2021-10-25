@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
 #
 # Python module of Gaussian process with random matrix for CPU.
-#
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : January 24, 2021
 ##################################################### SOURCE START #####################################################
-
 
 import numpy as np
 import sklearn.metrics
-from .rfflearn_cpu_common import Base
 
+from .rfflearn_cpu_common import Base
 
 ### Gaussian Process Regression with random matrix (RFF/ORF).
 class GPR(Base):
@@ -41,9 +37,9 @@ class GPR(Base):
         F = self.conv(X).T
         p = np.array(self.a.dot(F)).T
         p = np.squeeze(p, axis = 1) if len(p.shape) > 1 and p.shape[1] == 1 else p
-        if return_std and return_cov: return (p, self.std(F), self.cov(F))
-        elif return_std             : return (p, self.std(F))
-        elif return_cov             : return (p, self.cov(F))
+        if return_std and return_cov: return [p, self.std(F), self.cov(F)]
+        elif return_std             : return [p, self.std(F)]
+        elif return_cov             : return [p, self.cov(F)]
         else                        : return  p
 
     ### Return predicted standard deviation.
@@ -60,7 +56,6 @@ class GPR(Base):
     def score(self, X, y, **args):
         self.set_weight(X.shape[1])
         return sklearn.metrics.r2_score(y, self.predict(X))
-
 
 ### Gaussian Process Classification with random matrix (RFF/ORF).
 class GPC(GPR):
@@ -96,51 +91,44 @@ class GPC(GPR):
 
         return res
 
-
+    ### Returns classification accuracy.
     def score(self, Xs, ys):
         return np.mean(self.predict(Xs) == ys)
-
 
 ### The above functions/classes are not visible from users of this library,
 ### becasue of the complicated usage. The following classes are simplified
 ### version of the classes. These classes are visible from users.
-
 
 ### Gaussian process regression with RFF.
 class RFFGPR(GPR):
     def __init__(self, *pargs, **kwargs):
         super().__init__("rff", *pargs, **kwargs)
 
-
 ### Gaussian process regression with ORF.
 class ORFGPR(GPR):
     def __init__(self, *pargs, **kwargs):
         super().__init__("orf", *pargs, **kwargs)
-
 
 ### Gaussian process regression with QRF.
 class QRFGPR(GPR):
     def __init__(self, *pargs, **kwargs):
         super().__init__("qrf", *pargs, **kwargs)
 
-
 ### Gaussian process classifier with RFF.
 class RFFGPC(GPC):
     def __init__(self, *pargs, **kwargs):
         super().__init__("rff", *pargs, **kwargs)
-
 
 ### Gaussian process classifier with ORF.
 class ORFGPC(GPC):
     def __init__(self, *pargs, **kwargs):
         super().__init__("orf", *pargs, **kwargs)
 
-
 ### Gaussian process classifier with QRF.
 class QRFGPC(GPC):
     def __init__(self, *pargs, **kwargs):
         super().__init__("qrf", *pargs, **kwargs)
 
-
 ##################################################### SOURCE FINISH ####################################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

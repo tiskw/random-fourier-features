@@ -8,26 +8,25 @@ For the GPU training and inference, you need [PyTorch](https://pytorch.org/).
 
 ## Installation
 
-See [this document](https://tiskw.gitbook.io/rfflearn/tutorial#setting-up) for more details.
+See [this document](../../SETUP.md) for more details.
+
+### Docker image (recommended)
+
+```console
+$ docker pull tiskw/pytorch:latest
+$ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
+$ docker run --rm -it --gpus=all -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash
+$ cd examples/gpc_for_mnist/
+```
+
+If you need GPU support, add the option `--gpus=all` to the above `docker run` command.
 
 ### Install on your environment (easier, but pollute your development environment)
 
 ```console
 $ pip3 install docopt numpy scipy scikit-learn  # Necessary packages
 $ pip3 install torch                            # Required only for GPU training/inference
-$ pip3 install optuna                           # Required only for hyper parameter tuning
 ```
-
-### Docker image (recommended)
-
-```console
-$ docker pull tiskw/pytorch:2021-01-23
-$ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
-$ docker run --rm -it --gpus=all -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:2021-01-23 bash
-$ cd examples/gpc_for_mnist/
-```
-
-If you need GPU support, add the option `--gpus=all` to the above `docker run` command.
 
 
 ## Usage
@@ -42,8 +41,8 @@ $ cd ../../dataset/mnist
 $ python3 download_and_convert_mnist.py
 ```
 
-The MNIST dataset will be automatically downloaded, converted to `.npy` file
-and saved under `dataset/mnist/` directory.
+The MNIST dataset will be automatically downloaded, converted to `.npy` file,
+and saved under the `dataset/mnist/` directory.
 
 ### Training and inference
 

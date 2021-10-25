@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 #
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : October 10, 2020
+# Sample code for the RFFCCA class.
 ##################################################### SOURCE START #####################################################
 
 """
@@ -28,7 +27,6 @@ import numpy as np
 import sklearn.cross_decomposition
 import matplotlib.pyplot as mpl
 
-
 ### This function generate the data pair, x and y.
 ### The data x = [x1, x2] and y = [y1, y2] has a strong correlation, y1 = x1**2.
 ### This means that it is theoretically possible to extract correlated subspace of this data.
@@ -43,7 +41,7 @@ def generate_artificial_data(n_samples):
 
     return (data1, data2)
 
-
+### Main function.
 def main(args):
 
     ### Fix seed for random fourier feature calclation
@@ -102,7 +100,6 @@ def main(args):
     mpl.tight_layout()
     mpl.show()
 
-
 if __name__ == "__main__":
 
     ### Parse input arguments.
@@ -127,4 +124,5 @@ if __name__ == "__main__":
     main(args)
 
 ##################################################### SOURCE FINISH ####################################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 #
 # Python module of support vector regression with random matrix for CPU.
-#
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : January 29, 2021
 ##################################################### SOURCE START #####################################################
 
 import sklearn.svm
 import sklearn.multiclass
+
 from .rfflearn_cpu_common import Base
 
 ### Support vector regression with random matrix (RFF/ORF).
@@ -49,4 +47,5 @@ class ORFSVR(SVR):
         super().__init__("orf", *pargs, **kwargs)
 
 ##################################################### SOURCE FINISH ####################################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

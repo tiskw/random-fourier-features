@@ -8,7 +8,7 @@ Features of this module are:
 * interfaces of the module are quite close to the [scikit-learn](https://scikit-learn.org/),
 * support vector classifier and Gaussian process regressor/classifier provides CPU/GPU training and inference,
 * interface to [optuna](https://optuna.org/) for easier hyper parameter tuning,
-* this repository provides [example code](./examples/README.md) that shows RFF is useful for actual machine learning tasks.
+* this repository provides [example code](./examples/) that shows RFF is useful for actual machine learning tasks.
 
 Now, this module supports the following methods:
 
@@ -23,21 +23,6 @@ Now, this module supports the following methods:
 | support vector regression       | `rfflearn.cpu.RFFSVR`        | -                     |
 
 RFF can be applicable for many other machine learning algorithms, I will provide other functions soon.
-
-For more information, see the [user manual of rfflearn](https://tiskw.gitbook.io/rfflearn/).
-
-
-## Requirements and installations
-
-The author recommend to use [docker](https://www.docker.com/) for building development environment.
-See [this document](https://tiskw.gitbook.io/rfflearn/tutorial#setting-up) for more details.
-
-If you don't mind to pollute your own environment (or you are already inside a docker container),
-just run the following command for installing required packages:
-
-```console
-pip3 install -r requirements.txt
-```
 
 
 ## Minimal example
@@ -75,17 +60,17 @@ The following code requires PyTorch (>= 1.7.0).
 array([1])
 ```
 
-See [examples](./examples/README.md) directory for more detailed examples.
+See [examples](./examples/) directory for more detailed examples.
 
 
 ## Example1: MNIST using random Fourier features
 
-I tried SVC (support vector classifier) and GPC (Gaussian process classifire) with RFF to MNIST dataset
-which is the famous benchmark dataset of the image classification task,
-and I've got better performance and much faster inference speed than kernel SVM.
-The following table gives a brief comparison of kernel SVM, SVM with RFF and GPC with RFF.
-See the example of [RFF SVC module](./examples/svc_for_mnist/README.md)
-and [RFF GP module](./examples/gpc_for_mnist/README.md) for mode details.
+I tried SVC (support vector classifier) and GPC (Gaussian process classifire) with RFF to the MNIST
+dataset which is one of the famous benchmark dataset on the image classification task, and I've got
+better performance and much faster inference speed than kernel SVM. The following table gives
+a brief comparison of kernel SVM, SVM with RFF and GPC with RFF. See the example of
+[RFF SVC module](./examples/svc_for_mnist/) and [RFF GP module](./examples/gpc_for_mnist/)
+for mode details.
 
 | Method         | RFF dimension | Inference time (us) | Score (%) |
 |:--------------:|:-------------:|:-------------------:|:---------:|
@@ -103,9 +88,10 @@ and [RFF GP module](./examples/gpc_for_mnist/README.md) for mode details.
 
 ## Example2: Visualization of feature importance
 
-This module also have interfaces to some feature importance methods, like SHAP [3] and permutation importance [4].
-I tried SHAP and permutation importance to `RFFGPR` trained by Boston house-price dataset,
-and the following is the visualization results obtained by `rfflearn.shap_feature_importance` and `rfflearn.permutation_feature_importance`.
+This module also have interfaces to some feature importance methods, like SHAP [3] and permutation
+importance [4]. I tried SHAP and permutation importance to `RFFGPR` trained by Boston house-price
+dataset, and the following is the visualization results obtained by `rfflearn.shap_feature_importance`
+and `rfflearn.permutation_feature_importance`.
 
 <div align="center">
   <img src="./examples/feature_importances_for_boston_housing/figure_boston_housing_shap_importance.png" width="400" height="300" alt="Permutation importances of Boston housing dataset" />
@@ -113,18 +99,27 @@ and the following is the visualization results obtained by `rfflearn.shap_featur
 </div>
 
 
+## Requirements and installation
+
+The author recommend to use docker image for building environment, however, of course,
+you can install necessary packages on your environment. See [SETUP.md](./SETUP.md) for more details.
+
+
 ## Notes
 
 - Name of this module is changed from `pyrff` to `rfflearn` on Oct 2020,
   because the package `pyrff` already exists in PyPI.
-- If a number of training data are huge, error message like
-  `RuntimeError: The task could not be sent to the workers as it is too large for 'send_bytes'`.
-  will be raised from the joblib library. The reason for this error is that sklearn.svm.LinearSVC uses
-  joblib as a multiprocessing backend, but joblib cannot deal huge size of the array which cannot be managed
-  with 32-bit address space. In this case, please try `n_jobs = 1` option for `RFFSVC` or `ORFSVC` function.
-  Default settings are `n_jobs = -1` which means automatically detect available CPUs and use them.
-  (This bug information was reported by Mr. Katsuya Terahata @ Toyota Research Institute Advanced Development.
-  Thank you so much for the reporting!)
+- If a number of training data are huge, error message like `RuntimeError: The task could not be
+  sent to the workers as it is too large for 'send_bytes'` will be raised from the joblib library.
+  The reason for this error is that the `sklearn.svm.LinearSVC` uses `joblib` as a multiprocessing
+  backend, but joblib cannot deal huge size of the array which cannot be managed with 32-bit
+  address space. In this case, please try `n_jobs = 1` option for the `RFFSVC` or `ORFSVC` function.
+  Default settings are `n_jobs = -1` which means automatically detecting available CPUs and using
+  them. (This bug information was reported by Mr. Katsuya Terahata @ Toyota Research Institute
+  Advanced Development. Thank you so much for the reporting!)
+- Applucation of RFF to the Gaussian process is not straight forward.
+  See [this document](./documents/rff_for_gaussian_process.pdf) for mathematical details.
+
 
 
 ## Licence
@@ -149,4 +144,4 @@ and the following is the visualization results obtained by `rfflearn.shap_featur
 
 ## Author
 
-Tetsuya Ishikawa ([EMail](mailto:tiskw111@gmail.com), [Website](https://tiskw.gitlab.io/home/))
+Tetsuya Ishikawa ([EMail](mailto:tiskw111@gmail.com), [Website](https://tiskw.github.io/about_en.html))

@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 #
 # Python module of principal component analysis with random matrix for CPU.
-#
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : January 29, 2021
 ##################################################### SOURCE START #####################################################
 
 import numpy as np
@@ -123,4 +120,5 @@ class QRFPCA(PCA):
         super().__init__("qrf", *pargs, **kwargs)
 
 ##################################################### SOURCE FINISH ####################################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

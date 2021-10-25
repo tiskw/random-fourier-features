@@ -3,9 +3,6 @@
 # This Python script provides an example usage of RFFRegression class which is a class
 # for least square regression using RFF. Interface of RFFRegression is quite close to
 # sklearn.linear_model.LinearRegression.
-#
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
-# Date  : September 13, 2020
 #################################### SOURCE START ###################################
 
 """
@@ -33,7 +30,6 @@ import sys
 import docopt
 import numpy as np
 import matplotlib.pyplot as mpl
-
 
 ### Main procedure
 def main(args):
@@ -73,7 +69,6 @@ def main(args):
     mpl.grid()
     mpl.show()
 
-
 if __name__ == "__main__":
 
     ### Parse input arguments.
@@ -98,4 +93,5 @@ if __name__ == "__main__":
     main(args)
 
 #################################### SOURCE FINISH ##################################
+# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker
