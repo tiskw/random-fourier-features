@@ -80,7 +80,7 @@ def main(args):
             pstd = None
     else:
         with utils.Timer("GPR inference: ", unit = "us", devide_by = args["--n_test"]):
-            pred, pstd = gpr.predict(Xs_test, return_std = True)
+            pred, pstd, pcov = gpr.predict(Xs_test, return_std = True, return_cov = True)
             pred = pred.reshape((pred.shape[0],))
             pstd = pstd.reshape((pstd.shape[0],))
 
@@ -99,8 +99,24 @@ def main(args):
             mpl.fill_between(Xs_test.reshape((Xs_test.shape[0],)),  pred - pstd, pred + pstd, facecolor = "#DDDDDD")
         mpl.legend(["Training data", "Test data GT", "Prediction", "1-sigma area"])
         mpl.grid()
-        mpl.savefig("figure_rff_gpr_sparse_data.png")
+        # mpl.savefig("figure_rff_gpr_sparse_data.png")
     print("  - Saved to 'figure_rff_gpr_sparse_data.png'")
+
+    ### Re-sampling from the predicted mean and covariance to verify the mean and covariance.
+    with utils.Timer("Re-sampling: "):
+        ys_samples = np.random.multivariate_normal(pred, pcov, size = 100)
+
+    ### Plot re-sampled data.
+    with utils.Timer("Drawing figure for re-sampling: "):
+        mpl.figure()
+        mpl.title("Re-sampling from the predicted mean and covariance")
+        mpl.xlabel("X")
+        mpl.ylabel("Y")
+        for ys_sample in ys_samples:
+            mpl.plot(Xs_test, ys_sample,  "-")
+        mpl.grid()
+        mpl.savefig("figure_rff_gpr_resampling.png")
+    print("  - Saved to 'figure_rff_gpr_resampling.png'")
 
 if __name__ == "__main__":
 
