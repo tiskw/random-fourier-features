@@ -46,7 +46,7 @@ class GPR(Base):
 
         ### Derive posterior distribution 3/3 (on CPU).
         self.a = ((y_cpu.T @ F_cpu.T) @ M_cpu) / s_cpu
-        self.S = P_cpu @ M_cpu / s_cpu
+        self.S = I_cpu - P_cpu @ M_cpu / s_cpu
 
         ### Clean GPU memory.
         del Q_gpu, R_gpu

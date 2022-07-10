@@ -58,6 +58,23 @@ The following table is a summary of training and inference speed under my enviro
   <img src="./figure_rff_gpr_sparse_data.png" width="600" height="480" alt="Regression results for function y = sin(x^2) using Gaussian process w/ RFF" />
 </div>
 
+### Re-sampling from the predicted mean and covariance
+
+Gaussian process model can predict both mean and covariance from trainig data, therefore,
+you can re-sample data points from the normal distribution using the predicted mean vector
+and covariance matrix (e.g. `np.random.multivariate_normal`).
+
+<div align="center">
+  <img src="./figure_rff_gpr_resampling.png" width="600" height="480" alt="Re-sampling from the predicted mean and covariance" />
+</div>
+
 ### Training on GPU
 
 Open the script file, replace `rfflearn.cpu` as `rfflean.gpu` and run the script again.
+
+
+## Gratitude
+
+- I'm deeply grateful to [Dr. Sebastian Khan](https://github.com/Cyberface).
+  The re-sampling code in this Python script highly depends on his notebook which he shared with me in
+  [the Issue 7](https://github.com/tiskw/random-fourier-features/issues/7).

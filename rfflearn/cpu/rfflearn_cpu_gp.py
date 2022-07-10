@@ -26,7 +26,7 @@ class GPR(Base):
         s = self.s_e**2
         M = I - np.linalg.solve((P + s * I), P)
         self.a = (y.T @ F.T) @ M / s
-        self.S = P @ M / s
+        self.S = I - P @ M / s
         return self
 
     ### Run prediction. The interface of this function imitate the interface of
@@ -45,12 +45,12 @@ class GPR(Base):
     ### Return predicted standard deviation.
     def std(self, F):
         clip_flt = lambda x: max(0.0, float(x))
-        pred_var = [clip_flt(F[:, n].T @ (np.eye(2 * self.dim) - self.S) @ F[:, n]) for n in range(F.shape[1])]
+        pred_var = [clip_flt(F[:, n].T @ self.S @ F[:, n]) for n in range(F.shape[1])]
         return np.sqrt(np.array(pred_var))
 
     ### Return predicted covariance.
     def cov(self, F):
-        return F @ self.S @ F
+        return F.T @ self.S @ F
 
     ### Return score.
     def score(self, X, y, **args):
