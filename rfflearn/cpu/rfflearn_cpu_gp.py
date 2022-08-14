@@ -12,9 +12,11 @@ from .rfflearn_cpu_common import Base
 class GPR(Base):
 
     ### Constractor. Save hyperparameters as member variables.
-    def __init__(self, rand_mat_type, dim_kernel = 128, std_kernel = 0.1, std_error = 0.1, W = None):
-        super().__init__(rand_mat_type, dim_kernel, std_kernel, W)
+    def __init__(self, rand_mat_type, dim_kernel = 128, std_kernel = 0.1, std_error = 0.1, W = None, b = None, a = None, S = None):
+        super().__init__(rand_mat_type, dim_kernel, std_kernel, W, b)
         self.s_e = std_error
+        self.a   = a
+        self.S   = S
 
     ### Run training. The interface of this function imitate the interface of
     ### the 'sklearn.gaussian_process.GaussianProcessRegressor.fit'.
@@ -22,7 +24,7 @@ class GPR(Base):
         self.set_weight(X.shape[1])
         F = self.conv(X).T
         P = F @ F.T
-        I = np.eye(2 * self.dim)
+        I = np.eye(self.dim)
         s = self.s_e**2
         M = I - np.linalg.solve((P + s * I), P)
         self.a = (y.T @ F.T) @ M / s
@@ -68,8 +70,8 @@ class GPC(GPR):
     ### The purpouse of this RFFGPC class is only to do these pre/post-processings.
 
     ### Constractor. Save hyperparameters as member variables.
-    def __init__(self, rand_mat_type, dim_kernel = 128, std_kernel = 0.1, std_error = 0.1, W = None):
-        super().__init__(rand_mat_type, dim_kernel, std_kernel, std_error, W)
+    def __init__(self, rand_mat_type, dim_kernel = 128, std_kernel = 0.1, std_error = 0.1, W = None, b = None, a = None, S = None):
+        super().__init__(rand_mat_type, dim_kernel, std_kernel, std_error, W, b, a, S)
 
     def fit(self, Xs, ys):
         ys_onehot = np.eye(int(np.max(ys) + 1))[ys]

@@ -21,7 +21,7 @@ class SVC(Base):
     ### 'self.initialized' is set to True. And if 'self.initialized' is still False when just
     ### before the training/inference, then the parameters are initialized by the way (1).
     def __init__(self, rand_mat_type, svc = None, M_pre = None, dim_kernel = 128, std_kernel = 0.1,
-                 W = None, batch_size = 200, dtype = 'float64', *pargs, **kwargs):
+                 W = None, b = None, batch_size = 200, dtype = 'float32', *pargs, **kwargs):
 
         ### Save important variables.
         self.dim_kernel  = dim_kernel
@@ -30,6 +30,7 @@ class SVC(Base):
         self.dtype       = dtype
         self.initialized = False
         self.W           = W
+        self.b           = W
 
         ### Automatically detect device.
         ### This module assumes that GPU is available, but works if not available.
@@ -50,8 +51,9 @@ class SVC(Base):
         ###   - A: Coefficients of Linear SVC.               (shape = [dim_kernel, dim_output]).
         ###   - b: Intercepts of Linear SVC.                 (shape = [1,          dim_output]).
         self.W_cpu = self.W
-        self.A_cpu = 0.01 * np.random.randn(2 * dim_kernel, dim_output)
-        self.b_cpu = 0.01 * np.random.randn(1,              dim_output)
+        self.b_cpu = self.b
+        self.A_cpu = 0.01 * np.random.randn(dim_kernel, dim_output)
+        self.k_cpu = 0.01 * np.random.randn(1,          dim_output)
 
         ### Create GPU variables and build GPU model.
         self.build()
@@ -63,12 +65,17 @@ class SVC(Base):
     def init_from_RFFSVC_cpu(self, svc_cpu, M_pre):
 
         ### Only RFFSVC support GPU inference.
-        if not hasattr(svc_cpu, "W") or not hasattr(svc_cpu, "svm") or not hasattr(svc_cpu.svm, "coef_") or not hasattr(svc_cpu.svm, "intercept_"):
+        if not (hasattr(svc_cpu, "W") and hasattr(svc_cpu, "svm")):
             raise TypeError("rfflearn.gpu.SVC: Only rfflearn.cpu.SVC supported.")
 
         ### TODO: One-versus-one classifier is not supported now.
         if svc_cpu.svm.get_params()["estimator__multi_class"] != "ovr":
             raise TypeError("rfflearn.gpu.SVC: Sorry, current implementation support only One-versus-the-rest classifier.")
+
+        ### If OneVsRestClassifier does not support `coef_` and `intercept_`, manualy create them.
+        if not (hasattr(svc_cpu.svm, "coef_") and hasattr(svc_cpu.svm, "intercept_")):
+            svc_cpu.svm.coef_      = np.array([estimator.coef_.flatten() for estimator in svc_cpu.svm.estimators_])
+            svc_cpu.svm.intercept_ = np.array([estimator.intercept_      for estimator in svc_cpu.svm.estimators_])
 
         ### Copy parameters from rffsvc on CPU.
         ###   - W: Random matrix of Random Fourier Features.
@@ -76,8 +83,9 @@ class SVC(Base):
         ###   - A: Coefficients of Linear SVC.
         ###   - b: Intercepts of Linear SVC.
         self.W_cpu = M_pre.dot(svc_cpu.W) if M_pre is not None else svc_cpu.W
+        self.b_cpu = svc_cpu.b
         self.A_cpu = svc_cpu.svm.coef_.T
-        self.b_cpu = svc_cpu.svm.intercept_.T
+        self.k_cpu = svc_cpu.svm.intercept_.T
 
         ### Create GPU variables and build GPU model.
         self.build()
@@ -89,14 +97,15 @@ class SVC(Base):
     def build(self):
 
         ### Run build procedure if and only if all variables is available.
-        if all(v is not None for v in [self.W_cpu, self.A_cpu, self.b_cpu]):
+        if all(v is not None for v in [self.W_cpu, self.b_cpu, self.A_cpu, self.k_cpu]):
 
             ### Create GPU variables.
-            self.W_gpu = torch.tensor(self.W_cpu, dtype = torch.float64, device = self.device, requires_grad = False)
-            self.A_gpu = torch.tensor(self.A_cpu, dtype = torch.float64, device = self.device, requires_grad = True)
-            self.b_gpu = torch.tensor(self.b_cpu, dtype = torch.float64, device = self.device, requires_grad = True)
+            self.W_gpu = torch.tensor(self.W_cpu, dtype = torch.float32, device = self.device, requires_grad = False)
+            self.b_gpu = torch.tensor(self.b_cpu, dtype = torch.float32, device = self.device, requires_grad = False)
+            self.A_gpu = torch.tensor(self.A_cpu, dtype = torch.float32, device = self.device, requires_grad = True)
+            self.k_gpu = torch.tensor(self.k_cpu, dtype = torch.float32, device = self.device, requires_grad = True)
 
-            self.params = [self.A_gpu, self.b_gpu]
+            self.params = [self.A_gpu, self.k_gpu]
 
     ### Train the model for one batch.
     ###   - X_cpu (np.array, shape = [N, K]): training data,
@@ -104,9 +113,8 @@ class SVC(Base):
     def fit_batch(self, X_gpu, y_gpu, opt):
 
         ### Calclate loss function under the GradientTape.
-        z = torch.matmul(X_gpu, self.W_gpu)
-        z = torch.cat([torch.cos(z), torch.sin(z)], 1)
-        p = torch.matmul(z, self.A_gpu) + self.b_gpu
+        z = torch.cos(torch.matmul(X_gpu, self.W_gpu) + self.b_gpu)
+        p = torch.matmul(z, self.A_gpu) + self.k_gpu
         v = torch.mean(torch.sum(torch.max(torch.zeros_like(y_gpu), 1 - y_gpu * p), dim = 1))
 
         ### Derive gradient for all variables.
@@ -164,9 +172,9 @@ class SVC(Base):
     ###   - X_cpu (np.array, shape = [N, K]): training data,
     ### where N is the number of training data, K is dimension of the input data.
     def predict_proba_batch(self, X_cpu):
-        z = torch.matmul(torch.tensor(X_cpu, device = self.device), self.W_gpu)
-        z = torch.cat([torch.cos(z), torch.sin(z)], 1)
-        return (torch.matmul(z, self.A_gpu) + self.b_gpu).detach().cpu().numpy()
+        X = torch.tensor(X_cpu, device = self.device)
+        z = torch.cos(torch.matmul(X, self.W_gpu) + self.b_gpu)
+        return (torch.matmul(z, self.A_gpu) + self.k_gpu).detach().cpu().numpy()
 
     ### Run prediction and return probability (features).
     ###   - X_cpu (np.array, shape = [N, K]): training data,

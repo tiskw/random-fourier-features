@@ -12,7 +12,7 @@ Usage:
     main_cca_for_artificial_data.py (-h | --help)
 
 Options:
-    --kdim <int>         Hyper parameter of RFF SVM (dimention of RFF).   [default: 8]
+    --kdim <int>         Hyper parameter of RFF SVM (dimention of RFF).   [default: 16]
     --std_kernel <float> Hyper parameter of RFF SVM (stdev of RFF).       [default: 1.0]
     --n_samples <int>    Number of data samples.                          [default: 250]
     --seed <int>         Random seed.                                     [default: 111]

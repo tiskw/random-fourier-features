@@ -81,26 +81,28 @@ Note that run inference of GPU-tranined model on CPU is not supported. Supported
 - trained on CPU, inference on GPU,
 - trained on GPU, inference on GPU.
 
+
 ## Results of support vector classification with RFF
 
-I've got the following results on my computing environment (CPU: Intl Core i5 5250U, RAM: 4GB, GPU: GTX1050Ti):
+I've got the following results on my computing environment (CPU: Intel Core i5-9300H, RAM: 32GB, GPU: GeForce GTX1660Ti):
 
-| Method                   | Training time [sec] | Inference time [us] | Score [%] |
-| :---------------------:  | :-----------------: | :-----------------: | :-------: |
-| Kernel SVM               | 177.8 [sec]         | 4644.9 [us]         | 96.3 [%]  |
-| SVM w/ RFF <br> d = 512  | 126.6 [sec]         |   39.0 [us]         | 96.5 [%]  |
-| SVM w/ RFF <br> d = 1024 | 226.7 [sec]         |   96.1 [us]         | 97.5 [%]  |
+| Method     | Dimension of RFF  | Training time [sec] | Inference time [us] | Score [%]  |
+|:----------:|:-----------------:|:-------------------:|:-------------------:|:----------:|
+| Kernel SVM | -                 |  47.6 [sec]         | 1312.6 [us]         | 96.30 [%]  |
+| SVM w/ RFF | 640               |  76.7 [sec]         |   33.6 [us]         | 96.39 [%]  |
+| SVM w/ RFF | 1024              | 101.9 [sec]         |   46.5 [us]         | 97.16 [%]  |
+| SVM w/ RFF | 4096              | 442.4 [sec]         |  183.4 [us]         | 98.14 [%]  |
 
 As for inference using GPU, I've got the following result:
 
-| Method     | Dimension of RFF | Device  | Batch size | Inference time (us) | Score [%] |
-| :-------:  | :--------------: | :-----: | :---------:| :-----------------: | :-------: |
-| SVM w/ RFF | 512              | CPU     | -          | 39.0 [us]           | 96.5 [%]  |
-| SVM w/ RFF | 1024             | CPU     | -          | 96.1 [us]           | 97.5 [%]  |
-| SVM w/ RFF | 1024             | TitanXp | 2,000      | 2.38 [us]           | 97.5 [%]  |
+| Method     | Dimension of RFF | Device    | Batch size | Inference time (us) | Score [%] |
+|:----------:|:----------------:|:---------:|:----------:|:-------------------:|:---------:|
+| SVM w/ RFF | 640              | GTX1660Ti | 2,000      | 1.11 [us]           | 96.39 [%] |
+| SVM w/ RFF | 1024             | GTX1660Ti | 2,000      | 1.33 [us]           | 97.16 [%] |
+| SVM w/ RFF | 4096             | GTX1660Ti | 2,000      | 2.62 [us]           | 98.14 [%] |
 
 <div align="center">
-  <img src="./figures/figure_Inference_Time_and_Accuracy_on_MNIST.png" width="600" height="371" alt="Inference Time vs Accuracy on MNIST" />
+  <img src="./figures/figure_Inference_Time_and_Accuracy_on_MNIST.png" width="671" height="351" alt="Inference Time vs Accuracy on MNIST" />
 </div>
 
 ### Notes
@@ -115,6 +117,6 @@ As for inference using GPU, I've got the following result:
 - The following figure shows a tradeoff between the accuracy and inference time of RFF.
 
 <div align="center">
-  <img src="./figures/figure_rff_svc_for_mnist.png" width="480" height="320" alt="Accuracy for each dimention in RFF SVC" />
+  <img src="./figures/figure_rffsvc_inference_time_vs_test_acc_mnist.png" width="600" height="351" alt="Accuracy for each dimention in RFF SVC" />
 </div>
 

@@ -81,11 +81,12 @@ class Base:
 
     ### Constractor. Create random matrix generator and random matrix instance.
     ### NOTE: If 'W' is None then the appropriate matrix will be set just before the training.
-    def __init__(self, rand_mat_type, dim_kernel, std_kernel, W):
+    def __init__(self, rand_mat_type, dim_kernel, std_kernel, W, b):
         self.dim = dim_kernel
         self.s_k = std_kernel
         self.mat = get_matrix_generator(rand_mat_type, std_kernel, dim_kernel)
         self.W   = W
+        self.b   = b
 
     ### Apply random matrix to the given input vectors 'X' and create feature vectors.
     ### NOTE: This function can manipulate multiple random matrix. If argument 'index'
@@ -93,17 +94,22 @@ class Base:
     ### NOTE: Computation of `ts` is equivarent with ts = X @ W, however, for reducing
     ###       memory consumption, split X to smaller matrices and concatenate after multiplication wit W.
     def conv(self, X, index = None, chunk_size = 1024):
-        W  = self.W if index is None else self.W[index]
-        ts = X @ W
-        return np.bmat([np.cos(ts), np.sin(ts)])
+        W = self.W if index is None else self.W[index]
+        b = self.b if index is None else self.b[index]
+        return np.cos(X @ W + b)
 
     ### Set the appropriate random matrix to 'self.W' if 'self.W' is None (i.e. empty).
     ### NOTE: This function can manipulate multiple random matrix. If argument 'dim_in'
     ###       is a list/tuple of integers, then generate multiple random matrixes.
     def set_weight(self, dim_in):
+        # Generate matrix W.
         if   self.W is not None         : pass
         elif hasattr(dim_in, "__iter__"): self.W = tuple([self.mat(d) for d in dim_in])
         else                            : self.W = self.mat(dim_in)
+        # Generate vector b.
+        if   self.b is not None         : pass
+        elif hasattr(dim_in, "__iter__"): self.b = tuple([np.random.uniform(0, 2*np.pi, size=self.W.shape[1]) for _ in dim_in])
+        else                            : self.b = np.random.uniform(0, 2*np.pi, size=self.W.shape[1])
 
 ##################################################### SOURCE FINISH ####################################################
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>

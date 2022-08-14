@@ -45,6 +45,7 @@ import sys
 import docopt
 import numpy   as np
 import sklearn as skl
+import sklearn.svm
 
 ### Load train/test image data.
 def vectorise_MNIST_images(filepath, apply_fft = False):
@@ -78,7 +79,8 @@ def main(args):
     print("Program starts: args =", args)
 
     ### Fix seed for random fourier feature calclation.
-    rfflearn.seed(args["--seed"])
+    if args["cpu"] or args["gpu"]:
+        rfflearn.seed(args["--seed"])
 
     ### Create classifier instance.
     if   args["kernel"]          : svc = skl.svm.SVC(kernel = args["--kernel"], gamma = args["--gamma"])

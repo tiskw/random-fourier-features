@@ -11,11 +11,11 @@ Overview:
   Before running this script, make sure to create MNIST dataset.
 
 Usage:
-    main_rff_gpc_for_mnist.py cpu [--input <str>] [--output <str>] [--pcadim <int>] [--rtype <str>]
-                                  [--kdim <int>] [--std_kernel <float>] [--std_error <float>] [--seed <int>]
-    main_rff_gpc_for_mnist.py gpu [--input <str>] [--output <str>] [--pcadim <int>] [--rtype <str>]
-                                  [--kdim <int>] [--std_kernel <float>] [--std_error <float>] [--seed <int>]
-    main_rff_gpc_for_mnist.py (-h | --help)
+    train_rff_gpc_for_mnist.py cpu [--input <str>] [--output <str>] [--pcadim <int>] [--rtype <str>]
+                                   [--kdim <int>] [--std_kernel <float>] [--std_error <float>] [--seed <int>]
+    train_rff_gpc_for_mnist.py gpu [--input <str>] [--output <str>] [--pcadim <int>] [--rtype <str>]
+                                   [--kdim <int>] [--std_kernel <float>] [--std_error <float>] [--seed <int>]
+    train_rff_gpc_for_mnist.py (-h | --help)
 
 Options:
     --input <str>        Directory path to the MNIST dataset.                [default: ../../dataset/mnist]
@@ -92,7 +92,7 @@ def main(args):
     ### Save training results.
     with utils.Timer("Saving model: "):
         with open(args["--output"], "wb") as ofp:
-            pickle.dump({"gpc": gpc, "pca": T, "args": args}, ofp)
+            pickle.dump({"W": gpc.W, "b": gpc.b, "a": gpc.a, "S": gpc.S, "pca": T, "args": args}, ofp)
 
 if __name__ == "__main__":
 
