@@ -60,6 +60,10 @@ def main(args):
     else:
         pca = True
 
+    ### Idle CPU/GPU for accurate measurement of inference time.
+    if pca: svc.predict(np.zeros(Xs_test.shape).dot(T))
+    else  : svc.predict(np.zeros(Xs_test.shape))
+
     ### Calculate score for test data.
     with utils.Timer("SVM prediction time for 1 image: ", unit = "us", devide_by = ys_test.shape[0]):
 

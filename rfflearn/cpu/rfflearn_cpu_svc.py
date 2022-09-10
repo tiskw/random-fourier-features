@@ -14,8 +14,8 @@ class SVC(Base):
 
     ### Constractor. Save hyper parameters as member variables and create LinearSVC instance.
     ### The LinearSVC instance is always wrappered by multiclass classifier.
-    def __init__(self, rand_mat_type, dim_kernel = 128, std_kernel = 0.1, W = None, multi_mode = "ovr", n_jobs = -1, **args):
-        super().__init__(rand_mat_type, dim_kernel, std_kernel, W)
+    def __init__(self, rand_mat_type, dim_kernel = 128, std_kernel = 0.1, W = None, b = None, multi_mode = "ovr", n_jobs = -1, **args):
+        super().__init__(rand_mat_type, dim_kernel, std_kernel, W, b)
         self.svm = self.set_classifier(sklearn.svm.LinearSVC(**args), multi_mode, n_jobs)
 
     ### Select multiclass classifire. Now this function can handle one-vs-one and one-vs-others.
@@ -61,6 +61,7 @@ class BatchSVC:
         self.coef    = None
         self.icpt    = None
         self.W       = None
+        self.b       = None
         self.dim     = dim_kernel
         self.std     = std_kernel
         self.n_epoch = num_epochs
@@ -85,15 +86,18 @@ class BatchSVC:
         svc.fit(X, y)
 
         ### Update coefficients of linear SVM
-        if self.coef is None: self.coef = svc.svm.coef_
-        else                : self.coef = self.alpha * svc.svm.coef_ + (1 - self.alpha) * self.coef
+        coef = np.array([estimator.coef_.flatten() for estimator in svc.svm.estimators_])
+        if self.coef is None: self.coef = coef
+        else                : self.coef = self.alpha * coef + (1 - self.alpha) * self.coef
 
         ### Update intercept of linear SVM
-        if self.icpt is None: self.icpt = svc.svm.intercept_
-        else                : self.icpt = self.alpha * svc.svm.intercept_ + (1 - self.alpha) * self.icpt
+        icpt = np.array([estimator.intercept_.flatten() for estimator in svc.svm.estimators_])
+        if self.icpt is None: self.icpt = icpt
+        else                : self.icpt = self.alpha * icpt + (1 - self.alpha) * self.icpt
 
         ### Keep random matrices of RFF/ORF
         if self.W is None: self.W = svc.W
+        if self.b is None: self.b = svc.b
 
     ### Run training.
     def fit(self, X, y, test = None, **args):
@@ -115,13 +119,13 @@ class BatchSVC:
 
     ### Return prediction results.
     def predict(self, X, **args):
-        svc = RFFSVC(self.dim, self.std, self.W, **args)
+        svc = RFFSVC(self.dim, self.std, self.W, self.b, **args)
         return np.argmax(np.dot(svc.conv(X), self.coef.T) + self.icpt.flatten(), axis = 1)
 
     ### Return score.
     def score(self, X, y, **args):
-        pred  = self.predict(X)
-        return np.mean([(1 if pred[n, 0] == y[n] else 0) for n in range(X.shape[0])])
+        pred = self.predict(X)
+        return np.mean([(1 if pred[n] == y[n] else 0) for n in range(X.shape[0])])
 
 ### The above functions/classes are not visible from users of this library,
 ### becasue of the complicated usage. The following classes are simplified

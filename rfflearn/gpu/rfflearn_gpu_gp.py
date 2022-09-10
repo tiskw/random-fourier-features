@@ -17,10 +17,12 @@ from .rfflearn_gpu_common import Base, detect_device
 class GPR(Base):
 
     ### Constractor: Store necessary parameters (on CPU).
-    def __init__(self, rand_mat_type, dim_kernel = 256, std_kernel = 0.1, std_error = 1.0, scale = 1.0, W = None):
-        super().__init__(rand_mat_type, dim_kernel, std_kernel, W)
+    def __init__(self, rand_mat_type, dim_kernel = 256, std_kernel = 0.1, std_error = 1.0, scale = 1.0, W = None, b = None, a = None, S = None):
+        super().__init__(rand_mat_type, dim_kernel, std_kernel, W, b)
         self.s_e = std_error
         self.dev = detect_device()
+        self.a   = a
+        self.S   = S
 
     ### Training of Gaussian process using GPU.
     ###   - X_cpu (np.array, shape = [N, K]): training data
@@ -32,20 +34,20 @@ class GPR(Base):
         self.set_weight(X_cpu.shape[1])
 
         ### Generate random matrix W and identity matrix I on CPU.
-        I_cpu = np.eye(2 * self.dim)
+        I_cpu = np.eye(self.dim)
 
         ### Derive posterior distribution 1/3 (on CPU).
-        s_cpu = (self.s_e)**2
+        s_cpu = self.s_e**2
         F_cpu = self.conv(X_cpu).T
         P_cpu = F_cpu @ F_cpu.T
 
         ### Derive posterior distribution 2/3 (on GPU).
         Q_gpu = torch.tensor(P_cpu,                 device = self.dev, dtype = torch.float64)
         R_gpu = torch.tensor(P_cpu + s_cpu * I_cpu, device = self.dev, dtype = torch.float64)
-        M_cpu = I_cpu - torch.solve(Q_gpu, R_gpu)[0].cpu().numpy()
+        M_cpu = I_cpu - torch.linalg.solve(R_gpu, Q_gpu).cpu().numpy()
 
         ### Derive posterior distribution 3/3 (on CPU).
-        self.a = ((y_cpu.T @ F_cpu.T) @ M_cpu) / s_cpu
+        self.a = (y_cpu.T @ F_cpu.T) @ M_cpu / s_cpu
         self.S = I_cpu - P_cpu @ M_cpu / s_cpu
 
         ### Clean GPU memory.
@@ -55,21 +57,24 @@ class GPR(Base):
         return self
 
     ### Inference of Gaussian process using GPU.
-    ###   - X_cpu (np.array, shape = [N, K]): inference data
-    ###   - var   (boolean, scalar)         : returns variance vector if true
-    ###   - cov   (boolean, scalar)         : returns covariance matrix if true
+    ###   - X_cpu       (np.array, shape = [N, K]): inference data
+    ###   - return_std  (boolean, scalar)         : returns standard deviation vector if true
+    ###   - return_cov  (boolean, scalar)         : returns covariance matrix if true
+    ###   - precision   (torch.dtype)             : precision of the matrices on GPU
     ### where N is the number of training data and K is dimension of the input data.
-    def predict(self, X_cpu, return_std = False, return_cov = False):
+    def predict(self, X_cpu, return_std = False, return_cov = False, precision = torch.float32):
 
         ### Move matrix to GPU.
-        X = torch.tensor(X_cpu,  device = self.dev, dtype = torch.float64)
-        W = torch.tensor(self.W, device = self.dev, dtype = torch.float64)
-        a = torch.tensor(self.a, device = self.dev, dtype = torch.float64)
-        S = torch.tensor(self.S, device = self.dev, dtype = torch.float64)
+        ### 64bit precision is necessary for training, however,
+        ### 32bit precision is enough for inference in most cases.
+        X = torch.tensor(X_cpu,  device = self.dev, dtype = precision)
+        W = torch.tensor(self.W, device = self.dev, dtype = precision)
+        b = torch.tensor(self.b, device = self.dev, dtype = precision)
+        a = torch.tensor(self.a, device = self.dev, dtype = precision)
+        S = torch.tensor(self.S, device = self.dev, dtype = precision)
 
         ### Calculate mean of the prediction distribution.
-        Z = torch.matmul(X, W)
-        F = torch.cat([torch.cos(Z), torch.sin(Z)], dim = 1).t()
+        F = torch.cos(torch.matmul(X, W) + b).t()
         p = torch.matmul(a, F).t()
 
         ### Move prediction value to CPU.
@@ -83,7 +88,7 @@ class GPR(Base):
             s_cpu = np.sqrt(np.diag(V_cpu))
 
         ### Clean GPU memory.
-        del X, W, a, S, Z, F, p
+        del X, W, a, S, F, p
         if "cuda" in self.dev: torch.cuda.empty_cache()
 
         if return_std and return_cov: return [y_cpu, s_cpu, V_cpu]

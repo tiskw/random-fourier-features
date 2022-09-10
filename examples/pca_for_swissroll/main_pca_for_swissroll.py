@@ -23,9 +23,9 @@ Options:
     orf              Run ORF PCA.
     --samples <int>  Number of swiss roll data points.                   [default: 10000]
     --kernel <str>   Hyper parameter of kernel SVM (type of kernel).     [default: rbf]
-    --gamma <float>  Hyper parameter of kernel SVM (softness of kernel). [default: 1.0]
+    --gamma <float>  Hyper parameter of kernel SVM (softness of kernel). [default: 0.003]
     --kdim <int>     Hyper parameter of RFF SVM (dimention of RFF).      [default: 1024]
-    --stdev <float>  Hyper parameter of RFF SVM (stdev of RFF).          [default: 0.05]
+    --stdev <float>  Hyper parameter of RFF SVM (stdev of RFF).          [default: 0.06]
     --seed <int>     Random seed.                                        [default: 111]
     -h, --help       Show this message.
 """

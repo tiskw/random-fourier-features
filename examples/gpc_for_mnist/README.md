@@ -61,18 +61,20 @@ See `--help` for details.
 
 ### Results of Gaussian process classification with RFF
 
-In my computing environment (CPU: Intl Core i5 5250U, RAM: 4GB, GPU: GTX1050Ti), I've got the following results:
+In my computing environment (CPU: Intel Core i5-9300H, RAM: 32GB, GPU: GeForce GTX1660Ti), I've got the following results:
 
-| Method                          | Training time (sec) | Inference time (us) | Score (%) | Note                           |
-|:-------------------------------:|:-------------------:|:-------------------:|:---------:|:------------------------------:|
-| Kernel SVC <br> (reference)     | 177.8 sec           | 4644.9 us           | 96.3 %    |                                |
-| GPC w/ RFF <br> (d = 512)       |   6.2 sec           |  66.21 us           | 96.3 %    | `std_kernel=0.1,std_error=0.5` |
-| GPC w/ RFF <br> (d = 5120)      | 111.7 sec           |  342.1 us           | 98.2 %    | `std_kernel=0.1,std_error=0.5` |
-| GPC w/ ORF <br> (d = 5120)      | 114.3 sec           |  337.8 us           | 98.2 %    | `std_kernel=0.1,std_error=0.5` |
-| GPC w/ RFF <br> (d = 5120, GPU) | 143.3 sec           |  115.0 us           | 98.2 %    | `std_kernel=0.1,std_error=0.5` |
+| Method     | RFF dim | Device    | Training time (sec) | Inference time (us) | Score (%) | std_kernel | std_error |
+|:----------:|:-------:|:---------:|:-------------------:|:-------------------:|:---------:|:----------:|:---------:|
+| Kernel SVC | -       | CPU       |  47.63 sec          | 1312.6 us           | 96.30 %   | -          | -         |
+| GPC w/ RFF | 1536    | CPU       |   3.76 sec          |   49.3 us           | 96.37 %   | 0.1        | 0.5       |
+| GPC w/ RFF | 1536    | GTX1660Ti |      -              |   7.46 us           | 96.37 %   | 0.1        | 0.5       |
+| GPC w/ RFF | 10000   | CPU       |  96.95 sec          |  269.3 us           | 98.24 %   | 0.1        | 0.5       |
+| GPC w/ RFF | 10000   | GTX1660Ti |      -              |   33.6 us           | 98.24 %   | 0.1        | 0.5       |
+| GPC w/ RFF | 20000   | CPU       | 516.19 sec          |  517.9 us           | 98.38 %   | 0.1        | 0.5       |
+| GPC w/ RFF | 20000   | GTX1660Ti |      -              |   61.2 us           | 98.38 %   | 0.1        | 0.5       |
 
 <div align="center">
-  <img src="./figures/figure_inference_time_and_accuracy_on_MNIST.png" width="656" height="371" alt="Inference Time vs Accuracy on MNIST" />
+  <img src="./figures/figure_inference_time_and_accuracy_on_MNIST.png" width="671" height="351" alt="Inference Time vs Accuracy on MNIST" />
 </div>
 
 ### Notes

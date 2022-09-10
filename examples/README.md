@@ -29,7 +29,7 @@ An example of the Gaussian process classification with random Fourier features.
 See [README.md](./gpc_for_mnist/README.md) for more details.
 
 <div align="center">
-  <img src="./gpc_for_mnist/figures/figure_inference_time_and_accuracy_on_MNIST.png" width="656" height="371" alt="Inference Time vs Accuracy on MNIST" />
+  <img src="./gpc_for_mnist/figures/figure_inference_time_and_accuracy_on_MNIST.png" width="671" height="351" alt="Inference Time vs Accuracy on MNIST" />
 </div>
 
 
@@ -39,7 +39,7 @@ An example of support vector classification for [MNIST](http://yann.lecun.com/ex
 See [README.md](./svc_for_mnist/README.md) for more details.
 
 <div align="center">
-  <img src="./svc_for_mnist/figures/figure_Inference_Time_and_Accuracy_on_MNIST.png" width="600" height="371" alt="Inference Time vs Accuracy on MNIST" />
+  <img src="./svc_for_mnist/figures/figure_Inference_Time_and_Accuracy_on_MNIST.png" width="671" height="351" alt="Inference Time vs Accuracy on MNIST" />
 </div>
 
 
