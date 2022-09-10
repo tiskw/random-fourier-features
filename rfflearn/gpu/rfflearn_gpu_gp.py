@@ -57,18 +57,21 @@ class GPR(Base):
         return self
 
     ### Inference of Gaussian process using GPU.
-    ###   - X_cpu (np.array, shape = [N, K]): inference data
-    ###   - var   (boolean, scalar)         : returns variance vector if true
-    ###   - cov   (boolean, scalar)         : returns covariance matrix if true
+    ###   - X_cpu       (np.array, shape = [N, K]): inference data
+    ###   - return_std  (boolean, scalar)         : returns standard deviation vector if true
+    ###   - return_cov  (boolean, scalar)         : returns covariance matrix if true
+    ###   - precision   (torch.dtype)             : precision of the matrices on GPU
     ### where N is the number of training data and K is dimension of the input data.
-    def predict(self, X_cpu, return_std = False, return_cov = False):
+    def predict(self, X_cpu, return_std = False, return_cov = False, precision = torch.float32):
 
         ### Move matrix to GPU.
-        X = torch.tensor(X_cpu,  device = self.dev, dtype = torch.float64)
-        W = torch.tensor(self.W, device = self.dev, dtype = torch.float64)
-        b = torch.tensor(self.b, device = self.dev, dtype = torch.float64)
-        a = torch.tensor(self.a, device = self.dev, dtype = torch.float64)
-        S = torch.tensor(self.S, device = self.dev, dtype = torch.float64)
+        ### 64bit precision is necessary for training, however,
+        ### 32bit precision is enough for inference in most cases.
+        X = torch.tensor(X_cpu,  device = self.dev, dtype = precision)
+        W = torch.tensor(self.W, device = self.dev, dtype = precision)
+        b = torch.tensor(self.b, device = self.dev, dtype = precision)
+        a = torch.tensor(self.a, device = self.dev, dtype = precision)
+        S = torch.tensor(self.S, device = self.dev, dtype = precision)
 
         ### Calculate mean of the prediction distribution.
         F = torch.cos(torch.matmul(X, W) + b).t()
