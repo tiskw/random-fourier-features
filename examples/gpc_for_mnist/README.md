@@ -74,7 +74,7 @@ In my computing environment (CPU: Intel Core i5-9300H, RAM: 32GB, GPU: GeForce G
 | GPC w/ RFF | 20000   | GTX1660Ti |      -              |   61.2 us           | 98.38 %   | 0.1        | 0.5       |
 
 <div align="center">
-  <img src="./figures/figure_inference_time_and_accuracy_on_MNIST.png" width="671" height="351" alt="Inference Time vs Accuracy on MNIST" />
+  <img src="./figures/figure_inference_time_and_accuracy_on_MNIST.png" width="671" alt="Inference Time vs Accuracy on MNIST" />
 </div>
 
 ### Notes

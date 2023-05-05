@@ -102,7 +102,7 @@ As for inference using GPU, I've got the following result:
 | SVM w/ RFF | 4096             | GTX1660Ti | 2,000      | 2.62 [us]           | 98.14 [%] |
 
 <div align="center">
-  <img src="./figures/figure_Inference_Time_and_Accuracy_on_MNIST.png" width="671" height="351" alt="Inference Time vs Accuracy on MNIST" />
+  <img src="./figures/figure_Inference_Time_and_Accuracy_on_MNIST.png" width="671" alt="Inference Time vs Accuracy on MNIST" />
 </div>
 
 ### Notes
@@ -117,6 +117,17 @@ As for inference using GPU, I've got the following result:
 - The following figure shows a tradeoff between the accuracy and inference time of RFF.
 
 <div align="center">
-  <img src="./figures/figure_rffsvc_inference_time_vs_test_acc_mnist.png" width="600" height="351" alt="Accuracy for each dimention in RFF SVC" />
+  <img src="./figures/figure_rffsvc_inference_time_vs_test_acc_mnist.png" width="600" alt="Accuracy for each dimention in RFF SVC" />
 </div>
+
+
+## Bayesian parameter search using Optuna
+
+You can automatically search the hyperparameters `dim_kernel` and `std_kernel` using Optuna by the following command:
+
+```console
+python3 train_rff_svc_for_mnist_optuna.py
+```
+
+Note that the above command may take a long time.
 

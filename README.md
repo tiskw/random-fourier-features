@@ -24,6 +24,7 @@ Now, this module supports the following methods:
 
 RFF can be applicable for many other machine learning algorithms, I will provide other functions soon.
 
+*NOTE*: The author confirmed that the `rfflearn` can work on PyTorch 2.0!
 
 ## Minimal example
 
@@ -82,7 +83,7 @@ for mode details.
 | RFF GPC        | 20000         |  517.9 us                 | 98.38 %   |
 
 <div align="center">
-  <img src="./figures/Inference_Time_and_Accuracy_on_MNIST_SVC_and_GPC.png" width="671" height="351" alt="Accuracy for each epochs in RFF SVC/GPC" />
+  <img src="./figures/Inference_Time_and_Accuracy_on_MNIST_SVC_and_GPC.png" width="671" alt="Accuracy for each epochs in RFF SVC/GPC" />
 </div>
 
 
@@ -94,8 +95,8 @@ dataset, and the following is the visualization results obtained by `rfflearn.sh
 and `rfflearn.permutation_feature_importance`.
 
 <div align="center">
-  <img src="./examples/feature_importances_for_boston_housing/figure_boston_housing_shap_importance.png" width="400" height="300" alt="Permutation importances of Boston housing dataset" />
-  <img src="./examples/feature_importances_for_boston_housing/figure_boston_housing_permutation_importance.png" width="400" height="300" alt="SHAP importances of Boston housing dataset" />
+  <img src="./examples/feature_importances_for_boston_housing/figure_boston_housing_shap_importance.png" width="400" alt="Permutation importances of Boston housing dataset" />
+  <img src="./examples/feature_importances_for_boston_housing/figure_boston_housing_permutation_importance.png" width="400" alt="SHAP importances of Boston housing dataset" />
 </div>
 
 

@@ -47,7 +47,7 @@ In my computing environment (CPU: Intl Core i5 5250U, RAM: 4GB), I've got the fo
 | SVM w/ batched RFF <br> d = 1024 | 2062.2 sec          | 108.6 us            | 96.4 %    |
 
 <div align="center">
-  <img src="./figure_rff_batch_svc_for_mnist.png" width="480" height="320" alt="Accuracy for each epoch in SVM with batch RFF" />
+  <img src="./figure_rff_batch_svc_for_mnist.png" width="480" alt="Accuracy for each epoch in SVM with batch RFF" />
 </div>
 
 As the author pointed out at the top of this document, the above results are worse than [usual SVC training](../rff_svc_for_mnist/README.md).

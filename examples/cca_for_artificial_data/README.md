@@ -1,6 +1,6 @@
 # Canonical Correlation Analysis using Random Fourier Features
 
-This python script provides examples of regression canonical correlation analysis with random Fourier features.
+This python script provides examples of canonical correlation analysis with random Fourier features.
 
 
 ## Installation
@@ -38,5 +38,5 @@ however, `X[:, 1]` and `Y[:, 1]` are completely independent.
 The linear CCA was failed to find the correlation, but CCA with random Fourier features succeeded because of its nonlinearity.
 
 <div align="center">
-  <img src="./figure_cca_for_artificial_data.png" width="840" height="640" alt="CCA results for artificial dataset" />
+  <img src="./figure_cca_for_artificial_data.png" width="840" alt="CCA results for artificial dataset" />
 </div>
