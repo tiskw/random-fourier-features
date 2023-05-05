@@ -70,7 +70,7 @@ class BatchSVC:
 
     ### Shuffle the order of the training data.
     def shuffle(self, X, y):
-        data_all = np.bmat([X, y.reshape((y.size, 1))])
+        data_all = np.array(np.bmat([X, y.reshape((y.size, 1))]))
         np.random.shuffle(X)
         return (data_all[:, :-1], np.ravel(data_all[:, -1]))
 

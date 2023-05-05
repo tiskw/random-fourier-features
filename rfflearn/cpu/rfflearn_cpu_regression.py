@@ -11,8 +11,8 @@ from .rfflearn_cpu_common import Base
 class Regression(Base):
 
     ### Constractor. Save hyper parameters as member variables and create LinearRegression instance.
-    def __init__(self, rand_mat_type, dim_kernel = 16, std_kernel = 0.1, W = None, **args):
-        super().__init__(rand_mat_type, dim_kernel, std_kernel, W)
+    def __init__(self, rand_mat_type, dim_kernel = 16, std_kernel = 0.1, W = None, b = None, **args):
+        super().__init__(rand_mat_type, dim_kernel, std_kernel, W, b)
         self.reg = sklearn.linear_model.LinearRegression(**args)
 
     ### Run training, that is, extract feature vectors and train linear regressor.

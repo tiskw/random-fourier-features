@@ -11,8 +11,8 @@ from .rfflearn_cpu_common import Base
 class PCA(Base):
 
     ### Constractor. Save hyperparameters as member variables.
-    def __init__(self, rand_mat_type, n_components = None, dim_kernel = 128, std_kernel = 0.1, W = None, **args):
-        super().__init__(rand_mat_type, dim_kernel, std_kernel, W)
+    def __init__(self, rand_mat_type, n_components = None, dim_kernel = 128, std_kernel = 0.1, W = None, b = None, **args):
+        super().__init__(rand_mat_type, dim_kernel, std_kernel, W, b)
         self.pca = sklearn.decomposition.PCA(n_components, **args)
 
     ### Wrapper function of sklearn.decomposition.PCA.get_covariance.

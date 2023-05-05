@@ -48,7 +48,7 @@ def main():
 
     ### Train SVM with batch random fourier features
     with utils.Timer("Batch RFF SVM learning time: "):
-        svc.fit(Xs_train.dot(T), ys_train, test = (Xs_test.dot(T), ys_test), max_iter = 1E6, tol = 1.0E-2)
+        svc.fit(Xs_train.dot(T), ys_train, test = (Xs_test.dot(T), ys_test), max_iter = int(1E6), tol = 1.0E-2)
 
     ### Calculate score for test data
     with utils.Timer("RFF SVM prediction time for 1 image: ", unit = "us", devide_by = ys_test.shape[0]):

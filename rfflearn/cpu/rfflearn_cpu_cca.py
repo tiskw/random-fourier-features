@@ -10,9 +10,9 @@ from .rfflearn_cpu_common import Base
 ### Canonival Correlation Analysis with random matrix (RFF/ORF)
 class CCA:
 
-    def __init__(self, rand_mat_type, dim_kernel = 128, std_kernel = 0.1, W1 = None, W2 = None, **args):
-        self.fx1 = Base(rand_mat_type, dim_kernel, std_kernel, W1)
-        self.fx2 = Base(rand_mat_type, dim_kernel, std_kernel, W2)
+    def __init__(self, rand_mat_type, dim_kernel = 128, std_kernel = 0.1, W1 = None, b1 = None, W2 = None, b2 = None, **args):
+        self.fx1 = Base(rand_mat_type, dim_kernel, std_kernel, W1, b1)
+        self.fx2 = Base(rand_mat_type, dim_kernel, std_kernel, W2, b2)
         self.cca = sklearn.cross_decomposition.CCA(**args)
 
     ### Run training, that is, extract feature vectors and train CCA.

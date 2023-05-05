@@ -30,7 +30,7 @@ class SVC(Base):
         self.dtype       = dtype
         self.initialized = False
         self.W           = W
-        self.b           = W
+        self.b           = b
 
         ### Automatically detect device.
         ### This module assumes that GPU is available, but works if not available.
@@ -38,7 +38,7 @@ class SVC(Base):
 
         ### Inisialize variables.
         if svc: self.init_from_RFFSVC_cpu(svc, M_pre)
-        else  : super().__init__(rand_mat_type, dim_kernel, std_kernel, W)
+        else  : super().__init__(rand_mat_type, dim_kernel, std_kernel, W, b)
 
     ### Constractor: initialize parameters from scratch.
     def init_from_scratch(self, dim_input, dim_kernel, dim_output, std):
