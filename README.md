@@ -1,14 +1,19 @@
-# Random Fourier Features
+Random Fourier Features
+====================================================================================================
 
-This repository provides Python module `rfflearn`
-which is a library of random Fourier features [1, 2] for kernel method,
-like support vector machine and Gaussian process model.
-Features of this module are:
+This repository provides the Python module `rfflearn` which is a Python library of random Fourier
+features (hereinafter abbreviated as RFF) [1, 2] for kernel methods, like support vector
+machine [3, 4] and Gaussian process model [5]. Features of this module are:
 
-* interfaces of the module are quite close to the [scikit-learn](https://scikit-learn.org/),
-* support vector classifier and Gaussian process regressor/classifier provides CPU/GPU training and inference,
-* interface to [optuna](https://optuna.org/) for easier hyper parameter tuning,
-* this repository provides [example code](./examples/) that shows RFF is useful for actual machine learning tasks.
+- **User-friendly interfaces**: Interfaces of the `rfflearn` module are quite close to
+  the [scikit-learn](https://scikit-learn.org/) library,
+- **Example code first**: This repository provides plenty of [example code](./examples/) to
+  demonstrate that RFF is useful for actual machine learning tasks,
+- **GPU support**: Some classes in the `rfflearn` module provides both GPU training and inference
+  for faster computation,
+- **Wrapper to the other library**: Interface to [optuna](https://optuna.org/) and
+  [SHAP](https://github.com/slundberg/shap) are provided for easier hyperparameter tuning and
+  feature importance analysis.
 
 Now, this module supports the following methods:
 
@@ -22,13 +27,15 @@ Now, this module supports the following methods:
 | support vector classification   | `rfflearn.cpu.RFFSVC`        | `rfflearn.gpu.RFFSVC` |
 | support vector regression       | `rfflearn.cpu.RFFSVR`        | -                     |
 
-RFF can be applicable for many other machine learning algorithms, I will provide other functions soon.
+RFF can be applicable to many other machine learning algorithms than the above.
+The author will provide implementations of the other algorithms soon.
 
-**NOTE**: The author confirmed that the `rfflearn` can work on PyTorch 2.0!
+**NOTE**: The author confirmed that the `rfflearn` module works on PyTorch 2.0! :tada:
 
-## Minimal example
+Minimal example
+----------------------------------------------------------------------------------------------------
 
-Interfaces provided by our module is quite close to scikit-learn.
+Interfaces provided by the module `rfflearn` are quite close to scikit-learn.
 For example, the following Python code is a sample usage of `RFFSVC`
 (support vector machine with random Fourier features) class.
 
@@ -61,17 +68,18 @@ The following code requires PyTorch (>= 1.7.0).
 array([1])
 ```
 
-See [examples](./examples/) directory for more detailed examples.
+See the [examples](./examples/) directory for more detailed examples.
 
 
-## Example1: MNIST using random Fourier features
+Example1: MNIST using random Fourier features
+----------------------------------------------------------------------------------------------------
 
-I tried SVC (support vector classifier) and GPC (Gaussian process classifire) with RFF to the MNIST
-dataset which is one of the famous benchmark dataset on the image classification task, and I've got
-better performance and much faster inference speed than kernel SVM. The following table gives
-a brief comparison of kernel SVM, SVM with RFF and GPC with RFF. See the example of
-[RFF SVC module](./examples/svc_for_mnist/) and [RFF GP module](./examples/gpc_for_mnist/)
-for mode details.
+The author tried SVC (support vector classifier) and GPC (Gaussian process classifier) with RFF to
+the MNIST dataset which is one of the famous benchmark datasets on the image classification task,
+and the author has got better performance and much faster inference speed than kernel SVM.
+The following table gives a brief comparison of kernel SVM, SVM with RFF, and GPC with RFF. 
+See the example of [RFF SVC module](./examples/svc_for_mnist/) and
+[RFF GP module](./examples/gpc_for_mnist/) for more details.
 
 | Method         | RFF dimension | Inference time [us/image] | Score [%] |
 |:--------------:|:-------------:|:-------------------------:|:---------:|
@@ -87,12 +95,13 @@ for mode details.
 </div>
 
 
-## Example2: Visualization of feature importance
+Example2: Visualization of feature importance
+----------------------------------------------------------------------------------------------------
 
-This module also have interfaces to some feature importance methods, like SHAP [3] and permutation
-importance [4]. I tried SHAP and permutation importance to `RFFGPR` trained by Boston house-price
-dataset, and the following is the visualization results obtained by `rfflearn.shap_feature_importance`
-and `rfflearn.permutation_feature_importance`.
+This module also has interfaces to some feature importance methods, like SHAP [6] and permutation
+importance [7]. The author tried SHAP and permutation importance to `RFFGPR` trained on
+the California housing dataset, and the followings are the visualization results obtained by
+`rfflearn.shap_feature_importance` and `rfflearn.permutation_feature_importance`.
 
 <div align="center">
   <img src="./examples/feature_importances_for_california_housing/figure_california_housing_shap_importance.png" width="400" alt="Permutation importances of Boston housing dataset" />
@@ -100,17 +109,20 @@ and `rfflearn.permutation_feature_importance`.
 </div>
 
 
-## Requirements and installation
+Requirements and installation
+----------------------------------------------------------------------------------------------------
 
-The author recommend to use docker image for building environment, however, of course,
-you can install necessary packages on your environment. See [SETUP.md](./SETUP.md) for more details.
+The author recommends using a docker image for building the environment for the `rfflearn`,
+however, of course, you can install the necessary packages on your environment directly.
+See [SETUP.md](./SETUP.md) for more details.
 
 
-## Notes
+Notes
+----------------------------------------------------------------------------------------------------
 
-- Name of this module is changed from `pyrff` to `rfflearn` on Oct 2020,
-  because the package `pyrff` already exists in PyPI.
-- If a number of training data are huge, error message like `RuntimeError: The task could not be
+- The name of this module is changed from `pyrff` to `rfflearn` on Oct 2020, because the package name
+  `pyrff` already exists in PyPI.
+- If the number of training data is huge, an error message like `RuntimeError: The task could not be
   sent to the workers as it is too large for 'send_bytes'` will be raised from the joblib library.
   The reason for this error is that the `sklearn.svm.LinearSVC` uses `joblib` as a multiprocessing
   backend, but joblib cannot deal huge size of the array which cannot be managed with 32-bit
@@ -118,17 +130,18 @@ you can install necessary packages on your environment. See [SETUP.md](./SETUP.m
   Default settings are `n_jobs = -1` which means automatically detecting available CPUs and using
   them. (This bug information was reported by Mr. Katsuya Terahata @ Toyota Research Institute
   Advanced Development. Thank you so much for the reporting!)
-- Applucation of RFF to the Gaussian process is not straight forward.
+- Application of RFF to the Gaussian process model is not straightforward.
   See [this document](./documents/rff_for_gaussian_process.pdf) for mathematical details.
 
 
-
-## Licence
+License
+----------------------------------------------------------------------------------------------------
 
 [MIT Licence](https://opensource.org/licenses/mit-license.php)
 
 
-## Reference
+Reference
+----------------------------------------------------------------------------------------------------
 
 [1] A. Rahimi and B. Recht, "Random Features for Large-Scale Kernel Machines", NIPS, 2007.
 [PDF](https://papers.nips.cc/paper/3182-random-features-for-large-scale-kernel-machines.pdf)
@@ -136,13 +149,21 @@ you can install necessary packages on your environment. See [SETUP.md](./SETUP.m
 [2] F. X. Yu, A. T. Suresh, K. Choromanski, D. Holtmann-Rice and S. Kumar, "Orthogonal Random Features", NIPS, 2016.
 [PDF](https://papers.nips.cc/paper/6246-orthogonal-random-features.pdf)
 
-[3] S. M. Lundberg and S. Lee, "A Unified Approach to Interpreting Model Predictions", NIPS, 2017.
+[3] V. Vapnik and A. Lerner, "Pattern recognition using generalized portrait method", Automation and Remote Control, vol. 24, 1963.
+
+[4] B. Boser, I. Guyon and V. Vapnik, "A training algorithm for optimal margin classifiers", COLT, pp. 144-152, 1992
+[URL](https://dl.acm.org/doi/10.1145/130385.130401)
+
+[5] C. Rasmussen and C. Williams, "Gaussian Processes for Machine Learning", MIT Press, 2006.
+
+[6] S. M. Lundberg and S. Lee, "A Unified Approach to Interpreting Model Predictions", NIPS, 2017.
 [PDF](https://proceedings.neurips.cc/paper/2017/file/8a20a8621978632d76c43dfd28b67767-Paper.pdf)
 
-[4] L. Breiman, "Random Forests", Machine Learning, vol. 45, pp. 5-32, Springer, 2001.
+[7] L. Breiman, "Random Forests", Machine Learning, vol. 45, pp. 5-32, Springer, 2001.
 [Springer website](https://doi.org/10.1023/A:1010933404324).
 
 
-## Author
+Author
+----------------------------------------------------------------------------------------------------
 
 Tetsuya Ishikawa ([EMail](mailto:tiskw111@gmail.com), [Website](https://tiskw.github.io/about_en.html))

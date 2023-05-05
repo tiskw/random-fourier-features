@@ -1,41 +1,45 @@
-# Automatic Hyper Parameter Tuning using Optuna
+Automatic Hyper Parameter Tuning using Optuna
+====================================================================================================
 
-This directory provides an example of automatic hyper parameter tuning and visualization the tuning process.
-In this example, we use `RFFRegressor` as a model and the California housing dataset as a data.
+This directory provides an example of automatic hyperparameter tuning and visualization of the
+tuning process. In this example, we use `RFFRegressor` as a model and the California housing
+dataset as a data.
 
 
-## Installation
+Installation
+----------------------------------------------------------------------------------------------------
 
 See [this document](../..SETUP.md) for more details.
 
 ### Docker image (recommended)
 
 ```console
-$ docker pull tiskw/pytorch:latest
-$ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
-$ docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash
-$ cd examples/optuna_and_shap_for_boston_housing/
+docker pull tiskw/pytorch:latest
+cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
+docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash
+cd examples/optuna_and_shap_for_california_housing/
 ```
 
 ### Install on your environment (easier, but pollute your development environment)
 
 ```console
-$ pip3 install docopt numpy scipy scikit-learn  # Necessary packages
-$ pip3 install optuna                           # Required for hyper parameter tuning
-$ apt install apngasm                           # Required for tuning process visualization
+pip3 install docopt numpy scipy scikit-learn  # Necessary packages
+pip3 install optuna                           # Required for hyper parameter tuning
+apt install apngasm                           # Required for tuning process visualization
 ```
 
 The `apngasm` is a command to generate APNG animation.
 This command is required only for specifying `--visualize` option that generates the APNG animation below.
 
 
-## Usage
+Usage
+----------------------------------------------------------------------------------------------------
 
-The `rfflearn` library contains easier interface to Optuna.
-The sample script `main_optuna_for_boston_housing.py` provides sample usage of the interface.
+The `rfflearn` module contains wrapper interfaces to [Optuna](https://optuna.org/).
+The sample script `main_optuna_for_california_housing.py` provides sample usage of the interface.
 
 ```console
-$ python3 main_optuna_for_boston_housing.py
+python3 main_optuna_for_california_housing.py
 ```
 
 The best parameters and best estimators are returned like the following:
@@ -54,10 +58,10 @@ The best parameters and best estimators are returned like the following:
 
 ### Visualization of the tuning process
 
-The following command generate an APNG animation which virualizes the process of the hyper parameter search.
+The following command generates an APNG animation that visualizes the process of the hyperparameter search.
 
 ```console
-$ python3 main_optuna_for_boston_housing.py --visualize
+python3 main_optuna_for_california_housing.py --visualize
 ```
 
 <div align="center">

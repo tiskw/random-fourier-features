@@ -1,9 +1,11 @@
-# Example of RFFLearn module
+Example of RFFLearn module
+====================================================================================================
 
 This directory contains the example code for the `rfflearn.cpu` and `rfflearn.gpu` module.
 
 
-## Least square regression with random Fourier features
+Least square regression with random Fourier features
+----------------------------------------------------------------------------------------------------
 
 An example of regression with random Fourier features.
 See [README.md](./least_square_regression/README.md) for more details.
@@ -13,7 +15,8 @@ See [README.md](./least_square_regression/README.md) for more details.
 </div>
 
 
-## Gaussian process regression with random Fourier features
+Gaussian process regression with random Fourier features
+----------------------------------------------------------------------------------------------------
 
 An example of Gaussian process regression with random Fourier features.
 See [README.md](./gpr_sparse_data/README.md) for more details.
@@ -23,7 +26,8 @@ See [README.md](./gpr_sparse_data/README.md) for more details.
 </div>
 
 
-## Gaussian process classification with random Fourier features
+Gaussian process classification with random Fourier features
+----------------------------------------------------------------------------------------------------
 
 An example of the Gaussian process classification with random Fourier features.
 See [README.md](./gpc_for_mnist/README.md) for more details.
@@ -33,17 +37,19 @@ See [README.md](./gpc_for_mnist/README.md) for more details.
 </div>
 
 
-## Support vector classification with random Fourier features
+Support vector classification with random Fourier features
+----------------------------------------------------------------------------------------------------
 
-An example of support vector classification for [MNIST](http://yann.lecun.com/exdb/mnist/) dataset with random Fourier features.
-See [README.md](./svc_for_mnist/README.md) for more details.
+An example of support vector classification for [MNIST](http://yann.lecun.com/exdb/mnist/) dataset
+with random Fourier features. See [README.md](./svc_for_mnist/README.md) for more details.
 
 <div align="center">
   <img src="./svc_for_mnist/figures/figure_Inference_Time_and_Accuracy_on_MNIST.png" width="671" alt="Inference Time vs Accuracy on MNIST" />
 </div>
 
 
-## Canonical correlation analysis with random Fourier features
+Canonical correlation analysis with random Fourier features
+----------------------------------------------------------------------------------------------------
 
 An example of canonical correlation analysis with random Fourier features.
 See [README.md](./cca_for_artificial_data/README.md) for more details.
@@ -53,9 +59,10 @@ See [README.md](./cca_for_artificial_data/README.md) for more details.
 </div>
 
 
-## Principal component analysis with random Fourier features
+Principal component analysis with random Fourier features
+----------------------------------------------------------------------------------------------------
 
-An example of principal component analysis for swiss roll dataset with random Fourier features.
+An example of principal component analysis for the swiss roll dataset with random Fourier features.
 See [README.md](./pca_for_swissroll/README.md) for more details.
 
 <div align="center">
@@ -64,19 +71,22 @@ See [README.md](./pca_for_swissroll/README.md) for more details.
 </div>
 
 
-## Automatic hyper parameter tuning using Optuna
+Automatic hyperparameter tuning using Optuna
+----------------------------------------------------------------------------------------------------
 
-An example of automatic hyper parameter tuning functions that uses [Optuna](https://optuna.org/) as a backend.
-See [README.md](./optuna_for_california_housing/README.md) for more details.
+An example of automatic hyperparameter tuning functions that uses [Optuna](https://optuna.org/)
+as a backend. See [README.md](./optuna_for_california_housing/README.md) for more details.
 
 <div align="center">
   <img src="./optuna_for_california_housing/hyper_parameter_search.png" width="500" alt="Animation of hyper parameter search behavior" />
 </div>
 
 
-## Feature importance of trained model and visualization of the importance
+Feature importance of trained model and visualization of the importance
+----------------------------------------------------------------------------------------------------
 
-An example of the compuration of feature importance that uses [scikit-learn](https://scikit-learn.org/) and [Optuna](https://optuna.org/) as backends.
+An example of the computation of feature importance that uses
+[scikit-learn](https://scikit-learn.org/) and [Optuna](https://optuna.org/) as backends.
 See [README.md](./feature_importances_for_california_housing/README.md) for more details.
 
 <div align="center">
@@ -85,11 +95,13 @@ See [README.md](./feature_importances_for_california_housing/README.md) for more
 </div>
 
 
-## Support vector classification with random Fourier features with batch learning
+Support vector classification with random Fourier features with batch learning
+----------------------------------------------------------------------------------------------------
 
-An example of support vector classification with batch learning for [MNIST](http://yann.lecun.com/exdb/mnist/) dataset with random Fourier features.
+An example of support vector classification with batch learning for
+[MNIST](http://yann.lecun.com/exdb/mnist/) dataset with random Fourier features.
 See [README.md](./svc_for_mnist_batch/README.md) for more details.
 
 However, you do not need to pay much attention to this example because
 [non-batch learning approach](./svc_for_mnist/README.md)
-(i.e. usual SVC training using all dataset) now shows higher performance than the batch learning approach.
+(i.e. usual SVC training using the entire dataset) now shows higher performance than the batch learning approach.

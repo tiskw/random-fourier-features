@@ -1,7 +1,9 @@
-# Setting Up
+Setting Up
+====================================================================================================
 
 
-## Installation
+Installation
+----------------------------------------------------------------------------------------------------
 
 ### Using Docker (recommended)
 
@@ -11,18 +13,20 @@ inside a Docker container. The rfflearn and it's sample code are executable on
 Please run the following command to download the docker image:
 
 ```console
-$ docker pull tiskw/pytorch:latest
+docker pull tiskw/pytorch:latest
 ```
 
 The following command is the typical usage of the docker image:
 
 ```
-$ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
-$ docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash
+cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
+docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash
 ```
 
 If you need GPU support, add `--gpus all` option to the above docker run command above.
 Also if the version of your docker is lower than 19, use `--runtime=nvidia` instead of `--gpus all`.
+
+Also, if you want to use PyTorch 2.x, use `tiskw/pytorch2:latest` instead of `tiskw/pytorch2:latest`.
 
 ### Installing on your environment (easier, but pollute your development environment)
 
@@ -30,24 +34,25 @@ If you don't mind to pollute your own environment (or you are already inside a d
 just run the following command for installing required packages:
 
 ```console
-$ pip3 install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 
-## Quick Tutorial
+Quick Tutorial
+----------------------------------------------------------------------------------------------------
 
 At first, please clone the `random-fourier-features` repository from GitHub:
 
 ```console
-$ git clone https://github.com/tiskw/random-fourier-features.git
-$ cd random-fourier-features
+git clone https://github.com/tiskw/random-fourier-features.git
+cd random-fourier-features
 ```
 
 If you are using the docker image, enter into the docker container by the following command
 (not necessary to run thw following if you don't use docker):
 
 ```console
-$ docker run --rm -it --gpus all -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash
+docker run --rm -it --gpus all -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash
 ```
 
 Then, launch python3 and try the following minimal code that runs support vector classification
@@ -64,3 +69,12 @@ with random Fourier features on an artificial tiny dataset.
 >>> svc.predict(np.array([[-0.8, -1]]))
 array([1])
 ```
+
+
+Next Step
+----------------------------------------------------------------------------------------------------
+
+Now you succeeded in installing the `rfflearn` module.
+The author's recommendation for the next step is to see the [examples directory](./examples)
+and try a code you are interested in.
+
