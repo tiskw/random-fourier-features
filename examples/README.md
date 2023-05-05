@@ -67,21 +67,21 @@ See [README.md](./pca_for_swissroll/README.md) for more details.
 ## Automatic hyper parameter tuning using Optuna
 
 An example of automatic hyper parameter tuning functions that uses [Optuna](https://optuna.org/) as a backend.
-See [README.md](./optuna_for_boston_housing/README.md) for more details.
+See [README.md](./optuna_for_california_housing/README.md) for more details.
 
 <div align="center">
-  <img src="./optuna_for_boston_housing/figures/hyper_parameter_search.gif" width="500" alt="Animation of hyper parameter search behavior" />
+  <img src="./optuna_for_california_housing/hyper_parameter_search.png" width="500" alt="Animation of hyper parameter search behavior" />
 </div>
 
 
 ## Feature importance of trained model and visualization of the importance
 
-An example of automatic hyper parameter tuning functions that uses [Optuna](https://optuna.org/) as a backend.
-See [README.md](./feature_importances_for_boston_housing/README.md) for more details.
+An example of the compuration of feature importance that uses [scikit-learn](https://scikit-learn.org/) and [Optuna](https://optuna.org/) as backends.
+See [README.md](./feature_importances_for_california_housing/README.md) for more details.
 
 <div align="center">
-  <img src="./feature_importances_for_boston_housing/figure_boston_housing_shap_importance.png" width="400" alt="Permutation importances of Boston housing dataset" />
-  <img src="./feature_importances_for_boston_housing/figure_boston_housing_permutation_importance.png" width="400" alt="SHAP importances of Boston housing dataset" />
+  <img src="./feature_importances_for_california_housing/figure_california_housing_shap_importance.png" width="400" alt="Permutation importances of Boston housing dataset" />
+  <img src="./feature_importances_for_california_housing/figure_california_housing_permutation_importance.png" width="400" alt="SHAP importances of Boston housing dataset" />
 </div>
 
 

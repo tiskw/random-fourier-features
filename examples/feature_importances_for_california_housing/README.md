@@ -2,9 +2,8 @@
 
 This directory provides an example of feature importance calculation and visualization
 that is one of the typical data analysis procedure. In here, we build a model for
-the Boston house-price dataset using automatic hyper parameter tuning and calculate
-the feature importances. The backend of the SHAP feature importance is
-[SHAP library](https://shap.readthedocs.io/en/latest/).
+the California housing dataset and calculate the feature importances on the model.
+The backend of the SHAP feature importance is [SHAP library](https://shap.readthedocs.io/en/latest/).
 
 
 ## Installation
@@ -31,19 +30,19 @@ $ pip3 install shap                             # Required for feature importanc
 
 ## Usage
 
-One of the tipycal data analysis procedure is automatic hyper parameter tuning of a model and feature importance calculation.
-The sample script `main_feature_importanves_for_boston_housing.py` provides an example of the procedure using the Boston house-price dataset.
+The sample script `main_feature_importanves_for_boston_housing.py` provides an example of the procedure
+to train a model and compute feature importances on the model using the California housing dataset.
 
 ```console
-$ python3 main_feature_importanves_for_boston_housing.py
+$ python3 main_feature_importanves_for_california_housing.py
 ```
 
 The following figure shows regression result of house price and the list of important features.
 
 <div align="center">
-  <img src="./figure_boston_housing_regression.png" width="640" height="480" alt="Regression result of Boston housing dataset" />
-  <img src="./figure_boston_housing_shap_importance.png" width="840" height="640" alt="SHAP importances of Boston housing dataset" />
-  <img src="./figure_boston_housing_permutation_importance.png" width="640" height="480" alt="Permutation importances of Boston housing dataset" />
+  <img src="./figure_california_housing_regression.png" width="640" height="480" alt="Regression result of California housing dataset" />
+  <img src="./figure_california_housing_shap_importance.png" width="840" height="640" alt="SHAP importances of California housing dataset" />
+  <img src="./figure_california_housing_permutation_importance.png" width="640" height="480" alt="Permutation importances of California housing dataset" />
 </div>
 
 ### Training on GPU
