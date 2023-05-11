@@ -83,12 +83,13 @@ See the example of [RFF SVC module](./examples/svc_for_mnist/) and
 
 | Method         | RFF dimension | Inference time [us/image] | Score [%] |
 |:--------------:|:-------------:|:-------------------------:|:---------:|
-| Kernel SVM     | -             | 1312.6 us                 | 96.30 %   |
-| RFF SVC        |  640          |   33.6 us                 | 96.39 %   |
-| RFF SVC (GPU)  |  640          |   1.11 us                 | 96.39 %   |
-| RFF SVC        | 4096          |  183.4 us                 | 98.14 %   |
-| RFF SVC (GPU)  | 4096          |   2.62 us                 | 98.14 %   |
-| RFF GPC        | 20000         |  517.9 us                 | 98.38 %   |
+| Kernel SVM     |      -        | 1312.6 us                 | 96.30 %   |
+| RFF SVC        |    640        |   33.6 us                 | 96.39 %   |
+| RFF SVC (GPU)  |    640        |   1.11 us                 | 96.39 %   |
+| RFF SVC        |  4,096        |  183.4 us                 | 98.14 %   |
+| RFF SVC (GPU)  |  4,096        |   2.62 us                 | 98.14 %   |
+| RFF GPC        | 20,000        |  517.9 us                 | 98.38 %   |
+| RFF GPC (GPU)  | 20,000        |  61.52 us                 | 98.38 %   |
 
 <div align="center">
   <img src="./figures/Inference_Time_and_Accuracy_on_MNIST_SVC_and_GPC.png" width="671" alt="Accuracy for each epochs in RFF SVC/GPC" />

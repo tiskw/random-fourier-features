@@ -1,51 +1,98 @@
-#!/usr/bin/env python3
-#
-# Python module of support vector regression with random matrix for CPU.
-##################################################### SOURCE START #####################################################
+"""
+Python module of support vector regression with random matrix for CPU.
+"""
 
 import sklearn.svm
 import sklearn.multiclass
 
 from .rfflearn_cpu_common import Base
 
-### Support vector regression with random matrix (RFF/ORF).
-class SVR(Base):
 
-    ### Constractor. Save hyper parameters as member variables and create LinearSVR instance.
-    def __init__(self, rand_mat_type, dim_kernel = 128, std_kernel = 0.1, W = None, **args):
-        super().__init__(rand_mat_type, dim_kernel, std_kernel, W)
+class SVR(Base):
+    """
+    Support vector regression with random matrix (RFF/ORF).
+    """
+    def __init__(self, rand_type, dim_kernel=128, std_kernel=0.1, W=None, b=None, **args):
+        """
+        Constractor. Save hyper parameters as member variables and create LinearSVR instance.
+
+        Args:
+            rand_type  (str)       : Type of random matrix ("rff", "orf", "qrf", etc).
+            dim_kernel (int)       : Dimension of the random matrix.
+            std_kernel (float)     : Standard deviation of the random matrix.
+            W          (np.ndarray): Random matrix for the input `X`. If None then generated automatically.
+            b          (np.ndarray): Random bias for the input `X`. If None then generated automatically.
+            args       (dict)      : Extra arguments. This will be passed to sklearn's LinearSVC class constructor.
+        """
+        super().__init__(rand_type, dim_kernel, std_kernel, W)
         self.svr = sklearn.svm.LinearSVR(**args)
 
-    ### Run training, that is, extract feature vectors and train SVR.
     def fit(self, X, y, **args):
+        """
+        Run training, that is, extract feature vectors and train SVR.
+
+        Args:
+            X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
+            y    (np.ndarray): Output vector with shape (n_samples,).
+            args (dict)      : Extra arguments. This arguments will be passed to sklearn's `fit` function.
+
+        Returns:
+            (rfflearn.cpu.SVC): Myself.
+        """
         self.set_weight(X.shape[1])
         self.svr.fit(self.conv(X), y, **args)
         return self
 
-    ### Return prediction results.
     def predict(self, X, **args):
+        """
+        Return prediction results.
+
+        Args:
+            X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
+            args (dict)      : Extra arguments. This arguments will be passed to sklearn's `predict_log_proba` function.
+
+        Returns:
+            (np.ndarray): Predicted classes.
+        """
         self.set_weight(X.shape[1])
         return self.svr.predict(self.conv(X), **args)
 
-    ### Return evaluation score.
     def score(self, X, y, **args):
+        """
+        Return evaluation score (R2 score).
+
+        Args:
+            X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
+            y    (np.ndarray): Output vector with shape (n_samples,).
+            args (dict)      : Extra arguments. This arguments will be passed to sklearn's `score` function.
+
+        Returns:
+            (float): R2 score of regression.
+        """
         self.set_weight(X.shape[1])
         return self.svr.score(self.conv(X), y, **args)
 
-### The above functions/classes are not visible from users of this library,
-### becasue of the complicated usage. The following classes are simplified
-### version of the classes. These classes are visible from users.
 
-### Support vector machine with RFF.
+# The above functions/classes are not visible from users of this library, becasue the usage of
+# the function is a bit complicated. The following classes are simplified version of the above
+# classes. The following classes are visible from users.
+
+
 class RFFSVR(SVR):
+    """
+    Support vector machine with RFF.
+    """
     def __init__(self, *pargs, **kwargs):
         super().__init__("rff", *pargs, **kwargs)
 
-### Support vector machine with ORF.
+
 class ORFSVR(SVR):
+    """
+    Support vector machine with ORF.
+    """
     def __init__(self, *pargs, **kwargs):
         super().__init__("orf", *pargs, **kwargs)
 
-##################################################### SOURCE FINISH ####################################################
+
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

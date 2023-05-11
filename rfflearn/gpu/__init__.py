@@ -1,19 +1,19 @@
-#!/usr/bin/env python3
-#
-# __init__.py file for the module 'rfflearn.gpu'.
-##################################################### SOURCE START #####################################################
+"""
+__init__.py file for the module 'rfflearn.gpu'.
+"""
 
 import functools
 import pkgutil
 import sys
 
-### Import RFF-related modules.
+# Import RFF-related modules.
 from .rfflearn_gpu_common import seed
 from .rfflearn_gpu_svc    import RFFSVC, ORFSVC, QRFSVC
 from .rfflearn_gpu_gp     import RFFGPR, ORFGPR, QRFGPR, RFFGPC, ORFGPC, QRFGPC
 from .rfflearn_gpu_pca    import RFFPCA, ORFPCA
 
-### Import optuna-related modules if `optuna` is available.
+
+# Import optuna-related modules if `optuna` is available.
 if pkgutil.get_loader("optuna") is not None:
 
     from ..tuner import tuner
@@ -30,7 +30,7 @@ if pkgutil.get_loader("optuna") is not None:
 
 else: print("rfflearn.cpu: package 'optuna' not found. SKip loading tuner submodule.", file = sys.stderr)
 
-### Import shap-related modules if `shap` is available.
+# Import shap-related modules if `shap` is available.
 if pkgutil.get_loader("shap") is not None:
 
     from ..explainer.shap import shap_feature_importance
@@ -38,6 +38,6 @@ if pkgutil.get_loader("shap") is not None:
 
 else: print("rfflearn.cpu: package 'shap' not found. SKip loading explainer submodule.", file = sys.stderr)
 
-##################################################### SOURCE FINISH ####################################################
+
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker
