@@ -25,7 +25,7 @@ Options:
     kernel               Run normal Gaussian Process.
     rff                  Run Gaussian process with Random Fourier Features.
     orf                  Run Gaussian process with Orthogonal Random Features.
-    --kdim <int>         Hyper parameter of RFF SVM (dimention of RFF). [default: 16]
+    --kdim <int>         Hyper parameter of RFF SVM (dimention of RFF). [default: 32]
     --std_kernel <float> Hyper parameter of RFF SVM (stdev of RFF).     [default: 5.0]
     --std_error <float>  Hyper parameter of RFF SVM (stdev of error).   [default: 1.0]
     --n_train <int>      Number of training samples.                    [default: 10000]

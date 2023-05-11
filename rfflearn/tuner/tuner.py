@@ -19,9 +19,9 @@ def RFF_dim_std_tuner(train_set, valid_set, model_class, **kwargs):
 
     ### Define default arguments.
     args_par = {"dtype_dim_kernel": "int",
-                "range_dim_kernel": (128, 1024),
-                "dtype_std_kernel": "loguniform",
-                "range_std_kernel": (1e-3, 1.0)}
+                "range_dim_kernel": {"low": 128, "high": 1024},
+                "dtype_std_kernel": "float",
+                "range_std_kernel": {"low": 1e-3, "high": 1.0, "log": True}}
 
     ### Update parameter arguments and delete from the `kwargs` variable.
     for key in args_par:
@@ -36,8 +36,8 @@ def RFF_dim_std_tuner(train_set, valid_set, model_class, **kwargs):
     def objective(trial):
 
         ### Define optuna variable.
-        dim_kernel = eval("trial.suggest_{dtype_dim_kernel}('dim_kernel', *{range_dim_kernel})".format(**args_par))
-        std_kernel = eval("trial.suggest_{dtype_std_kernel}('std_kernel', *{range_std_kernel})".format(**args_par))
+        dim_kernel = eval("trial.suggest_{dtype_dim_kernel}('dim_kernel', **{range_dim_kernel})".format(**args_par))
+        std_kernel = eval("trial.suggest_{dtype_std_kernel}('std_kernel', **{range_std_kernel})".format(**args_par))
 
         ### Create classifier instance.
         model = model_class(dim_kernel = dim_kernel, std_kernel = std_kernel, **args_fit)
@@ -68,11 +68,11 @@ def RFF_dim_std_err_tuner(train_set, valid_set, model_class, **kwargs):
 
     ### Define default arguments.
     args_par = {"dtype_dim_kernel": "int",
-                "range_dim_kernel": (128, 1024),
-                "dtype_std_error" : "loguniform",
-                "range_std_error" : (1e-4, 0.1),
-                "dtype_std_kernel": "loguniform",
-                "range_std_kernel": (1e-3, 1.0)}
+                "range_dim_kernel": {"low": 128, "high": 1024},
+                "dtype_std_error" : "float",
+                "range_std_error" : {"low": 1e-4, "high": 0.1, "log": True},
+                "dtype_std_kernel": "float",
+                "range_std_kernel": {"low": 1e-3, "high": 1.0, "log": True}}
 
     ### Update parameter arguments and delete from the `kwargs` variable.
     for key in args_par:
@@ -87,9 +87,9 @@ def RFF_dim_std_err_tuner(train_set, valid_set, model_class, **kwargs):
     def objective(trial):
 
         ### Define optuna variable.
-        dim_kernel = eval("trial.suggest_{dtype_dim_kernel}('dim_kernel', *{range_dim_kernel})".format(**args_par))
-        std_kernel = eval("trial.suggest_{dtype_std_kernel}('std_kernel', *{range_std_kernel})".format(**args_par))
-        std_error  = eval("trial.suggest_{dtype_std_error} ('std_error',  *{range_std_error} )".format(**args_par))
+        dim_kernel = eval("trial.suggest_{dtype_dim_kernel}('dim_kernel', **{range_dim_kernel})".format(**args_par))
+        std_kernel = eval("trial.suggest_{dtype_std_kernel}('std_kernel', **{range_std_kernel})".format(**args_par))
+        std_error  = eval("trial.suggest_{dtype_std_error} ('std_error',  **{range_std_error} )".format(**args_par))
 
         ### Create classifier instance.
         model = model_class(dim_kernel = dim_kernel, std_kernel = std_kernel, std_error = std_error, **args_fit)

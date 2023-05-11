@@ -34,7 +34,7 @@ def permutation_plot(permutation_importances, feature_names, show = True):
     ### Sort faetures by the average of permutation order.
     sorted_idx  = np.mean(permutation_importances, axis = 1).argsort()
     importances = permutation_importances[sorted_idx].T
-    label_names = feature_names[sorted_idx]
+    label_names = np.array(feature_names)[sorted_idx]
 
     ### Plot box diagram.
     mpl.boxplot(importances, labels = label_names, vert = False)

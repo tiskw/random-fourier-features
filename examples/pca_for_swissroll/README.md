@@ -1,44 +1,47 @@
-# Princaipal Component Analysis using Random Fourier Features
+Principal Component Analysis using Random Fourier Features
+====================================================================================================
 
-This python script provides an example of PCA with Random Fourier Features (RFF PCA).
+This Python script provides an example of PCA with Random Fourier Features (RFF PCA).
 Our module for Random Fourier Features (PyRFFF.py) needs scikit-learn as a backend of PCA solver,
 therefore you need to install scikit-learn.
 
 
-## Installation
+Installation
+----------------------------------------------------------------------------------------------------
 
 See [this document](../../SETUP.md) for more details.
 
 ### Docker image (recommended)
 
 ```console
-$ docker pull tiskw/pytorch:latest
-$ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
-$ docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash
-$ cd examples/gpr_sparse_data/
+docker pull tiskw/pytorch:latest
+cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
+docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash
+cd examples/gpr_sparse_data/
 ```
 
 ### Install on your environment (easier, but pollute your development environment)
 
 ```console
-$ pip3 install docopt numpy scipy scikit-learn  # Necessary packages
-$ pip3 install torch                            # Required only for GPU training/inference
+pip3 install docopt numpy scipy scikit-learn  # Necessary packages
+pip3 install torch                            # Required only for GPU training/inference
 ```
 
-## Usage
+Usage
+----------------------------------------------------------------------------------------------------
 
 ```console
-$ python3 main_pca_for_swissroll.py rff     # RFF PCA
-$ python3 main_pca_for_swissroll.py kernel  # Kernel PCA
+python3 main_pca_for_swissroll.py rff     # RFF PCA
+python3 main_pca_for_swissroll.py kernel  # Kernel PCA
 ```
 
-### Results of princaipal component analysis using random Fourier features
+### Results of principal component analysis using random Fourier features
 
 The following figure shows the input data (10,000 points of swiss roll) and results of RFF PCA.
 
 <div align="center">
-  <img src="./figure_pca_for_swissroll_3d.png" width="640" height="480" alt="3D plot of input data (10,000 points of swiss roll)" />
-  <img src="./figure_pca_for_swissroll_rffpca.png" width="640" height="480" alt="2D plot of 1st/2nd PC obtained by RFF PCA" />
+  <img src="./figure_pca_for_swissroll_3d.png" width="640" alt="3D plot of input data (10,000 points of swiss roll)" />
+  <img src="./figure_pca_for_swissroll_rffpca.png" width="640" alt="2D plot of 1st/2nd PC obtained by RFF PCA" />
 </div>
 
 
