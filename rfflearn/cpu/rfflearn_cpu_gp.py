@@ -34,16 +34,17 @@ class GPR(Base):
 
     def fit(self, X, y, **args):
         """
-        Run the training process. The interface of this function imitate the interface of
-        the 'sklearn.gaussian_process.GaussianProcessRegressor.fit'.
+        Trains the GPR model according to the given data. The interface of this function imitate
+        the interface of the 'sklearn.gaussian_process.GaussianProcessRegressor.fit'.
 
         Args:
             X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
             y    (np.ndarray): Output vector with shape (n_samples,).
-            args (dict)      : Extra arguments, however, this arguments will be ignored.
+            args (dict)      : Extra arguments. However, this arguments will be ignored. This
+                               argument exists only for keeping the same interface with scikit-learn.
 
         Returns:
-            (rfflearn.cpu.GPR): Myself.
+            (rfflearn.cpu.GPR): Fitted estimator.
         """
         self.set_weight(X.shape[1])
         F = self.conv(X).T
@@ -57,9 +58,7 @@ class GPR(Base):
 
     def predict(self, X, return_std=False, return_cov=False):
         """
-        Run prediction. The interface of this function imitate the interface of
-        the 'sklearn.gaussian_process.GaussianProcessRegressor.predict'.
-        If shape of the vector p is (*, 1), then reshape to (*, ).
+        Performs regression on the given data.
 
         Args:
             X          (np.ndarray): Input matrix with shape (n_samples, n_features_input).
@@ -67,7 +66,8 @@ class GPR(Base):
             return_cov (bool)      : Returns covariance of the prediction if True.
 
         Returns:
-            (np.ndarray, or tuple): Prediction, or tuple of prediction, std, and cov.
+            (np.ndarray, or tuple): Prediction, or tuple of prediction, standard deviation,
+                                    and covariance of the prediction.
         """
         self.set_weight(X.shape[1])
 
@@ -82,7 +82,7 @@ class GPR(Base):
 
     def std(self, F):
         """
-        Returns standard deviation of prediction.
+        Returns standard deviation of the prediction.
 
         Args:
             F (np.ndarray): Matrix F (= self.conv(X).T).
@@ -96,7 +96,7 @@ class GPR(Base):
 
     def cov(self, F):
         """
-        Returns covariance of prediction.
+        Returns covariance of the prediction.
 
         Args:
             F (np.ndarray): Matrix F (= self.conv(X).T).
@@ -108,15 +108,15 @@ class GPR(Base):
 
     def score(self, X, y, **args):
         """
-        Return R2 score of the regression result.
+        Returns R2 score (coefficient of determination) of the prediction.
 
         Args:
             X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
-            y    (np.ndarray): Output vector with shape (n_samples,).
-            args (dict)      : Extra arguments, however, this arguments will be ignored.
+            y    (np.ndarray): Output matrix with shape (n_samples, n_features_output).
+            args (dict)      : Extra arguments. However, this arguments will be ignored.
 
         Returns:
-            (float): R2 score of the regression.
+            (float): R2 score of the prediction.
         """
         self.set_weight(X.shape[1])
         return sklearn.metrics.r2_score(y, self.predict(X))
@@ -126,12 +126,14 @@ class GPC(GPR):
     """
     Gaussian Process Classification with random matrix (RFF/ORF).
 
-    RFFGPC is essentially the same as RFFGPR, but some pre-processing and post-processing are necessary.
-    The required processings are:
-      - Assumed input label is a vector of class indexes, but the input of
-        the RFFGPR should be a one hot vector of the class indexes.
+    RFFGPC is essentially the same as RFFGPR, but some pre-processing and post-processing
+    are necessary. The required processing is:
+
+      - Assumed input label is a class index, but the input of the RFFGPR should be a one hot
+        vector of the class index.
       - Output of the RFFGPR is log-prob, not predicted class indexes.
-    The purpouse of this RFFGPC class is only to do these pre/post-processings.
+
+    The purpose of this RFFGPC class is only to do these pre/post-processing.
     """
     def __init__(self, rand_type, dim_kernel=128, std_kernel=0.1, std_error=0.1, W=None, b=None, a=None, S=None):
         """
@@ -151,25 +153,24 @@ class GPC(GPR):
 
     def fit(self, X, y):
         """
-        Run the training process. The interface of this function imitate the interface of
-        the 'sklearn.gaussian_process.GaussianProcessRegressor.fit'.
+        Trains the GPC model according to the given data. The interface of this function imitate
+        the interface of the 'sklearn.gaussian_process.GaussianProcessRegressor.fit'.
 
         Args:
             X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
             y    (np.ndarray): Output vector with shape (n_samples,).
-            args (dict)      : Extra arguments, however, this arguments will be ignored.
+            args (dict)      : Extra arguments. However, this arguments will be ignored. This
+                               argument exists only for keeping the same interface with scikit-learn.
 
         Returns:
-            (rfflearn.cpu.GPC): Myself.
+            (rfflearn.cpu.GPC): Fitted estimator.
         """
         y_onehot = np.eye(int(np.max(y) + 1))[y]
         return super().fit(X, y_onehot)
 
     def predict(self, X, return_std=False, return_cov=False):
         """
-        Run prediction. The interface of this function imitate the interface of
-        the 'sklearn.gaussian_process.GaussianProcessRegressor.predict'.
-        If shape of the vector p is (*, 1), then reshape to (*, ).
+        Performs classification on the given data.
 
         Args:
             X          (np.ndarray): Input matrix with shape (n_samples, n_features_input).
@@ -191,15 +192,15 @@ class GPC(GPR):
 
     def score(self, X, y, **args):
         """
-        Returns classification accuracy.
+        Returns the mean accuracy on the given data and labels.
 
         Args:
             X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
             y    (np.ndarray): Output vector with shape (n_samples,).
-            args (dict)      : Extra arguments, however, this arguments will be ignored.
+            args (dict)      : Extra arguments. However, this arguments will be ignored.
 
         Returns:
-            (float): Classification accuracy.
+            (float): Mean classification accuracy.
         """
         return np.mean(self.predict(X) == y)
 
@@ -257,6 +258,5 @@ class QRFGPC(GPC):
         super().__init__("qrf", *pargs, **kwargs)
 
 
-##################################################### SOURCE FINISH ####################################################
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

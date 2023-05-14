@@ -72,22 +72,28 @@ def main(args):
     perm_values = rfflearn.permutation_feature_importance(model, Xs_test, ys_test)
 
     # Draw regression result.
-    mpl.figure(0)
+    mpl.figure(figsize=(6, 3.5))
     mpl.scatter(pred_test, ys_test, alpha=0.2)
     mpl.plot([0, 5], [0, 5], "--", color="#666666")
     mpl.title("Regression of California Housing Dataset (R2 = %.4f)" % score_r2)
     mpl.xlabel("Predicted MedianHouseVal")
     mpl.ylabel("True MedianHouseVal")
     mpl.grid()
+    mpl.tight_layout()
+    mpl.savefig("figure_california_housing_regression.svg")
 
     # Visualize SHAP importance.
-    mpl.figure(1)
+    mpl.figure(figsize=(6, 3.5))
     rfflearn.shap_plot(shap_values, Xs_test, feature_names, show=False)
     mpl.xlim(-4, 4)
+    mpl.tight_layout()
+    mpl.savefig("figure_california_housing_shap_importance.svg")
 
     # Visualize permurtation importance.
-    mpl.figure(2)
+    mpl.figure(figsize=(6, 3.5))
     rfflearn.permutation_plot(perm_values, feature_names, show=False)
+    mpl.tight_layout()
+    mpl.savefig("figure_california_housing_permutation_importance.svg")
 
     # Show all figures.
     mpl.show()

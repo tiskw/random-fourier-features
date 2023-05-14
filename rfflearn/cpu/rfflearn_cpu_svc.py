@@ -26,7 +26,8 @@ class SVC(Base):
             b          (np.ndarray): Random bias for the input `X`. If None then generated automatically.
             multi_mode (str)       : Treatment of multi-class ("ovr" or "ovo").
             n_jobs     (int)       : The number of jobs to run in parallel.
-            args       (dict)      : Extra arguments. This will be passed to sklearn's LinearSVC class constructor.
+            args       (dict)      : Extra arguments. This will be passed to scikit-learn's
+                                     LinearSVC class constructor.
         """
         super().__init__(rand_type, dim_kernel, std_kernel, W, b)
         self.svm = self.set_classifier(sklearn.svm.LinearSVC(**args), multi_mode, n_jobs)
@@ -36,7 +37,7 @@ class SVC(Base):
         Select multiclass classifire. Now this function can handle one-vs-one and one-vs-others.
 
         Args:
-            svm        (sklearn.svm.LinearSVC): Sklearn's LinnearSVC instance.
+            svm        (sklearn.svm.LinearSVC): Scikit-learn's LinnearSVC instance.
             multi_mode (str)                  : Treatment of multi-class ("ovr" or "ovo").
             n_jobs     (int)                  :
 
@@ -50,12 +51,12 @@ class SVC(Base):
 
     def fit(self, X, y, **args):
         """
-        Run training, that is, extract feature vectors and train SVC.
+        Trains the SVC model according to the given data.
 
         Args:
             X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
             y    (np.ndarray): Output vector with shape (n_samples,).
-            args (dict)      : Extra arguments. This arguments will be passed to sklearn's `fit` function.
+            args (dict)      : Extra arguments. This arguments will be passed to scikit-learn's `fit` function.
 
         Returns:
             (rfflearn.cpu.SVC): Myself.
@@ -64,56 +65,56 @@ class SVC(Base):
         self.svm.fit(self.conv(X), y, **args)
         return self
 
-    def predict_proba(self, X, **args):
+    def predict(self, X, **args):
         """
-        Return predicted probability for each target classes.
+        Performs classification on the given data.
 
         Args:
             X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
-            args (dict)      : Extra arguments. This arguments will be passed to sklearn's `predict_proba` function.
+            args (dict)      : Extra arguments. This arguments will be passed to scikit-learn's `predict` function.
 
         Returns:
-            (np.ndarray): Probability of each class.
+            (np.ndarray): Predicted class labels.
+        """
+        self.set_weight(X.shape[1])
+        return self.svm.predict(self.conv(X), **args)
+
+    def predict_proba(self, X, **args):
+        """
+        Returns probabilities of possible outcomes for the given data.
+
+        Args:
+            X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
+            args (dict)      : Extra arguments. This arguments will be passed to scikit-learn's `predict_proba` function.
+
+        Returns:
+            (np.ndarray): The probability for each class with shape (n_samples, n_classes).
         """
         self.set_weight(X.shape[1])
         return self.svm.predict_proba(self.conv(X), **args)
 
     def predict_log_proba(self, X, **args):
         """
-        Return predicted log-probability for each target classes.
+        Returns log probabilities of possible outcomes for the given data.
 
         Args:
             X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
-            args (dict)      : Extra arguments. This arguments will be passed to sklearn's `predict_log_proba` function.
+            args (dict)      : Extra arguments. This arguments will be passed to scikit-learn's `predict_log_proba` function.
 
         Returns:
-            (np.ndarray): Log probability of each class.
+            (np.ndarray): The log probability for each class with shape (n_samples, n_classes).
         """
         self.set_weight(X.shape[1])
         return self.svm.predict_log_proba(self.conv(X), **args)
 
-    def predict(self, X, **args):
-        """
-        Return prediction results.
-
-        Args:
-            X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
-            args (dict)      : Extra arguments. This arguments will be passed to sklearn's `predict_log_proba` function.
-
-        Returns:
-            (np.ndarray): Predicted classes.
-        """
-        self.set_weight(X.shape[1])
-        return self.svm.predict(self.conv(X), **args)
-
     def score(self, X, y, **args):
         """
-        Return evaluation score (classification accuracy).
+        Returns evaluation score (classification accuracy).
 
         Args:
             X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
             y    (np.ndarray): Output vector with shape (n_samples,).
-            args (dict)      : Extra arguments. This arguments will be passed to sklearn's `score` function.
+            args (dict)      : Extra arguments. This arguments will be passed to scikit-learn's `score` function.
 
         Returns:
             (float): Classification accyracy.
@@ -237,7 +238,7 @@ class BatchSVC:
 
         Args:
             X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
-            args (dict)      : Extra arguments. This arguments will be passed to sklearn's `predict` function.
+            args (dict)      : Extra arguments. This arguments will be passed to scikit-learn's `predict` function.
 
         Returns:
             (np.ndarray): 
@@ -252,7 +253,7 @@ class BatchSVC:
         Args:
             X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
             y    (np.ndarray): Output vector with shape (n_samples,).
-            args (dict)      : Extra arguments. This arguments will be passed to sklearn's `score` function.
+            args (dict)      : Extra arguments. This arguments will be passed to scikit-learn's `score` function.
 
         Returns:
             (float): Classification accyracy.

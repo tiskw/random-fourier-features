@@ -31,14 +31,14 @@ class CCA:
 
     def fit(self, X, Y):
         """
-        Extract feature vectors and train CCA.
+        Extracts feature vectors and trains CCA.
 
         Args:
             X (np.ndarray): Input matrix with shape (n_samples, n_features_input).
             Y (np.ndarray): Output matrix with shape (n_samples, n_features_output).
 
         Returns:
-            (rfflearn.cpu.CCA): Myself.
+            (rfflearn.cpu.CCA): Fitted estimator.
         """
         self.fx1.set_weight(X.shape[1])
         self.fx2.set_weight(Y.shape[1])
@@ -47,7 +47,7 @@ class CCA:
 
     def predict(self, X, copy=True):
         """
-        Return prediction results.
+        Returns prediction results.
 
         Args:
             X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
@@ -60,7 +60,7 @@ class CCA:
 
     def score(self, X, Y, sample_weight=None):
         """
-        Return evaluation score (the coefficient of determination R2).
+        Returns evaluation score (the coefficient of determination R2).
 
         Args:
             X             (np.ndarray): Input matrix with shape (n_samples, n_features_input).
@@ -68,13 +68,13 @@ class CCA:
             sample_weight (np.ndarray): Sample weight of the evaluation with shape (n_samples,).
 
         Returns:
-            (float): R2 score.
+            (float): Returns the R2 score (coefficient of determination) of the prediction.
         """
         return self.cca.score(self.fx1.conv(X), self.fx2.conv(Y), sample_weight)
 
     def transform(self, X, Y=None, copy=True):
         """
-        Apply the dimension reduction using the trained CCA.
+        Applies the dimension reduction using the trained CCA.
 
         Args:
             X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
@@ -82,7 +82,8 @@ class CCA:
             copy (bool)      : Make a copy of X if True, otherwise perform in-place operation.
 
         Returns:
-            Return x_scores if Y is not given, (x_scores, y_scores) otherwise.
+            (np.array or tuple): Applies the dimension reduction. Returns X_transformed if Y is
+                                 not given, otherwise returns (x_transformed, y_transformed).
         """
         return self.cca.transform(self.fx1.conv(X), None if Y is None else self.fx2.conv(Y), copy)
 

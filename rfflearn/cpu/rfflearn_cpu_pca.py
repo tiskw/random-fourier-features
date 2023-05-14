@@ -41,7 +41,7 @@ class PCA(Base):
 
     def fit(self, X, *pargs, **kwargs):
         """
-        Train the PCA model. This function is a wrapper of sklearn.decomposition.PCA.fit.
+        Trains the PCA model. This function is a wrapper of sklearn.decomposition.PCA.fit.
 
         Args:
             X      (np.ndarray): Input matrix with shape (n_samples, n_features_input).

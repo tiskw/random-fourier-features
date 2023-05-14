@@ -58,7 +58,7 @@ The following table is a summary of training and inference speed under my enviro
 | 100,000                    | 1,000                   |    - [s] /    - [s]                   |  93.5 ms / 0.852 [us/sample]      |
 
 <div align="center">
-  <img src="./figure_rff_gpr_sparse_data.png" width="600" alt="Regression results for function y = sin(x^2) using Gaussian process w/ RFF" />
+  <img src="./figure_rff_gpr_sparse_data.svg" width="600" alt="Regression results for function y = sin(x^2) using Gaussian process w/ RFF" />
 </div>
 
 ### Re-sampling from the predicted mean and covariance
@@ -68,7 +68,7 @@ you can re-sample data points from the normal distribution using the predicted m
 and covariance matrix (e.g. `np.random.multivariate_normal`).
 
 <div align="center">
-  <img src="./figure_rff_gpr_resampling.png" width="600" alt="Re-sampling from the predicted mean and covariance" />
+  <img src="./figure_rff_gpr_resampling.svg" width="600" alt="Re-sampling from the predicted mean and covariance" />
 </div>
 
 ### Training on GPU

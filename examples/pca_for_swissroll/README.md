@@ -40,8 +40,7 @@ python3 main_pca_for_swissroll.py kernel  # Kernel PCA
 The following figure shows the input data (10,000 points of swiss roll) and results of RFF PCA.
 
 <div align="center">
-  <img src="./figure_pca_for_swissroll_3d.png" width="640" alt="3D plot of input data (10,000 points of swiss roll)" />
-  <img src="./figure_pca_for_swissroll_rffpca.png" width="640" alt="2D plot of 1st/2nd PC obtained by RFF PCA" />
+  <img src="./figure_pca_for_swissroll.svg" width="640" alt="RFFPCA for the Swiss roll data" />
 </div>
 
 

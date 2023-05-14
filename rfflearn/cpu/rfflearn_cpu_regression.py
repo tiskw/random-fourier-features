@@ -28,7 +28,7 @@ class Regression(Base):
 
     def fit(self, X, y, **args):
         """
-        Run training, that is, extract feature vectors and train linear regressor.
+        Trains the RFF regression model according to the given data.
 
         Args:
             X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
@@ -36,7 +36,7 @@ class Regression(Base):
             args (dict)      : Extra arguments. This arguments will be passed to the sklearn's `fit` function.
 
         Returns:
-            (rfflearn.cpu.Regression): Myself.
+            (rfflearn.cpu.Regression): Fitted estimator.
         """
         self.set_weight(X.shape[1])
         self.reg.fit(self.conv(X), y, **args)
@@ -44,21 +44,21 @@ class Regression(Base):
 
     def predict(self, X, **args):
         """
-        Return prediction results.
+        Performs prediction on the given data.
 
         Args:
             X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
             args (dict)      : Extra arguments. This arguments will be passed to the sklearn's `predict` function.
 
         Returns:
-            (np.ndarray): Prediction of regression.
+            (np.ndarray): Predicted vector.
         """
         self.set_weight(X.shape[1])
         return self.reg.predict(self.conv(X), **args)
 
     def score(self, X, y, **args):
         """
-        Return evaluation score (R2 score).
+        Returns the R2 score (coefficient of determination) of the prediction.
 
         Args:
             X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
@@ -66,7 +66,7 @@ class Regression(Base):
             args (dict)      : Extra arguments. This arguments will be passed to sklearn's `score` function.
 
         Returns:
-            (float): R2 score of the regression.
+            (float): R2 score of the prediction.
         """
         self.set_weight(X.shape[1])
         return self.reg.score(self.conv(X), y, **args)
