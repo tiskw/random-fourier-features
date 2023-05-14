@@ -77,10 +77,10 @@ the author has got the following results:
 | GPC w/ RFF | 10000   | CPU       |  96.95 sec          |  269.3 us           | 98.24 %   | 0.1        | 0.5       |
 | GPC w/ RFF | 10000   | GTX1660Ti |      -              |   33.6 us           | 98.24 %   | 0.1        | 0.5       |
 | GPC w/ RFF | 20000   | CPU       | 516.19 sec          |  517.9 us           | 98.38 %   | 0.1        | 0.5       |
-| GPC w/ RFF | 20000   | GTX1660Ti |      -              |   61.2 us           | 98.38 %   | 0.1        | 0.5       |
+| GPC w/ RFF | 20000   | GTX1660Ti |      -              |   61.5 us           | 98.38 %   | 0.1        | 0.5       |
 
 <div align="center">
-  <img src="./figures/figure_inference_time_and_accuracy_on_MNIST.png" width="671" alt="Inference Time vs Accuracy on MNIST" />
+  <img src="./figures/Inference_time_and_acc_on_MNIST_gpc.svg" width="640" alt="Inference Time vs Accuracy on MNIST" />
 </div>
 
 ### Notes

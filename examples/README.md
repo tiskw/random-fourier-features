@@ -11,7 +11,7 @@ An example of regression with random Fourier features.
 See [README.md](./least_square_regression/README.md) for more details.
 
 <div align="center">
-  <img src="./least_square_regression/figure_least_square_regression.png" width="640" alt="Regression results for function y = sin(x^2) with RFF" />
+  <img src="./least_square_regression/figure_least_square_regression.svg" width="640" alt="Regression results for function y = sin(x^2) with RFF" />
 </div>
 
 
@@ -22,7 +22,7 @@ An example of Gaussian process regression with random Fourier features.
 See [README.md](./gpr_sparse_data/README.md) for more details.
 
 <div align="center">
-  <img src="./gpr_sparse_data/figure_rff_gpr_sparse_data.png" width="640" alt="Regression results for function y = sin(x^2) with RFF" />
+  <img src="./gpr_sparse_data/figure_rff_gpr_sparse_data.svg" width="640" alt="Regression results for function y = sin(x^2) with RFF" />
 </div>
 
 
@@ -33,7 +33,7 @@ An example of the Gaussian process classification with random Fourier features.
 See [README.md](./gpc_for_mnist/README.md) for more details.
 
 <div align="center">
-  <img src="./gpc_for_mnist/figures/figure_inference_time_and_accuracy_on_MNIST.png" width="671" alt="Inference Time vs Accuracy on MNIST" />
+  <img src="./gpc_for_mnist/figures/Inference_time_and_acc_on_MNIST_gpc.svg" width="640" alt="Inference Time vs Accuracy on MNIST" />
 </div>
 
 
@@ -44,7 +44,7 @@ An example of support vector classification for [MNIST](http://yann.lecun.com/ex
 with random Fourier features. See [README.md](./svc_for_mnist/README.md) for more details.
 
 <div align="center">
-  <img src="./svc_for_mnist/figures/figure_Inference_Time_and_Accuracy_on_MNIST.png" width="671" alt="Inference Time vs Accuracy on MNIST" />
+  <img src="./svc_for_mnist/figures/Inference_time_and_acc_on_MNIST_svc.svg" width="640" alt="Inference Time vs Accuracy on MNIST" />
 </div>
 
 
@@ -66,8 +66,7 @@ An example of principal component analysis for the swiss roll dataset with rando
 See [README.md](./pca_for_swissroll/README.md) for more details.
 
 <div align="center">
-  <img src="./pca_for_swissroll/figure_pca_for_swissroll_3d.png" width="400" alt="3D plot of input data (10,000 points of swiss roll)" />
-  <img src="./pca_for_swissroll/figure_pca_for_swissroll_rffpca.png" width="400" alt="2D plot of 1st/2nd PC obtained by RFF PCA" />
+  <img src="./pca_for_swissroll/figure_pca_for_swissroll.svg" width="640" alt="3D plot of input data (10,000 points of swiss roll)" />
 </div>
 
 

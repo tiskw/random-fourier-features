@@ -11,6 +11,7 @@ import sys
 from .rfflearn_cpu_common     import seed
 from .rfflearn_cpu_regression import RFFRegression, ORFRegression
 from .rfflearn_cpu_svc        import RFFSVC, ORFSVC, QRFSVC, RFFBatchSVC, ORFBatchSVC, QRFBatchSVC
+from .rfflearn_cpu_svr        import RFFSVR, ORFSVR, QRFSVR
 from .rfflearn_cpu_gp         import RFFGPR, ORFGPR, QRFGPR, RFFGPC, ORFGPC, QRFGPC
 from .rfflearn_cpu_pca        import RFFPCA, ORFPCA
 from .rfflearn_cpu_cca        import RFFCCA, ORFCCA

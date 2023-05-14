@@ -1,6 +1,10 @@
 Random Fourier Features
 ====================================================================================================
 
+<div align="center">
+  <img src="./figures/logo_long.svg" width="480" alt="rfflearn logo" />
+</div>
+
 This repository provides the Python module `rfflearn` which is a Python library of random Fourier
 features (hereinafter abbreviated as RFF) [1, 2] for kernel methods, like support vector
 machine [3, 4] and Gaussian process model [5]. Features of this module are:
@@ -92,7 +96,7 @@ See the example of [RFF SVC module](./examples/svc_for_mnist/) and
 | RFF GPC (GPU)  | 20,000        |  61.52 us                 | 98.38 %   |
 
 <div align="center">
-  <img src="./figures/Inference_Time_and_Accuracy_on_MNIST_SVC_and_GPC.png" width="671" alt="Accuracy for each epochs in RFF SVC/GPC" />
+  <img src="./figures/Inference_time_and_acc_on_MNIST.svg" width="640" alt="Accuracy for each epochs in RFF SVC/GPC" />
 </div>
 
 

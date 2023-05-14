@@ -104,7 +104,8 @@ def main(args):
 
     # Draw images and save under "figures/" directory.
     for index in range(len(xs)):
-        mpl.figure(figsize=(5, 4))
+        # mpl.figure(figsize=(5, 4))
+        mpl.figure(figsize=(6, 3.5))
         mpl.title("Behavior of Hyper Parameter Tuning (step %3d/%3d)" % (index + 1, len(xs)))
         mpl.xlabel("dim_kernel")
         mpl.ylabel("std_kernel")
@@ -120,11 +121,11 @@ def main(args):
 
     # Run command for creating the animation gif.
     command = "apngasm hyper_parameter_search.png figures/hyper_parameter_search_*.png"
-    subprocess.run(command, shell=True)
+    # subprocess.run(command, shell=True)
 
     # Remove the intermediate files.
     command = "rm -rf figures"
-    subprocess.run(command, shell=True)
+    # subprocess.run(command, shell=True)
 
 
 if __name__ == "__main__":

@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-#
-# Sample code for the RFFCCA class.
-##################################################### SOURCE START #####################################################
 
 """
 Overview:
@@ -27,11 +24,13 @@ import numpy as np
 import sklearn.cross_decomposition
 import matplotlib.pyplot as mpl
 
-### This function generate the data pair, x and y.
-### The data x = [x1, x2] and y = [y1, y2] has a strong correlation, y1 = x1**2.
-### This means that it is theoretically possible to extract correlated subspace of this data.
-def generate_artificial_data(n_samples):
 
+def generate_artificial_data(n_samples):
+    """
+    This function generate the data pair, x and y.
+    The data x = [x1, x2] and y = [y1, y2] has a strong correlation, y1 = x1**2.
+    This means that it is theoretically possible to extract correlated subspace of this data.
+    """
     xs1 = np.random.uniform(-1, 1, size = (n_samples,))
     xs2 = np.random.randn(n_samples)
     xs3 = np.random.randn(n_samples)
@@ -41,17 +40,19 @@ def generate_artificial_data(n_samples):
 
     return (data1, data2)
 
-### Main function.
-def main(args):
 
-    ### Fix seed for random fourier feature calclation
+def main(args):
+    """
+    Main function.
+    """
+    # Fix seed for random fourier feature calclation
     rfflearn.seed(args["--seed"])
 
-    ### Generate dataset.
+    # Generate dataset.
     with utils.Timer("Generate dataset: "):
         X, Y = generate_artificial_data(args["--n_samples"])
 
-    ### Linear CCA
+    # Linear CCA
     with utils.Timer("Linear CCA training and inference: "):
         cca = sklearn.cross_decomposition.CCA(n_components = 1)
         cca.fit(X, Y)
@@ -59,7 +60,7 @@ def main(args):
     score_lin = cca.score(X, Y)
     print("Score of linear CCA:", score_lin)
 
-    ### RFF CCA
+    # RFF CCA
     with utils.Timer("RFF CCA trainig and inference: "):
         cca = rfflearn.RFFCCA(args["--kdim"], args["--std_kernel"], n_components = 1)
         cca.fit(X, Y)
@@ -100,14 +101,15 @@ def main(args):
     mpl.tight_layout()
     mpl.show()
 
+
 if __name__ == "__main__":
 
-    ### Parse input arguments.
+    # Parse input arguments.
     args = docopt.docopt(__doc__)
 
-    ### Add path to 'rfflearn/' directory.
-    ### The followings are not necessary if you copied 'rfflearn/' to the current
-    ### directory or other directory which is included in the Python path.
+    # Add path to 'rfflearn/' directory.
+    # The followings are not necessary if you copied 'rfflearn/' to the current
+    # directory or other directory which is included in the Python path.
     current_dir = os.path.dirname(__file__)
     module_path = os.path.join(current_dir, "../../")
     sys.path.append(module_path)
@@ -115,14 +117,14 @@ if __name__ == "__main__":
     import rfflearn.cpu   as rfflearn
     import rfflearn.utils as utils
 
-    ### Convert all arguments to an appropriate type.
+    # Convert all arguments to an appropriate type.
     for k, v in args.items():
         try   : args[k] = eval(str(v))
         except: args[k] = str(v)
 
-    ### Run main procedure.
+    # Run main procedure.
     main(args)
 
-##################################################### SOURCE FINISH ####################################################
+
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

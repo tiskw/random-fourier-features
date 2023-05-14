@@ -31,34 +31,35 @@ import docopt
 import numpy as np
 import matplotlib.pyplot as mpl
 
-### Main procedure
 def main(args):
-
-    ### Fix seed for random fourier feature calclation
+    """
+    Main procedure
+    """
+    # Fix seed for random fourier feature calclation
     rfflearn.seed(111)
 
-    ### Create classifier instance
+    # Create classifier instance
     if   args["--rtype"] == "rff": reg = rfflearn.RFFRegression(dim_kernel = args["--kdim"], std_kernel = args["--std_kernel"])
     elif args["--rtype"] == "orf": reg = rfflearn.ORFRegression(dim_kernel = args["--kdim"], std_kernel = args["--std_kernel"])
     else                         : raise RuntimeError("Error: 'random_type' must be 'rff' or 'orf'.")
 
-    ### Prepare training data
+    # Prepare training data
     with utils.Timer("Creating dataset: "):
         Xs_train = np.linspace(0, 3, args["--n_train"]).reshape((args["--n_train"], 1))
         ys_train = np.sin(Xs_train**2)
         Xs_test  = np.linspace(0, 3, args["--n_test"]).reshape((args["--n_test"], 1))
         ys_test  = np.sin(Xs_test**2)
 
-    ### Train regression with random fourier features
+    # Train regression with random fourier features
     with utils.Timer("Train regressor: "):
         reg.fit(Xs_train, ys_train)
 
-    ### Conduct prediction for the test data
+    # Conduct prediction for the test data
     with utils.Timer("Prediction: "):
         predict = reg.predict(Xs_test)
 
-    ### Plot regression results
-    mpl.figure(0)
+    # Plot regression results
+    mpl.figure(figsize=(6, 3.5))
     mpl.title("Regression for function y = sin(x^2) with RFF")
     mpl.xlabel("X")
     mpl.ylabel("Y")
@@ -67,16 +68,19 @@ def main(args):
     mpl.plot(Xs_test,  predict,  "-")
     mpl.legend(["Training data", "Test data", "Prediction by RFF regression"])
     mpl.grid()
+    mpl.tight_layout()
     mpl.show()
+    # mpl.savefig("figure_least_square_regression.svg")
+
 
 if __name__ == "__main__":
 
-    ### Parse input arguments.
+    # Parse input arguments.
     args = docopt.docopt(__doc__)
 
-    ### Add path to 'rfflearn/' directory.
-    ### The followings are not necessary if you copied 'rfflearn/' to the current
-    ### directory or other directory which is included in the Python path.
+    # Add path to 'rfflearn/' directory.
+    # The followings are not necessary if you copied 'rfflearn/' to the current
+    # directory or other directory which is included in the Python path.
     current_dir = os.path.dirname(__file__)
     module_path = os.path.join(current_dir, "../../")
     sys.path.append(module_path)
@@ -84,14 +88,14 @@ if __name__ == "__main__":
     import rfflearn.cpu   as rfflearn
     import rfflearn.utils as utils
 
-    ### Convert all arguments to an appropriate type.
+    # Convert all arguments to an appropriate type.
     for k, v in args.items():
         try   : args[k] = eval(str(v))
         except: args[k] = str(v)
 
-    ### Run main procedure.
+    # Run main procedure.
     main(args)
 
-#################################### SOURCE FINISH ##################################
+
 # Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

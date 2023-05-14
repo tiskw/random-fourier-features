@@ -22,7 +22,7 @@ def seed(seed):
 
 def get_rff_matrix(dim_in, dim_out, std):
     """
-    Generate random matrix of random Fourier features.
+    Generates random matrix of random Fourier features.
 
     Args:
         dim_in  (int)  : Input dimension of the random matrix.
@@ -37,7 +37,7 @@ def get_rff_matrix(dim_in, dim_out, std):
 
 def get_orf_matrix(dim_in, dim_out, std):
     """
-    Generate random matrix of orthogonal random features.
+    Generates random matrix of orthogonal random features.
 
     Args:
         dim_in  (int)  : Input dimension of the random matrix.
@@ -62,7 +62,7 @@ def get_orf_matrix(dim_in, dim_out, std):
 
 def get_qrf_matrix(dim_in, dim_out, std):
     """
-    Generate random matrix for quasi-random Fourier features.
+    Generates random matrix for quasi-random Fourier features.
 
     Args:
         dim_in  (int)  : Input dimension of the quasi-random matrix.
@@ -142,7 +142,7 @@ class Base:
 
     def conv(self, X, index=None):
         """
-        Apply random matrix to the given input vectors `X` and create feature vectors.
+        Applies random matrix to the given input vectors `X` and create feature vectors.
 
         Args:
             X     (np.ndarray): Input matrix with shape (n_samples, n_features).
