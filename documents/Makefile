@@ -1,6 +1,6 @@
 # Makefile
 
-docker_image   = tiskw/latex:2022-07-10
+docker_image   = tiskw/latex:2023-01-15
 docker_uidgid  = -u $(shell id -u):$(shell id -g)
 docker_volume  = -v $(shell pwd):/workspace -w /workspace
 docker_command = docker run --rm -it $(docker_uidgid) $(docker_volume) $(docker_image)

@@ -7,8 +7,8 @@
 \usepackage{graphicx}
 \usepackage{thmbox}
 \usepackage{csquotes}
-\usepackage{algorithm2e}
-\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \usepackage{fancyhdr}
 \usepackage{xcolor}
 \usepackage{nicefrac}
@@ -27,9 +27,6 @@
 \rfoot{\small\tt\textcolor{lightgray}{T.~Ishikawa}}
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}
-
-\RestyleAlgo{ruled}
-\SetKwComment{Comment}{/* }{ */}
 
 \makeatletter
 \def\@maketitle{\begin{center}
@@ -65,5 +62,7 @@
 \put(-1,0){\line(1,0){94}}
 \put(93,0){\circle*{1}}
 \end{picture}\vspace*{3pt}}
+
+\renewcommand*{\thefootnote}{\dag\arabic{footnote}}
 
 % vim: noexpandtab tabstop=4 shiftwidth=4
