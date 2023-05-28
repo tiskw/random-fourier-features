@@ -74,7 +74,7 @@ If the test date is $\bs{\xi} \in \mathbb{R}^M$, the expectation of the predicti
 and the covariance of the test data $\bs{\xi}_1, \bs{\xi}_2 \in \mathbb{R}^M$ is given by:
 \begin{equation}
     v (\bs{\xi}_1, \bs{\xi}_2) = k (\bs{\xi}_1, \bs{\xi}_2)
-    - \bs{k} (\bs{\xi}_1)\tran \left( \bs{K} - \sigma^2 \bs{I} \right)^{-1} \bs{k} (\bs{\xi}_2),
+    - \bs{k} (\bs{\xi}_1)\tran \left( \bs{K} + \sigma^2 \bs{I} \right)^{-1} \bs{k} (\bs{\xi}_2),
     \label{eqn:gp_cov}
 \end{equation}
 where the function $k: \mathbb{R}^M \times \mathbb{R}^M \to \mathbb{R}$ is a kernel function,
@@ -110,7 +110,7 @@ You can compute the variance of the prediction of the test data $\bs{\xi}$
 by substituting $\bs{\xi}_1 = \bs{\xi}_2 = \bs{\xi}$ into the equation (\ref{eqn:gp_cov}),
 \begin{equation}
     v (\bs{\xi}, \bs{\xi}) = k (\bs{\xi}, \bs{\xi})
-    - \bs{k} (\bs{\xi})\tran \left( \bs{K} - \sigma^2 \bs{I} \right)^{-1} \bs{k} (\bs{\xi}).
+    - \bs{k} (\bs{\xi})\tran \left( \bs{K} + \sigma^2 \bs{I} \right)^{-1} \bs{k} (\bs{\xi}).
 \end{equation}
 
 % }}}
