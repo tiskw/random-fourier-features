@@ -61,16 +61,15 @@ class GPR(Base):
         P_cpu = F_cpu @ F_cpu.T
 
         # Derive posterior distribution 2/3 (on GPU).
-        Q_gpu = torch.tensor(P_cpu,                 device = self.dev, dtype = torch.float64)
-        R_gpu = torch.tensor(P_cpu + s_cpu * I_cpu, device = self.dev, dtype = torch.float64)
-        M_cpu = I_cpu - torch.linalg.solve(R_gpu, Q_gpu).cpu().numpy()
+        Q_gpu = torch.tensor(P_cpu + s_cpu * I_cpu, device=self.dev, dtype=torch.float64)
+        M_cpu = torch.linalg.inv(Q_gpu).cpu().numpy()
 
         # Derive posterior distribution 3/3 (on CPU).
-        self.a = (y_cpu.T @ F_cpu.T) @ M_cpu / s_cpu
-        self.S = I_cpu - P_cpu @ M_cpu / s_cpu
+        self.a = (F_cpu @ y_cpu).T @ M_cpu
+        self.S = I_cpu - P_cpu @ M_cpu
 
         # Clean GPU memory.
-        del Q_gpu, R_gpu
+        del Q_gpu
         if "cuda" in self.dev: torch.cuda.empty_cache()
 
         return self
@@ -93,11 +92,11 @@ class GPR(Base):
             32bit precision is enough for inference in most cases.
         """
         # Move matrices to GPU.
-        X = torch.tensor(X_cpu,  device = self.dev, dtype = precision)
-        W = torch.tensor(self.W, device = self.dev, dtype = precision)
-        b = torch.tensor(self.b, device = self.dev, dtype = precision)
-        a = torch.tensor(self.a, device = self.dev, dtype = precision)
-        S = torch.tensor(self.S, device = self.dev, dtype = precision)
+        X = torch.tensor(X_cpu,  device=self.dev, dtype=precision)
+        W = torch.tensor(self.W, device=self.dev, dtype=precision)
+        b = torch.tensor(self.b, device=self.dev, dtype=precision)
+        a = torch.tensor(self.a, device=self.dev, dtype=precision)
+        S = torch.tensor(self.S, device=self.dev, dtype=precision)
 
         # Calculate mean of the prediction distribution.
         F = torch.cos(torch.matmul(X, W) + b).t()
@@ -106,7 +105,7 @@ class GPR(Base):
         # Move prediction value to CPU.
         # If shape of y_cpu is (*, 1), then reshape to (*, ).
         y_cpu = p.cpu().numpy()
-        y_cpu = np.squeeze(y_cpu, axis = 1) if len(y_cpu.shape) > 1 and y_cpu.shape[1] == 1 else y_cpu
+        y_cpu = np.squeeze(y_cpu, axis=1) if len(y_cpu.shape) > 1 and y_cpu.shape[1] == 1 else y_cpu
 
         # Calculate covariance matrix and variance vector.
         if return_std or return_cov:
@@ -158,7 +157,7 @@ class GPC(GPR):
         y_onehot_cpu = np.eye(int(np.max(y_cpu) + 1))[y_cpu]
         return super().fit(X_cpu, y_onehot_cpu)
 
-    def predict(self, X_cpu, return_std = False, return_cov = False):
+    def predict(self, X_cpu, return_std=False, return_cov=False):
         """
         Inference of Gaussian process using GPU.
 
@@ -171,8 +170,8 @@ class GPC(GPR):
         res = super().predict(X_cpu, return_std, return_cov)
 
         # Convert one-hot vector to class index.
-        if return_std or return_cov: res[0] = np.argmax(res[0], axis = 1)
-        else                       : res    = np.argmax(res,    axis = 1)
+        if return_std or return_cov: res[0] = np.argmax(res[0], axis=1)
+        else                       : res    = np.argmax(res,    axis=1)
 
         return res
 

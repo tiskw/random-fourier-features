@@ -50,10 +50,9 @@ class GPR(Base):
         F = self.conv(X).T
         P = F @ F.T
         I = np.eye(self.dim)
-        s = self.s_e**2
-        M = I - np.linalg.solve((P + s * I), P)
-        self.a = (y.T @ F.T) @ M / s
-        self.S = I - P @ M / s
+        M = np.linalg.inv(P + self.s_e**2 * I)
+        self.a = (F @ y).T @ M
+        self.S = I - P @ M
         return self
 
     def predict(self, X, return_std=False, return_cov=False):
@@ -72,7 +71,7 @@ class GPR(Base):
         self.set_weight(X.shape[1])
 
         F = self.conv(X).T
-        p = np.array(self.a.dot(F)).T
+        p = np.array(self.a @ F).T
         p = np.squeeze(p, axis = 1) if len(p.shape) > 1 and p.shape[1] == 1 else p
 
         if return_std and return_cov: return [p, self.std(F), self.cov(F)]
@@ -185,8 +184,8 @@ class GPC(GPR):
         res = super().predict(X, return_std, return_cov)
 
         # Convert one-hot vector to class index.
-        if return_std or return_cov: res[0] = np.argmax(res[0], axis = 1)
-        else                       : res    = np.argmax(res,    axis = 1)
+        if return_std or return_cov: res[0] = np.argmax(res[0], axis=1)
+        else                       : res    = np.argmax(res,    axis=1)
 
         return res
 
