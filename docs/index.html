@@ -1,24 +1,38 @@
 <!doctype html>
 <html lang="en" data-bs-theme="light">
-
   <head>
-    <title>RFFLearn: User's Manual</title>
-    <link href="./css/bootstrap.min.css" rel="stylesheet" type="text/css">
-    <link href="./css/style.css" rel="stylesheet" type="text/css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="User's manual for RFFLearn, a library for random Fourier feature based ML models">
+    <meta name="keywords" content="random Fourier features,rff,fast machine learning,Tetsuya Ishikawa">
+    <meta name="robots" content="index,follow" />
+    <meta name="author" content="Tetsuya Ishikawa, tiskw111@gmail.com">
+    <link rel="icon" href="./images/logo-short.svg">
 
+    <title>RFFLearn: User's Manual</title>
+
+    <!-- Load FontAwesome -->
     <link rel="preload" as="style" href="https://use.fontawesome.com/releases/v6.4.2/css/all.css" crossorigin>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.2/css/all.css" media="print" onload="this.media='all'">
 
+    <!-- Load Google's webfont -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap core CSS -->
+    <link href="./css/bootstrap.min.css" rel="stylesheet" type="text/css">
+
+    <!-- Custom styles for this page -->
+    <link href="./css/style.css" rel="stylesheet" type="text/css">
   </head>
 
   <body>
 
+    <!-- Header -->
     <header>
       <div class="container mx-auto"><div class="row">
-        <p class="text-center"><img src="./images/logo_long.svg" style="width:640px;"></p>
+        <p class="text-center"><img src="./images/logo_long.svg" style="width:640px;" alt="rfflearn_logo"></p>
       </div></div>
     </header>
 
@@ -48,7 +62,7 @@
             <div class="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3 p-2">
               <i class="fa-solid fa-wrench"></i>
             </div>
-            <h3>Setting Up</h3>
+            <h2>Setting Up</h2>
             <p>Build development environment for RFFLearn. The author recommend to use Docker, but you can build on your environment <!--
             -->if you don't mind to pollute your environment.</p>
             <p class="text-end px-2"><a href="./tutorials.html#setting_up">See more details >></a></p>
@@ -59,7 +73,7 @@
             <div class="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3 p-2">
               <i class="fa-solid fa-flag-checkered"></i>
             </div>
-            <h3>Quick Start</h3>
+            <h2>Quick Start</h2>
             <p>Try RFFlearn from a tiny code (7 lines!). RFFLearn will be easily acceptable for many ML developers <!--
             -->because the usage of RFFLearn is quite close to Scikit-learn.</p>
             <p class="text-end px-2"><a href="./tutorials.html#quick_start">See more details >></a></p>
@@ -70,7 +84,7 @@
             <div class="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3 p-2">
               <i class="fa-solid fa-code"></i>
             </div>
-            <h3>Minimal Examples</h3>
+            <h2>Minimal Examples</h2>
             <p>Collection of code snippets for RFF-based models, hyperparameter tuners, and feature importance visualizers. <!--
             -->See the section below for more practical examples.</p>
             <p class="text-end px-2"><a href="./tutorials.html#minimal_examples">See more details >></a></p>
@@ -85,7 +99,7 @@
 
             <!-- -->
             <div class="col-4"><div class="card shadow-sm p-1">
-              <img src="images/RFF_least_square_regression.webp" style="width:100%;">
+              <img src="images/RFF_least_square_regression.webp" style="width:100%;" alt="RFF_least_square_regression">
               <div class="card-body">
                 <p class="card-text text-body">Least square regression with random Fourier features</p>
                 <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/least_square_regression" class="btn btn-primary" target="blank_">
@@ -96,7 +110,7 @@
 
             <!-- -->
             <div class="col-4"><div class="card shadow-sm p-1">
-              <img src="images/RFFGPR_sparse_data.webp" style="width:100%;">
+              <img src="images/RFFGPR_sparse_data.webp" style="width:100%;" alt="RFFGPR_sparse_data">
               <div class="card-body">
                 <p class="card-text text-body">Gaussian process regression with random Fourier features</p>
                 <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/gpr_sparse_data" class="btn btn-primary" target="blank_">
@@ -107,7 +121,7 @@
 
             <!-- -->
             <div class="col-4"><div class="card shadow-sm p-1">
-              <img src="images/RFFSVC_Inference_time_and_acc_on_MNIST.webp" style="width:100%;">
+              <img src="images/RFFSVC_Inference_time_and_acc_on_MNIST.webp" style="width:100%;" alt="RFFSVC_Inference_time_and_acc_on_MNIST">
               <div class="card-body">
                 <p class="card-text text-body">Support vector classifier with random Fourier features for the MNIST dataset</p>
                 <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/svc_for_mnist" class="btn btn-primary" target="blank_">
@@ -118,7 +132,7 @@
 
             <!-- -->
             <div class="col-4"><div class="card shadow-sm p-1">
-              <img src="images/RFFGPC_Inference_time_and_acc_on_MNIST.webp" style="width:100%;">
+              <img src="images/RFFGPC_Inference_time_and_acc_on_MNIST.webp" style="width:100%;" alt="RFFGPC_Inference_time_and_acc_on_MNIST">
               <div class="card-body">
                 <p class="card-text text-body">Gaussian process classifier with random Fourier features for the MNIST dataset</p>
                 <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/gpc_for_mnist" class="btn btn-primary" target="blank_">
@@ -129,7 +143,7 @@
 
             <!-- -->
             <div class="col-4"><div class="card shadow-sm p-1">
-              <img src="images/PCA_for_swissroll.webp" style="width:100%;">
+              <img src="images/PCA_for_swissroll.webp" style="width:100%;" alt="PCA_for_swissroll">
               <div class="card-body">
                 <p class="card-text text-body">Principal component analysis (PCA) with random Fourier features for Swiss roll dataset</p>
                 <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/pca_for_swissroll" class="btn btn-primary" target="blank_">
@@ -140,7 +154,7 @@
 
             <!-- -->
             <div class="col-4"><div class="card shadow-sm p-1">
-              <img src="images/RFFCCA_for_artificial_data.webp" style="width:100%;">
+              <img src="images/RFFCCA_for_artificial_data.webp" style="width:100%;" alt="RFFCCA_for_artificial_data">
               <div class="card-body">
                 <p class="card-text text-body">Canonical correlation analysis (CCA) with random Fourier features</p>
                 <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/cca_for_artificial_data" class="btn btn-primary" target="blank_">
@@ -151,7 +165,7 @@
 
             <!-- -->
             <div class="col-4"><div class="card shadow-sm p-1">
-              <img src="images/Hyperparameter_search.webp" style="width:100%;">
+              <img src="images/Hyperparameter_search.webp" style="width:100%;" alt="Hyperparameter_search">
               <div class="card-body">
                 <p class="card-text text-body">Automatic hyperparameter tuning for California housing dataset</p>
                 <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/optuna_for_california_housing" class="btn btn-primary" target="blank_">
@@ -162,7 +176,7 @@
 
             <!-- -->
             <div class="col-4"><div class="card shadow-sm p-1">
-              <img src="images/California_housing_permutation_importance.webp" style="width:100%;">
+              <img src="images/California_housing_permutation_importance.webp" style="width:100%;" alt="California_housing_permutation_importance">
               <div class="card-body">
                 <p class="card-text text-body">Feature importance of RFF-based regressor for California housing dataset</p>
                 <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/feature_importances_for_california_housing" class="btn btn-primary" target="blank_">
