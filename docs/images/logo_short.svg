@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="256"
+   height="256"
+   viewBox="0 0 67.733332 67.733335"
+   version="1.1"
+   id="svg13289"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="logo_short.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview13291"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:showpageshadow="false"
+     borderlayer="true"
+     units="px"
+     inkscape:zoom="3.375"
+     inkscape:cx="128"
+     inkscape:cy="127.85185"
+     inkscape:window-width="1920"
+     inkscape:window-height="1062"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs13286" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g1025">
+      <path
+         id="rect13486"
+         style="fill:#141e32;stroke:#141e32;stroke-width:2.54372;stroke-linecap:round;stroke-linejoin:round"
+         d="M 8.0177807,24.119834 32.426975,33.768135 V 60.276623 L 8.0177807,50.628322 Z" />
+      <g
+         aria-label="R"
+         id="text16178"
+         style="font-size:25.4px;line-height:1.25;font-family:'DejaVu Math TeX Gyre';-inkscape-font-specification:'DejaVu Math TeX Gyre, Normal';fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.529167;stroke-opacity:1"
+         transform="matrix(0.92255215,0.36466017,0,1.0018956,-26.039934,3.8954444)">
+        <path
+           d="m 52.279613,18.41656 q 0.889,-0.889 0.889,-2.7432 0,-1.8542 -0.889,-2.7432 -0.889,-0.889 -2.7686,-0.889 h -3.6576 v 7.2644 h 3.6576 q 1.8796,0 2.7686,-0.889 z m 7.035799,10.820399 h -4.368799 l -2.8956,-5.892799 q -0.8382,-1.7272 -1.524,-2.2098 -0.7112,-0.508 -1.905,-0.508 h -2.7686 v 7.289799 h 2.6162 v 1.3208 h -7.493 v -1.3208 h 2.3622 V 12.04116 h -2.3622 v -1.3208 h 9.398 q 2.667,0 4.1656,1.2954 1.473199,1.2954 1.473199,3.6576 0,1.905 -1.092199,2.9972 -1.0668,1.0922 -3.175,1.3716 0.889,0.2286 1.4986,0.8128 0.6604,0.6096 1.1176,1.5748 l 2.692399,5.486399 h 2.2606 z"
+           id="path18193"
+           style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-opacity:1" />
+      </g>
+      <path
+         id="rect13486-1"
+         style="fill:#141e32;stroke:#141e32;stroke-width:2.54372;stroke-linecap:round;stroke-linejoin:round"
+         d="M 37.068312,33.768134 61.477506,24.119833 V 50.628322 L 37.068312,60.276623 Z" />
+      <g
+         aria-label="F"
+         transform="matrix(0.95958672,-0.37929894,0,1.0421153,0,0)"
+         id="text20388"
+         style="font-size:24.4197px;line-height:1.25;font-family:'DejaVu Math TeX Gyre';-inkscape-font-specification:'DejaVu Math TeX Gyre, Normal';fill:#fffffc;stroke:#ffffff;stroke-width:0.508744">
+        <path
+           d="M 58.637332,54.23703 H 57.17215 v -2.49081 h -8.424797 v 5.958407 h 6.080505 v -2.222192 h 1.465182 v 5.909567 h -1.465182 v -2.222193 h -6.080505 v 7.643367 h 2.857105 V 68.083 H 44.05877 v -1.269824 h 2.271032 V 51.550863 H 44.05877 v -1.269825 h 14.578562 z"
+           id="path858" />
+      </g>
+      <path
+         id="rect13486-1-1"
+         style="fill:#141e32;stroke:#141e32;stroke-width:2.19128;stroke-linecap:round;stroke-linejoin:round"
+         d="m 10.07277,20.908526 24.674874,-9.729953 24.674872,9.729952 -24.674873,9.729953 z" />
+      <g
+         aria-label="F"
+         transform="matrix(1.1260485,-0.4440306,1.1260485,0.4440306,0,0)"
+         id="text20388-0"
+         style="font-size:21.0363px;line-height:1.25;font-family:'DejaVu Math TeX Gyre';-inkscape-font-specification:'DejaVu Math TeX Gyre, Normal';fill:#fffffc;stroke:#ffffff;stroke-width:0.438256">
+        <path
+           d="m -1.8356559,34.713172 h -1.262178 V 32.56747 h -7.2575241 v 5.132857 h 5.2380392 v -1.914303 h 1.2621781 v 5.090784 h -1.2621781 v -1.914303 h -5.2380392 v 6.584362 h 2.4612475 v 1.093888 h -6.5002165 v -1.093888 h 1.956376 V 32.399179 h -1.956376 v -1.093887 h 12.5586711 z"
+           id="path855" />
+      </g>
+    </g>
+  </g>
+</svg>

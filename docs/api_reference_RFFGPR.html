@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="User's manual for RFFLearn, a library for random Fourier feature based ML models">
+    <meta name="keywords" content="random Fourier features,rff,fast machine learning,Tetsuya Ishikawa">
+    <meta name="robots" content="index,follow" />
+    <meta name="author" content="Tetsuya Ishikawa, tiskw111@gmail.com">
+    <link rel="icon" href="./images/logo-short.svg">
+
+    <title>RFFLearn: User's Manual - API Reference - RFFGPR</title>
+
+    <!-- Load FontAwesome -->
+    <link rel="preload" as="style" href="https://use.fontawesome.com/releases/v6.4.2/css/all.css" crossorigin>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.2/css/all.css" media="print" onload="this.media='all'">
+
+    <!-- Load Google's webfont -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+
+    <!-- Load Highlight JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/atelier-forest-light.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+
+    <!-- Bootstrap core CSS -->
+    <link href="./css/bootstrap.min.css" rel="stylesheet" type="text/css">
+
+    <!-- Custom styles for this page -->
+    <link href="./css/style.css" rel="stylesheet" type="text/css">
+  </head>
+
+  <body>
+
+    <!-- Header -->
+    <header>
+      <div class="container mx-auto"><div class="row">
+        <p class="text-center"><img src="./images/logo_long.svg" style="width:640px;" alt="rfflearn_logo"></p>
+      </div></div>
+    </header>
+
+    <main>
+
+      <!-- -->
+      <section class="container py-3">
+        <h1 class="py-2 border-bottom">rfflearn.cpu.RFFGPR</h1>
+        <p>Gaussian Process Regression with random Fourier features.</p>
+        <pre><code class="python">def rfflearn.cpu.RFFGPR(self, dim_kernel=128, std_kernel=0.1, std_error=0.1, W=None, b=None, a=None, S=None)</code></pre>
+        <p><strong>Parameters:</strong></p>
+        <div class="row pb-3 g-3">
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">dim_kernel: int, default=128</code></pre>
+            <p class="mx-2">Dimension of the random matrix.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">std_kernel: float, default=0.1</code></pre>
+            <p class="mx-2">Standard deviation of the random matrix.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">std_error: float, default=0.1</code></pre>
+            <p class="mx-2">Standard deviation of the measurement error.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">W: np.ndarray, default=None</code></pre>
+            <p class="mx-2">Random matrix for the input X. If None then generated automatically.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">b: np.ndarray, default=None</code></pre>
+            <p class="mx-2">Random bias for the input X. If None then generated automatically.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">a: np.ndarray, default=None</code></pre>
+            <p class="mx-2">Cache of the matrix a. If None then generated automatically.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">S: np.ndarray, default=None</code></pre>
+            <p class="mx-2">Cache of the matrix S. If None then generated automatically. </p>
+          </div></div>
+        </div>
+        <p><strong>Attributes:</strong></p>
+        <div class="row pb-1 g-3">
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">dim: int</code></pre>
+            <p class="mx-2">Dimension of the random matrix.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">s_k: float</code></pre>
+            <p class="mx-2">Standard deviation of the random matrix.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">mat: Callable</code></pre>
+            <p class="mx-2">A function to generate the random matrix W.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">W: np.ndarray</code></pre>
+            <p class="mx-2">Random matrix for the input X.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">b: np.ndarray</code></pre>
+            <p class="mx-2">Random bias for the input X.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">s_e: np.ndarray</code></pre>
+            <p class="mx-2">Standard deviation of the measurement error.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">a: np.ndarray</code></pre>
+            <p class="mx-2">Cache of the matrix a. If None then generated automatically.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">S: np.ndarray</code></pre>
+            <p class="mx-2">Cache of the matrix S. If None then generated automatically.</p>
+          </div></div>
+        </div>
+      </section>
+
+      <section class="container py-3">
+        <h2 class="py-2">Member functions</h2>
+
+        <pre><code class="python">def fit(self, X, y, **args)</code></pre>
+        <p>Trains the GPR model according to the given data.</p>
+        <p><strong>Parameters:</strong></p>
+        <div class="row pb-4 g-3">
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">X: np.ndarray</code></pre>
+            <p class="mx-2">Input matrix with shape (n_samples, n_features_input).</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">y: np.ndarray</code></pre>
+            <p class="mx-2">Output matrix with shape (n_samples, n_features_output).</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">args: dict</code></pre>
+            <p class="mx-2">Extra arguments. However, this arguments will be ignored. This argument exists only for keeping the same interface with scikit-learn.</p>
+          </div></div>
+        </div>
+        <p><strong>Returnd:</strong></p>
+        <div class="row pb-4 g-3">
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">rfflearn.cpu.RFFGPR</code></pre>
+            <p class="mx-2">Fitted estimator.</p>
+          </div></div>
+        </div>
+
+        <pre><code class="python">def predict(self, X, return_std=False, return_cov=False)</code></pre>
+        <p>Performs regression on the input data.</p>
+        <p><strong>Parameters:</strong></p>
+        <div class="row pb-4 g-3">
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">X: np.ndarray</code></pre>
+            <p class="mx-2">Input matrix with shape (n_samples, n_features_input).</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">return_std: bool, default=False</code></pre>
+            <p class="mx-2">Returns standard deviation of the prediction if True.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">return_cov: bool, default=False</code></pre>
+            <p class="mx-2">Returns covariance of the prediction if True.</p>
+          </div></div>
+        </div>
+        <p><strong>Returnd:</strong></p>
+        <div class="row pb-4 g-3">
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">np.ndarray, or tuple</code></pre>
+            <p class="mx-2">Predicted vector, or tuple of prediction, standard deviation, and covariance of the prediction.</p>
+          </div></div>
+        </div>
+
+        <pre><code class="python">def std(self, F)</code></pre>
+        <p>Returns standard deviation of the prediction.</p>
+        <p><strong>Parameters:</strong></p>
+        <div class="row pb-4">
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">F: np.ndarray</code></pre>
+            <p class="mx-2">Matrix F (= self.conv(X).T).</p>
+          </div></div>
+        </div>
+        <p><strong>Returnd:</strong></p>
+        <div class="row pb-4">
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">np.ndarray</code></pre>
+            <p class="mx-2">Standard deviation of the prediction.</p>
+          </div></div>
+        </div>
+
+        <pre><code class="python">def cov(self, F)</code></pre>
+        <p>Returns covariance of the prediction.</p>
+        <p><strong>Parameters:</strong></p>
+        <div class="row pb-4">
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">F: np.ndarray</code></pre>
+            <p class="mx-2">Matrix F (= self.conv(X).T).</p>
+          </div></div>
+        </div>
+        <p><strong>Returnd:</strong></p>
+        <div class="row pb-4">
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">np.ndarray</code></pre>
+            <p class="mx-2">Covariance of the prediction.</p>
+          </div></div>
+        </div>
+
+        <pre><code class="python">def score(self, X, y, **args)</code></pre>
+        <p>Returns the R2 score (coefficient of determination) of the prediction.</p>
+        <p><strong>Parameters:</strong></p>
+        <div class="row pb-4">
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">X: np.ndarray</code></pre>
+            <p class="mx-2">Input matrix with shape (n_samples, n_features_input).</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">y: np.ndarray</code></pre>
+            <p class="mx-2">True output matrix with shape (n_samples, n_features_output).</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">args: dict</code></pre>
+            <p class="mx-2">Extra arguments. However, this arguments will be ignored.</p>
+          </div></div>
+        </div>
+        <p><strong>Returnd:</strong></p>
+        <div class="row pb-1">
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">float</code></pre>
+            <p class="mx-2">R2 score of the prediction.</p>
+          </div></div>
+        </div>
+
+      </section>
+
+      <section class="container py-3">
+        <h2 class="py-2">Minimal Example</h2>
+        <pre><code class="python">>>> import numpy as np                                  # Import Numpy
+>>> import rfflearn.cpu as rfflearn                     # Import module
+>>> X = np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]])  # Define input data
+>>> y = np.array([0.5, 1, 1.5, 2])                      # Defile label data
+>>> gpr = rfflearn.RFFGPR().fit(X, y)                   # Training (on CPU)
+>>> gpr.score(X, y)                                     # Inference (on CPU)
+0.982939182798136
+>>> gpr.predict(np.array([[-0.8, -1]]))
+array([0.52784025])</code></pre>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3">
+      <div class="container text-center">
+        <p>Copyright (C) 2017-<span id="thisYear"></span> Tetsuya Ishikawa</p>
+      </div>
+    </footer>
+
+    <!-- Load javascripts -->
+    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="./js/jquery-3.7.1.min.js"></script>
+    <script src="./js/script.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+  </body>
+</html>
+
+<!--
+vim: expandtab shiftwidth=2 tabstop=2
+-->

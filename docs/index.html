@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="User's manual for RFFLearn, a library for random Fourier feature based ML models">
+    <meta name="keywords" content="random Fourier features,rff,fast machine learning,Tetsuya Ishikawa">
+    <meta name="robots" content="index,follow" />
+    <meta name="author" content="Tetsuya Ishikawa, tiskw111@gmail.com">
+    <link rel="icon" href="./images/logo-short.svg">
+
+    <title>RFFLearn: User's Manual</title>
+
+    <!-- Load FontAwesome -->
+    <link rel="preload" as="style" href="https://use.fontawesome.com/releases/v6.4.2/css/all.css" crossorigin>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.2/css/all.css" media="print" onload="this.media='all'">
+
+    <!-- Load Google's webfont -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap core CSS -->
+    <link href="./css/bootstrap.min.css" rel="stylesheet" type="text/css">
+
+    <!-- Custom styles for this page -->
+    <link href="./css/style.css" rel="stylesheet" type="text/css">
+  </head>
+
+  <body>
+
+    <!-- Header -->
+    <header>
+      <div class="container mx-auto"><div class="row">
+        <p class="text-center"><img src="./images/logo_long.svg" style="width:640px;" alt="rfflearn_logo"></p>
+      </div></div>
+    </header>
+
+    <main>
+
+      <!-- -->
+      <section class="container py-3">
+        <h1 class="py-2 border-bottom">User's Manual</h1>
+        <div class="row"><div class="col-12">
+          <p>RFFLearn is a Python library of random Fourier features (hereinafter abbreviated as RFF) [1, 2] <!--
+          -->for kernel methods, like support vector machine [3, 4] and Gaussian process model [5]. Features of this module are:</p>
+          <ul>
+            <li><strong>User-friendly interfaces</strong>: Interfaces of the rfflearn module are quite close to the scikit-learn library,</li>
+            <li><strong>Example code first</strong>: This repository provides plenty of example code to demonstrate that RFF is useful for actual machine learning tasks,</li>
+            <li><strong>GPU support</strong>: Some classes in the rfflearn module provides both GPU training and inference for faster computation,</li>
+            <li><strong>Wrapper to the other library</strong>: Interface to optuna and SHAP are provided for easier hyper-parameter tuning and feature importance analysis.</li>
+          </ul>
+        </div></div>
+      </section>
+
+      <section class="container py-3">
+        <h1 class="py-2 border-bottom">Tutorials</h1>
+        <div class="row g-4 py-3 row-cols-1 row-cols-lg-3">
+
+          <!-- -->
+          <div class="feature col">
+            <div class="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3 p-2">
+              <i class="fa-solid fa-wrench"></i>
+            </div>
+            <h2>Setting Up</h2>
+            <p>Build development environment for RFFLearn. The author recommend to use Docker, but you can build on your environment <!--
+            -->if you don't mind to pollute your environment.</p>
+            <p class="text-end px-2"><a href="./tutorials.html#setting_up">See more details >></a></p>
+          </div>
+
+          <!-- -->
+          <div class="feature col">
+            <div class="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3 p-2">
+              <i class="fa-solid fa-flag-checkered"></i>
+            </div>
+            <h2>Quick Start</h2>
+            <p>Try RFFlearn from a tiny code (7 lines!). RFFLearn will be easily acceptable for many ML developers <!--
+            -->because the usage of RFFLearn is quite close to Scikit-learn.</p>
+            <p class="text-end px-2"><a href="./tutorials.html#quick_start">See more details >></a></p>
+          </div>
+
+          <!-- -->
+          <div class="feature col">
+            <div class="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3 p-2">
+              <i class="fa-solid fa-code"></i>
+            </div>
+            <h2>Minimal Examples</h2>
+            <p>Collection of code snippets for RFF-based models, hyperparameter tuners, and feature importance visualizers. <!--
+            -->See the section below for more practical examples.</p>
+            <p class="text-end px-2"><a href="./tutorials.html#minimal_examples">See more details >></a></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- -->
+      <section class="container py-3">
+        <h1 class="py-2 border-bottom">Practical Examples</h1>
+        <div class="row pt-3 g-3">
+
+            <!-- -->
+            <div class="col-4"><div class="card shadow-sm p-1">
+              <img src="images/RFF_least_square_regression.webp" style="width:100%;" alt="RFF_least_square_regression">
+              <div class="card-body">
+                <p class="card-text text-body">Least square regression with random Fourier features</p>
+                <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/least_square_regression" class="btn btn-primary" target="blank_">
+                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link-alt"></i>
+                </a></div>
+              </div>
+            </div></div>
+
+            <!-- -->
+            <div class="col-4"><div class="card shadow-sm p-1">
+              <img src="images/RFFGPR_sparse_data.webp" style="width:100%;" alt="RFFGPR_sparse_data">
+              <div class="card-body">
+                <p class="card-text text-body">Gaussian process regression with random Fourier features</p>
+                <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/gpr_sparse_data" class="btn btn-primary" target="blank_">
+                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link-alt"></i>
+                </a></div>
+              </div>
+            </div></div>
+
+            <!-- -->
+            <div class="col-4"><div class="card shadow-sm p-1">
+              <img src="images/RFFSVC_Inference_time_and_acc_on_MNIST.webp" style="width:100%;" alt="RFFSVC_Inference_time_and_acc_on_MNIST">
+              <div class="card-body">
+                <p class="card-text text-body">Support vector classifier with random Fourier features for the MNIST dataset</p>
+                <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/svc_for_mnist" class="btn btn-primary" target="blank_">
+                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link-alt"></i>
+                </a></div>
+              </div>
+            </div></div>
+
+            <!-- -->
+            <div class="col-4"><div class="card shadow-sm p-1">
+              <img src="images/RFFGPC_Inference_time_and_acc_on_MNIST.webp" style="width:100%;" alt="RFFGPC_Inference_time_and_acc_on_MNIST">
+              <div class="card-body">
+                <p class="card-text text-body">Gaussian process classifier with random Fourier features for the MNIST dataset</p>
+                <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/gpc_for_mnist" class="btn btn-primary" target="blank_">
+                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link-alt"></i>
+                </a></div>
+              </div>
+            </div></div>
+
+            <!-- -->
+            <div class="col-4"><div class="card shadow-sm p-1">
+              <img src="images/PCA_for_swissroll.webp" style="width:100%;" alt="PCA_for_swissroll">
+              <div class="card-body">
+                <p class="card-text text-body">Principal component analysis (PCA) with random Fourier features for Swiss roll dataset</p>
+                <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/pca_for_swissroll" class="btn btn-primary" target="blank_">
+                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link-alt"></i>
+                </a></div>
+              </div>
+            </div></div>
+
+            <!-- -->
+            <div class="col-4"><div class="card shadow-sm p-1">
+              <img src="images/RFFCCA_for_artificial_data.webp" style="width:100%;" alt="RFFCCA_for_artificial_data">
+              <div class="card-body">
+                <p class="card-text text-body">Canonical correlation analysis (CCA) with random Fourier features</p>
+                <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/cca_for_artificial_data" class="btn btn-primary" target="blank_">
+                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link-alt"></i>
+                </a></div>
+              </div>
+            </div></div>
+
+            <!-- -->
+            <div class="col-4"><div class="card shadow-sm p-1">
+              <img src="images/Hyperparameter_search.webp" style="width:100%;" alt="Hyperparameter_search">
+              <div class="card-body">
+                <p class="card-text text-body">Automatic hyperparameter tuning for California housing dataset</p>
+                <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/optuna_for_california_housing" class="btn btn-primary" target="blank_">
+                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link-alt"></i>
+                </a></div>
+              </div>
+            </div></div>
+
+            <!-- -->
+            <div class="col-4"><div class="card shadow-sm p-1">
+              <img src="images/California_housing_permutation_importance.webp" style="width:100%;" alt="California_housing_permutation_importance">
+              <div class="card-body">
+                <p class="card-text text-body">Feature importance of RFF-based regressor for California housing dataset</p>
+                <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/feature_importances_for_california_housing" class="btn btn-primary" target="blank_">
+                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link-alt"></i>
+                </a></div>
+              </div>
+            </div></div>
+
+        </div>
+      </section>
+
+      <!-- -->
+      <section class="container py-3">
+        <h1 class="py-2 border-bottom">API Reference</h1>
+        <div class="row"><div class="col-12">
+          <p><a href="api_reference.html">See this page</a>.</p>
+        </div></div>
+      </section>
+
+      <!-- -->
+      <section class="container py-3">
+        <h1 class="py-2 border-bottom">References</h1>
+        <ul class="references py-2">
+          <li class="references">[1] A. Rahimi and B. Recht, "Random Features for Large-Scale Kernel Machines", NIPS, 2007.
+            <a href="https://papers.nips.cc/paper_files/paper/2007/file/013a006f03dbc5392effeb8f18fda755-Paper.pdf" target="blank_">PDF</a></li>
+          <li class="references">[2] F. X. Yu, A. T. Suresh, K. Choromanski, D. Holtmann-Rice and S. Kumar, "Orthogonal Random Features", NIPS, 2016.
+            <a href="https://proceedings.neurips.cc/paper_files/paper/2016/file/53adaf494dc89ef7196d73636eb2451b-Paper.pdf" target="blank_">PDF</a></li>
+          <li class="references">[3] V. Vapnik and A. Lerner, "Pattern recognition using generalized portrait method", Automation and Remote Control, vol. 24, 1963.</li>
+          <li class="references">[4] B. Boser, I. Guyon and V. Vapnik, "A training algorithm for optimal margin classifiers", COLT, pp. 144-152, 1992.
+            <a href="https://dl.acm.org/doi/10.1145/130385.130401" target="blank_">URL</a></li>
+          <li class="references">[5] C. Rasmussen and C. Williams, "Gaussian Processes for Machine Learning", MIT Press, 2006.</li>
+        </ul>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3">
+      <div class="container text-center">
+        <p>Copyright (C) 2017-<span id="thisYear"></span> Tetsuya Ishikawa</p>
+      </div>
+    </footer>
+
+    <!-- Load javascripts -->
+    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="./js/jquery-3.7.1.min.js"></script>
+    <script src="./js/script.js"></script>
+
+  </body>
+</html>
+
+<!--
+vim: expandtab shiftwidth=2 tabstop=2
+-->
