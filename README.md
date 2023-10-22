@@ -136,7 +136,7 @@ Notes
   them. (This bug information was reported by Mr. Katsuya Terahata @ Toyota Research Institute
   Advanced Development. Thank you so much for the reporting!)
 - Application of RFF to the Gaussian process model is not straightforward.
-  See [this document](./documents/rff_for_gaussian_process.pdf) for mathematical details.
+  See [this document](./articles/rff_for_gaussian_process.pdf) for mathematical details.
 
 
 License

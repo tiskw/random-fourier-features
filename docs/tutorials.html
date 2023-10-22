@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+
+  <head>
+    <title>RFFLearn: User's Manual - Tutorials</title>
+    <link href="./css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="./css/style.css" rel="stylesheet" type="text/css">
+
+    <link rel="preload" as="style" href="https://use.fontawesome.com/releases/v6.4.2/css/all.css" crossorigin>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.2/css/all.css" media="print" onload="this.media='all'">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/solarized-light.min.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/atelier-forest-light.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container mx-auto"><div class="row">
+        <p class="text-center"><img src="./images/logo_long.svg" style="width:640px;"></p>
+      </div></div>
+    </header>
+
+    <main>
+
+      <!-- -->
+      <section class="container py-3">
+        <h1 class="py-2 border-bottom" id="setting_up">Setting Up</h1>
+
+        <div class="row"><div class="col-12">
+          <h2 class="py-2">Using Docker (recommended)</h2>
+          <p>If you don't like to pollute your development environment, it is a good idea to run everything <!--
+          -->inside a Docker container. The rfflearn and it's sample code are executable on this docker image. <!--
+          -->Please run the following command to install the docker image:</p>
+          <pre><code class="bash">docker pull tiskw/pytorch:latest</code></pre>
+          <p>The following command is the typical usage of the docker image:</p>
+          <pre><code class="bash">cd PATH_TO_THE_WORKING_DIRECTORY
+docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash</code></pre>
+          <p>If you need GPU support, add --gpus all option to the above docker run command above. <!--
+          -->Also if the version of your docker is lower than 19, use <code class="bash">--runtime=nvidia</code> <!--
+          -->instead of <code class="bash">--gpus</code> all.</p>
+        </div></div>
+
+        <div class="row"><div class="col-12">
+          <h2 class="py-2">Installing on your environment (easier, but pollute your environment)</h2>
+          <p>The rfflearn module requires NumPy, SciPy, Scikit-learn, and PyTorch if you need GPU support, and optuna <!--
+          -->if you need hyper parameter tuning function. Also, the sample code contained in the module requires docopt. <!--
+          -->If you don't have them, please run the following to install them (you may need root permission)</p>
+          <pre><code class="bash">pip3 install numpy scipy scikit-learn  # Necessary packages
+pip3 install torch                     # Required for GPU inference
+pip3 install optuna                    # Required for hyper parameter tuning
+pip3 install shap                      # Required for feature importance
+pip3 install docopt                    # Required for sample code</code></pre>
+          <p>Author recommend to install the latest version of these above packages because later version tend to be stable <!--
+          -->and show better performance. See requirements.txt if you need detail information of the package versions.</p>
+        </div></div>
+      </section>
+
+      <section class="container py-3">
+        <h1 class="py-2 border-bottom" id="quick_start">Quick Start</h1>
+
+        <div class="row"><div class="col-12">
+          <h2 class="py-2">Tiny code example</h2>
+          <p>At first, please clone the random-fourier-features repository from GitHub:</p>
+          <pre><code class="bash">git clone https://github.com/tiskw/random-fourier-features.git
+cd random-fourier-features</code></pre>
+          <p>If you are using the docker image, enter into the docker container:</p>
+          <pre><code class="bash">docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash</code></pre>
+          <p>Launch python3 and try the following minimal code for support vector classification with random Fourier features:</p>
+          <pre><code class="python">>>> import numpy as np                                  # Import Numpy
+>>> import rfflearn.cpu as rfflearn                     # Import our module
+>>> X = np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]])  # Define input data
+>>> y = np.array([1, 1, 2, 2])                          # Defile label data
+>>> svc = rfflearn.RFFSVC().fit(X, y)                   # Training
+>>> svc.score(X, y)                                     # Inference (on CPU)
+1.0
+>>> svc.predict(np.array([[-0.8, -1]]))
+array([1])</code></pre>
+        </div></div>
+
+        <div class="row"><div class="col-12">
+          <h2 class="py-2">More practical example</h2>
+          <p>Open a text file using your favorite text editor with the name sample.py, and type the following:</p>
+          <pre><code class="python">import numpy as np
+import rfflearn.cpu as rfflearn
+
+def main():
+    # Define training data and labels.
+    N = 1000
+    x = np.linspace(0, 2 * np.pi, N)
+    y = np.sin(x) + 0.1 * np.random.randn(N)
+
+    # Create model instance and train it.
+    svr = rfflearn.RFFSVR().fit(x.reshape((N, 1)), y)
+
+    # Print score.
+    print("R2 score =", svr.score(x.reshape((N, 1)), y))
+
+if __name__ == "__main__":
+    main()</code></pre>
+          <p>Then, place the sample.py to the same directory as the rfflearn directory (i.e. root directory of the random-fourier-features repository), <!--
+          -->and run the following command inside the docker container:</p>
+          <pre><code class="bash">python3 sample.py</code></pre>
+          <p>Now you've got a minimal example code of the rfflearn. You can customize the sample code as you like. Enjoy comfortable ML life!</p>
+        </div></div>
+      </section>
+
+      <section class="container py-3">
+        <h1 class="py-2 border-bottom" id="minimal_examples">Minimal Examples</h1>
+
+        <div class="row"><div class="col-12">
+          <h2 class="py-2">Support vector classification with random Fourier features</h2>
+          <pre><code class="python">>>> import numpy as np                                  # Import Numpy
+>>> import rfflearn.cpu as rfflearn                     # Import module
+>>> X = np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]])  # Define input data
+>>> y = np.array([1, 1, 2, 2])                          # Defile label data
+>>> svc = rfflearn.RFFSVC().fit(X, y)                   # Training
+>>> svc.score(X, y)                                     # Inference (on CPU)
+1.0
+>>> svc.predict(np.array([[-0.8, -1]]))
+array([1])</code></pre>
+
+          <h2 class="py-2">Gaussian process classification with random Fourier features on GPU</h2>
+          <pre><code class="python">>>> import numpy as np                                  # Import Numpy
+>>> import rfflearn.gpu as rfflearn                     # Import module
+>>> X = np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]])  # Define input data
+>>> y = np.array([1, 1, 2, 2])                          # Defile label data
+>>> gpc = rfflearn.RFFGPC().fit(X, y)                   # Training on GPU
+>>> gpc.score(X, y)                                     # Inference on GPU
+1.0
+>>> gpc.predict(np.array([[-0.8, -1]]))
+array([1])</code></pre>
+
+          <h2 class="py-2">Principal component analysis with random Fourier features</h2>
+          <pre><code class="python">>>> import numpy as np                                  # Import Numpy
+>>> import rfflearn.cpu as rfflearn                     # Import module
+>>> X = np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]])  # Define input data
+>>> pca = rfflearn.RFFPCA(n_components=1).fit(X)        # Training (on CPU)
+>>> pca.transform(X)                                    # Transform (on CPU)
+array([[-1.5231749 ],
+       [-2.37334318],
+       [ 1.5231749 ],
+       [ 2.37334318]])</code></pre>
+
+          <h2 class="py-2">Automatic hyper parameter tuning (using Optuna)</h2>
+          <pre><code class="python">>>> import numpy as np
+>>> import rfflearn.cpu as rfflearn
+>>> train_set = (np.array([[-1, -1], [1, 1]]), np.array([1, 2]))
+>>> valid_set = (np.array([[2, 1]]), np.array([2]))
+>>> study = rfflearn.RFFSVC_tuner(train_set, valid_set)
+>>> study.best_params
+{'dim_kernel': 879, 'std_kernel': 0.6135046243705738}
+>>> study.user_attrs["best_model"]                               # Get best estimator
+<rfflearn.cpu.rfflearn_cpu_svc.RFFSVC object at 0x7ff754049898></code></pre>
+
+          <h2 class="py-2">Feature importance visualization (SHAP)</h2>
+          <pre><code class="python">>>> import numpy as np
+>>> import rfflearn.cpu as rfflearn
+>>> X = np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]])
+>>> y = np.array([1, 1, 2, 2])
+>>> gpr = rfflearn.RFFGPR().fit(X, y)
+>>> shap_values = rfflearn.shap_feature_importance(gpc, Xs)
+>>> rfflearn.shap_plot(shap_values, X)</code></pre>
+        </div></div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3">
+      <div class="container text-center">
+        <p>Copyright (C) 2017-<span id="thisYear"></span> Tetsuya Ishikawa</p>
+      </div>
+    </footer>
+
+    <!-- Load javascripts -->
+    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="./js/jquery-3.7.1.min.js"></script>
+    <script src="./js/script.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+  </body>
+</html>
+
+<!--
+vim: expandtab shiftwidth=2 tabstop=2
+-->

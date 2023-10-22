@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+
+  <head>
+    <title>RFFLearn: User's Manual - API Reference - RFFSVR</title>
+
+    <link rel="preload" as="style" href="https://use.fontawesome.com/releases/v6.4.2/css/all.css" crossorigin>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.2/css/all.css" media="print" onload="this.media='all'">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/atelier-forest-light.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+
+    <link href="./css/bootstrap.min.css" rel="stylesheet" type="text/css">
+
+    <link href="./css/style.css" rel="stylesheet" type="text/css">
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container mx-auto"><div class="row">
+        <p class="text-center"><img src="./images/logo_long.svg" style="width:640px;"></p>
+      </div></div>
+    </header>
+
+    <main>
+
+      <!-- -->
+      <section class="container py-3">
+        <h1 class="py-2 border-bottom">rfflearn.cpu.RFFSVR</h1>
+        <p>Support vector regression with random Fourier features.</p>
+        <pre><code class="python">def rfflearn.cpu.RFFSVR(self, dim_kernel=128, std_kernel=0.1, W=None, b=None, **args)</code></pre>
+        <p><strong>Parameters:</strong></p>
+        <div class="row pb-3 g-3">
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">dim_kernel: int, default=128</code></pre>
+            <p class="mx-2">Dimension of the random matrix.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">std_kernel: float, default=0.1</code></pre>
+            <p class="mx-2">Standard deviation of the random matrix.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">W: np.ndarray, default=None</code></pre>
+            <p class="mx-2">Random matrix for the input X. If None then generated automatically.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">b: np.ndarray, default=None</code></pre>
+            <p class="mx-2">Random bias for the input X. If None then generated automatically.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">args: dict, default={}</code></pre>
+            <p class="mx-2">Extra arguments. This will be passed to scikit-learn's LinearSVR class constructor.</p>
+          </div></div>
+        </div>
+        <p><strong>Attributes:</strong></p>
+        <div class="row pb-1 g-3">
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">dim: int</code></pre>
+            <p class="mx-2">Dimension of the random matrix.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">s_k: float</code></pre>
+            <p class="mx-2">Standard deviation of the random matrix.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">mat: Callable</code></pre>
+            <p class="mx-2">A function to generate the random matrix W.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">W: np.ndarray</code></pre>
+            <p class="mx-2">Random matrix for the input X.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">b: np.ndarray</code></pre>
+            <p class="mx-2">Random bias for the input X.</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">svr: sklearn.svm.SVR</code></pre>
+            <p class="mx-2">Linear SVR model instance.</p>
+          </div></div>
+        </div>
+      </section>
+
+      <section class="container py-3">
+        <h2 class="py-2">Member functions</h2>
+
+        <pre><code class="python">def fit(self, X, y, **args)</code></pre>
+        <p>Trains the SVR model according to the given data.</p>
+        <p><strong>Parameters:</strong></p>
+        <div class="row pb-4">
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">X: np.ndarray</code></pre>
+            <p class="mx-2">Input matrix with shape (n_samples, n_features_input).</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">y: np.ndarray</code></pre>
+            <p class="mx-2">Output vector with shape (n_samples,).</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">args: dict, default={}</code></pre>
+            <p class="mx-2">Extra arguments. This arguments will be passed to scikit-learn's fit function.</p>
+          </div></div>
+        </div>
+        <p><strong>Returnd:</strong></p>
+        <div class="row pb-4">
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">rfflearn.cpu.SVR</code></pre>
+            <p class="mx-2">Fitted estimator.</p>
+          </div></div>
+        </div>
+
+        <pre><code class="python">def predict(self, X, **args)</code></pre>
+        <p>Performs regression on the given data.</p>
+        <p><strong>Parameters:</strong></p>
+        <div class="row pb-4">
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">X: np.ndarray</code></pre>
+            <p class="mx-2">Input matrix with shape (n_samples, n_features_input).</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">args: dict, default={}</code></pre>
+            <p class="mx-2">Extra arguments. This arguments will be passed to scikit-learn's predict function.</p>
+          </div></div>
+        </div>
+        <p><strong>Returnd:</strong></p>
+        <div class="row pb-4">
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">np.ndarray</code></pre>
+            <p class="mx-2">The predicted values.</p>
+          </div></div>
+        </div>
+
+        <pre><code class="python">def score(self, X, y, **args)</code></pre>
+        <p>Returns the R2 score (coefficient of determination) of the prediction.</p>
+        <p><strong>Parameters:</strong></p>
+        <div class="row pb-4">
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">X: np.ndarray</code></pre>
+            <p class="mx-2">Input matrix with shape (n_samples, n_features_input).</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">y: np.ndarray</code></pre>
+            <p class="mx-2">True Output vector with shape (n_samples,).</p>
+          </div></div>
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">args: dict, default={}</code></pre>
+            <p class="mx-2">Extra arguments. This arguments will be passed to scikit-learn's score function.</p>
+          </div></div>
+        </div>
+        <p><strong>Returnd:</strong></p>
+        <div class="row pb-1">
+          <div class="col-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">float</code></pre>
+            <p class="mx-2">The R2 score of the prediction.</p>
+          </div></div>
+        </div>
+
+      </section>
+
+      <section class="container py-3">
+        <h2 class="py-2">Minimal Example</h2>
+        <pre><code class="python">>>> import numpy as np                                  # Import Numpy
+>>> import rfflearn.cpu as rfflearn                     # Import module
+>>> X = np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]])  # Define input data
+>>> y = np.array([0.5, 1, 1.5, 2])                      # Defile label data
+>>> svr = rfflearn.RFFSVR().fit(X, y)                   # Training (on CPU)
+>>> svr.score(X, y)                                     # Inference (on CPU)
+0.6160459856695937
+>>> svr.predict(np.array([[-0.8, -1]]))
+array([1.09586662])</code></pre>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3">
+      <div class="container text-center">
+        <p>Copyright (C) 2017-<span id="thisYear"></span> Tetsuya Ishikawa</p>
+      </div>
+    </footer>
+
+    <!-- Load javascripts -->
+    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="./js/jquery-3.7.1.min.js"></script>
+    <script src="./js/script.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+  </body>
+</html>
+
+<!--
+vim: expandtab shiftwidth=2 tabstop=2
+-->
