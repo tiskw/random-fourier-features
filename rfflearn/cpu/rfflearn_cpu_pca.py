@@ -30,12 +30,18 @@ class PCA(Base):
     def get_covariance(self):
         """
         Wrapper function of sklearn.decomposition.PCA.get_covariance.
+
+        Returns:
+            (np.ndarray): Estimated covariance matrix of data with shape (n_features, n_features).
         """
         return self.pca.get_covariance()
 
     def get_precision(self):
         """
         Wrapper function of sklearn.decomposition.PCA.get_precision.
+
+        Returns:
+            (np.ndarray): Estimated precision matrix of data with shape (n_features, n_features).
         """
         return self.pca.get_precision()
 
