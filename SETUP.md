@@ -2,7 +2,7 @@ Setting Up
 ====================================================================================================
 
 
-Installation
+Environment setup
 ----------------------------------------------------------------------------------------------------
 
 ### Using Docker (recommended)
@@ -23,10 +23,10 @@ cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
 docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash
 ```
 
-If you need GPU support, add `--gpus all` option to the above docker run command above.
+If you need GPU support, add `--gpus all` option to the above `docker run` command above.
 Also if the version of your docker is lower than 19, use `--runtime=nvidia` instead of `--gpus all`.
 
-Also, if you want to use PyTorch 2.x, use `tiskw/pytorch2:latest` instead of `tiskw/pytorch2:latest`.
+Also, if you want to use PyTorch 2.x, use `tiskw/pytorch2:latest` instead of `tiskw/pytorch:latest`.
 
 ### Installing on your environment (easier, but pollute your development environment)
 
@@ -36,6 +36,14 @@ just run the following command for installing required packages:
 ```console
 pip3 install -r requirements.txt
 ```
+
+
+Installation
+----------------------------------------------------------------------------------------------------
+
+Copy the `rfflearn` directory to your `PYTHONPATH`, or register the parent directory of `rfflearn`
+to your `PYTHONPATH` by, for example, using `sys.path` variable. If you need a concrete example,
+please refer [the sample code](/examples) that use the latter apporach.
 
 
 Quick Tutorial
@@ -75,6 +83,6 @@ Next Step
 ----------------------------------------------------------------------------------------------------
 
 Now you succeeded in installing the `rfflearn` module.
-The author's recommendation for the next step is to see the [examples directory](./examples)
+The author's recommendation for the next step is to see the [examples directory](/examples)
 and try a code you are interested in.
 
