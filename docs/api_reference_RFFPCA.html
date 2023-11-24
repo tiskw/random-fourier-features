@@ -5,30 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="User's manual for RFFLearn, a library for random Fourier feature based ML models">
     <meta name="keywords" content="random Fourier features,rff,fast machine learning,Tetsuya Ishikawa">
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content="index,follow">
     <meta name="author" content="Tetsuya Ishikawa, tiskw111@gmail.com">
-    <link rel="icon" href="./images/logo-short.svg">
+    <link rel="icon" href="./images/logo_short.svg">
 
     <title>RFFLearn: User's Manual - API Reference - RFFPCA</title>
 
     <!-- Load FontAwesome -->
-    <link rel="preload" as="style" href="https://use.fontawesome.com/releases/v6.4.2/css/all.css" crossorigin>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.2/css/all.css" media="print" onload="this.media='all'">
 
     <!-- Load Google's webfont -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" media="print" onload="this.media='all'">
 
     <!-- Load Highlight JS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/atelier-forest-light.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
 
     <!-- Bootstrap core CSS -->
-    <link href="./css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
 
     <!-- Custom styles for this page -->
-    <link href="./css/style.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="./css/style.css">
   </head>
 
   <body>
@@ -36,7 +35,7 @@
     <!-- Header -->
     <header>
       <div class="container mx-auto"><div class="row">
-        <p class="text-center"><img src="./images/logo_long.svg" style="width:640px;" alt="rfflearn_logo"></p>
+        <p class="text-center"><img src="./images/logo_long.svg" style="width:100%;max-width:640px;height:auto;" alt="rfflearn_logo"></p>
       </div></div>
     </header>
 
@@ -49,54 +48,54 @@
         <pre><code class="python">def rfflearn.cpu.RFFPCA(self, n_components=None, dim_kernel=128, std_kernel=0.1, W=None, b=None, **args)</code></pre>
         <p><strong>Parameters:</strong></p>
         <div class="row pb-3 g-3">
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">n_components: int, default=None</code></pre>
             <p class="mx-2">The number of components to be kept.</p>
           </div></div>
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">dim_kernel: int, default=128</code></pre>
             <p class="mx-2">Dimension of the random matrix.</p>
           </div></div>
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">std_kernel: float, defualt=0.1</code></pre>
             <p class="mx-2">Standard deviation of the random matrix.</p>
           </div></div>
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">W: np.ndarray, default=None</code></pre>
             <p class="mx-2">Random matrix for the input X. If None then generated automatically.</p>
           </div></div>
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">b: np.ndarray, default=None</code></pre>
             <p class="mx-2">Random bias for the input X. If None then generated automatically.</p>
           </div></div>
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">args: dict, defualt={}</code></pre>
             <p class="mx-2">Extra arguments. This dictionaly will be unpacked and passed to PCA class constructor of scikit-learn.</p>
           </div></div>
         </div>
         <p><strong>Attributes:</strong></p>
         <div class="row pb-1 g-3">
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">dim: int</code></pre>
             <p class="mx-2">Dimension of the random matrix.</p>
           </div></div>
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">s_k: float</code></pre>
             <p class="mx-2">Standard deviation of the random matrix.</p>
           </div></div>
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">mat: Callable</code></pre>
             <p class="mx-2">A function to generate the random matrix W.</p>
           </div></div>
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">W: np.ndarray</code></pre>
             <p class="mx-2">Random matrix for the input X.</p>
           </div></div>
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">b: np.ndarray</code></pre>
             <p class="mx-2">Random bias for the input X.</p>
           </div></div>
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">pca: sklearn.decomposition.PCA</code></pre>
             <p class="mx-2">PCA model instance.</p>
           </div></div>
@@ -109,7 +108,7 @@
         <p>Wrapper function of <code>sklearn.decomposition.PCA.get_covariance</code>.</p>
         <p><strong>Returnd:</strong></p>
         <div class="row pb-4">
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">np.ndarray</code></pre>
             <p class="mx-2">Estimated covariance matrix of data with shape (n_features, n_features).</p>
           </div></div>
@@ -119,7 +118,7 @@
         <p>Wrapper function of <code>sklearn.decomposition.PCA.get_precision</code>.</p>
         <p><strong>Returnd:</strong></p>
         <div class="row pb-4">
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">np.ndarray</code></pre>
             <p class="mx-2">Estimated precision matrix of data with shape (n_features, n_features).</p>
           </div></div>
@@ -129,26 +128,26 @@
         <p>Trains the PCA model. This function is a wrapper of <code>sklearn.decomposition.PCA.fit</code>.</p>
         <p><strong>Parameters:</strong></p>
         <div class="row pb-4">
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">X: np.ndarray</code></pre>
             <p class="mx-2">Input matrix with shape (n_samples, n_features_input).</p>
           </div></div>
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">pargs: tuple</code></pre>
             <p class="mx-2">Extra positional arguments. This will be passed to fit function of sklearn's PCA model.</p>
           </div></div>
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">kwargs: dict</code></pre>
             <p class="mx-2">Extra keywork arguments. This will be passed to fit function of sklearn's PCA model.</p>
           </div></div>
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python"></code></pre>
             <p class="mx-2"></p>
           </div></div>
         </div>
         <p><strong>Returnd:</strong></p>
         <div class="row pb-4">
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">rfflearn.cpu.PCA</code></pre>
             <p class="mx-2">Fitted estimator.</p>
           </div></div>
@@ -158,22 +157,22 @@
         <p>Wrapper function of <code>sklearn.decomposition.PCA.fit_transform</code>.</p>
         <p><strong>Parameters:</strong></p>
         <div class="row pb-4">
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">X: np.ndarray</code></pre>
             <p class="mx-2">Input matrix with shape (n_samples, n_features_input).</p>
           </div></div>
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">pargs: tuple</code></pre>
             <p class="mx-2">Extra positional arguments. This will be passed to fit_transform function of sklearn's PCA model.</p>
           </div></div>
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">kwargs: dict</code></pre>
             <p class="mx-2">Extra keywork arguments. This will be passed to fit_transform function of sklearn's PCA model.</p>
           </div></div>
         </div>
         <p><strong>Returnd:</strong></p>
         <div class="row pb-4">
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">np.ndarray</code></pre>
             <p class="mx-2">Transformed <code>X</code>.</p>
           </div></div>
@@ -183,22 +182,22 @@
         <p>Wrapper function of <code>sklearn.decomposition.PCA.score</code>.</p>
         <p><strong>Parameters:</strong></p>
         <div class="row pb-4">
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">X, np.ndarray</code></pre>
             <p class="mx-2">Input matrix with shape (n_samples, n_features_input).</p>
           </div></div>
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">pargs: tuple</code></pre>
             <p class="mx-2">Extra positional arguments. This will be passed to score function of sklearn's PCA model.</p>
           </div></div>
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">kwargs: dict</code></pre>
             <p class="mx-2">Extra keywork arguments. This will be passed to score function of sklearn's PCA model.</p>
           </div></div>
         </div>
         <p><strong>Returnd:</strong></p>
         <div class="row pb-4">
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">float</code></pre>
             <p class="mx-2">The average log-likelihood of all samples.</p>
           </div></div>
@@ -208,22 +207,22 @@
         <p>Wrapper function of <code>sklearn.decomposition.PCA.score_samples</code>.</p>
         <p><strong>Parameters:</strong></p>
         <div class="row pb-4">
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">X: np.ndarray</code></pre>
             <p class="mx-2">Input matrix with shape (n_samples, n_features_input).</p>
           </div></div>
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">pargs: tuple</code></pre>
             <p class="mx-2">Extra positional arguments. This will be passed to score function of sklearn's PCA model.</p>
           </div></div>
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">kwargs: dict</code></pre>
             <p class="mx-2">Extra keywork arguments. This will be passed to score function of sklearn's PCA model.</p>
           </div></div>
         </div>
         <p><strong>Returnd:</strong></p>
         <div class="row pb-4">
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">np.ndarray</code></pre>
             <p class="mx-2">The log-likelihood of each sample with shape (n_samples,).</p>
           </div></div>
@@ -233,22 +232,22 @@
         <p>Wrapper function of <code>sklearn.decomposition.PCA.transform</code>.</p>
         <p><strong>Parameters:</strong></p>
         <div class="row pb-4">
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">X: np.ndarray</code></pre>
             <p class="mx-2">Input matrix with shape (n_samples, n_features_input).</p>
           </div></div>
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">pargs: tuple</code></pre>
             <p class="mx-2">Extra positional arguments. This will be passed to score function of sklearn's PCA model.</p>
           </div></div>
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">kwargs:dict</code></pre>
             <p class="mx-2">Extra keywork arguments. This will be passed to score function of sklearn's PCA model.</p>
           </div></div>
         </div>
         <p><strong>Returnd:</strong></p>
         <div class="row pb-4">
-          <div class="col-3"><div class="card shadow-sm h-100">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">np.ndarray</code></pre>
             <p class="mx-2">Transformed <code>X</code>.</p>
           </div></div>
