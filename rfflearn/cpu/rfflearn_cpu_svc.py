@@ -44,7 +44,8 @@ class SVC(Base):
         Returns:
             (sklearn.base.BaseEstimator): Multi-class classifier instance.
         """
-        if   multi_mode == "ovo": classifier = sklearn.multiclass.OneVsOneClassifier
+
+        elif   multi_mode == "ovo": classifier = sklearn.multiclass.OneVsOneClassifier
         elif multi_mode == "ovr": classifier = sklearn.multiclass.OneVsRestClassifier
         else                    : classifier = sklearn.multiclass.OneVsRestClassifier
         return classifier(svm, n_jobs = n_jobs)

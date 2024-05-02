@@ -103,7 +103,7 @@ def get_qrf_matrix(dim_in, dim_out, std):
     return std * W
 
 
-def get_matrix_generator(rand_type, std, dim_kernel):
+def get_matrix_generator(rand_type, std, dim_kernel, func = None):
     """
     This function returns a function which generate RFF/ORF matrix.
     The usage of the returned value of this function are:
