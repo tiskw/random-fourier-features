@@ -1,0 +1,68 @@
+[build-system]
+
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+
+# Package name.
+name = "rfflearn"
+
+# List of attributes that will be captured dynamically.
+dynamic = ["version"]
+
+# Authors.
+authors = [{name="Tetsuya Ishikawa", email="tiskw111@gmail.com"}]
+
+# Package description.
+description = "Implementation of random Fourier features for kernel method, like support vector machine and Gaussian process model"
+
+# Readme file.
+readme = "README.md"
+
+# License file.
+license = {file = "LICENSE"}
+
+# Required Python version.
+requires-python = ">=3.9"
+
+# Dependencies of the other Python packages.
+dependencies = ["numpy>=1.19.0", "scipy>=1.6.0", "pandas>=1.2.1", "scikit-learn>=0.24.0"]
+
+# Classification tags.
+classifiers = [
+    # How mature is this project? Common values are.
+    #   3 - Alpha
+    #   4 - Beta
+    #   5 - Production/Stable
+    "Development Status :: 4 - Beta",
+
+    # Indicate who your project is intended for.
+    "Intended Audience :: Developers",
+
+    # Specify the Python versions you support here.
+    "Programming Language :: Python :: 3",
+
+    # Pick your license as you wish.
+    "License :: OSI Approved :: MIT License",
+
+    # Operating system assumed to be used.
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+
+# GitHub repository URL.
+Repository = "https://github.com/tiskw/random-fourier-features"
+
+# GitHub issue URL.
+Issues = "https://github.com/tiskw/random-fourier-features/issues"
+
+[tool.hatch.build.targets.wheel]
+
+packages = ["rfflearn"]
+
+[tool.hatch.version]
+
+# Path to the file that contains `__version__` variable.
+path = "rfflearn/rfflearn_common.py"

@@ -2,9 +2,14 @@
 Python module of support vector regression with random matrix for CPU.
 """
 
+# Declare published functions and variables.
+__all__ = ["RFFSVR", "ORFSVR", "QRFSVR"]
+
+# Import 3rd-party packages.
 import sklearn.svm
 import sklearn.multiclass
 
+# Import custom modules.
 from .rfflearn_cpu_common import Base
 
 
@@ -20,9 +25,10 @@ class SVR(Base):
             rand_type  (str)       : Type of random matrix ("rff", "orf", "qrf", etc).
             dim_kernel (int)       : Dimension of the random matrix.
             std_kernel (float)     : Standard deviation of the random matrix.
-            W          (np.ndarray): Random matrix for the input `X`. If None then generated automatically.
-            b          (np.ndarray): Random bias for the input `X`. If None then generated automatically.
-            args       (dict)      : Extra arguments. This will be passed to scikit-learn's LinearSVR class constructor.
+            W          (np.ndarray): Random matrix for input `X` (generated automatically if None).
+            b          (np.ndarray): Random bias for input `X` (generated automatically if None).
+            args       (dict)      : Extra arguments. This will be passed to scikit-learn's
+                                     LinearSVR class constructor.
         """
         super().__init__(rand_type, dim_kernel, std_kernel, W, b)
         self.svr = sklearn.svm.LinearSVR(**args)
@@ -34,7 +40,8 @@ class SVR(Base):
         Args:
             X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
             y    (np.ndarray): Output vector with shape (n_samples,).
-            args (dict)      : Extra arguments. This arguments will be passed to scikit-learn's `fit` function.
+            args (dict)      : Extra arguments. This arguments will be passed to scikit-learn's
+                               `fit` function.
 
         Returns:
             (rfflearn.cpu.SVR): Fitted estimator.
@@ -49,7 +56,8 @@ class SVR(Base):
 
         Args:
             X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
-            args (dict)      : Extra arguments. This arguments will be passed to scikit-learn's `predict_log_proba` function.
+            args (dict)      : Extra arguments. This arguments will be passed to scikit-learn's
+                               `predict_log_proba` function.
 
         Returns:
             (np.ndarray): The predicted values.
@@ -64,7 +72,8 @@ class SVR(Base):
         Args:
             X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
             y    (np.ndarray): Output vector with shape (n_samples,).
-            args (dict)      : Extra arguments. This arguments will be passed to scikit-learn's `score` function.
+            args (dict)      : Extra arguments. This arguments will be passed to scikit-learn's
+                               `score` function.
 
         Returns:
             (float): The R2 score of the prediction.
@@ -73,9 +82,11 @@ class SVR(Base):
         return self.svr.score(self.conv(X), y, **args)
 
 
+####################################################################################################
 # The above functions/classes are not visible from users of this library, becasue the usage of
 # the function is a bit complicated. The following classes are simplified version of the above
 # classes. The following classes are visible from users.
+####################################################################################################
 
 
 class RFFSVR(SVR):
@@ -102,5 +113,4 @@ class QRFSVR(SVR):
         super().__init__("qrf", *pargs, **kwargs)
 
 
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

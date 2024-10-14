@@ -3,5 +3,9 @@
 *.npz
 *.swp
 *.pickle
-.notifier
+
+# Ignore python cache.
 __pycache__
+
+# Ignore virtual environment.
+venv

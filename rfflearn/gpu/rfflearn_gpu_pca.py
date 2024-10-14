@@ -2,9 +2,14 @@
 Python module of principal component analysis with random matrix for CPU.
 """
 
+# Declare published functions and variables.
+__all__ = ["RFFPCA", "ORFPCA", "QRFPCA", "LinearPCA"]
+
+# Import 3rd-party packages.
 import numpy as np
 import torch
 
+# Import custom modules.
 from .rfflearn_gpu_common import Base, detect_device
 
 
@@ -13,7 +18,7 @@ class LinearPCA:
     Linear Principal Component Analysis on GPU.
     This class designed to have similar interface to sklearn.decomposition.PCA.
     """
-    def __init__(self, n_components, nniter=50):
+    def __init__(self, n_components: int , n_iter: int = 50):
         """
         Constractor: Store necessary parameters (on CPU).
 
@@ -31,7 +36,25 @@ class LinearPCA:
         self.explained_variance_ = None
 
         # Device to be used.
-        self.dev = detect_device()
+        self.device = detect_device()
+
+    def get_covariance(self):
+        """
+        Wrapper function of sklearn.decomposition.PCA.get_covariance.
+
+        Returns:
+            (np.ndarray): Estimated covariance matrix of data with shape (n_features, n_features).
+        """
+        raise NotImplementedError()
+
+    def get_precision(self):
+        """
+        Wrapper function of sklearn.decomposition.PCA.get_precision.
+
+        Returns:
+            (np.ndarray): Estimated precision matrix of data with shape (n_features, n_features).
+        """
+        raise NotImplementedError()
 
     def fit(self, X_cpu, y_cpu=None):
         """
@@ -50,11 +73,11 @@ class LinearPCA:
             raise RuntimeError("PCA.fit: input variable should be 2-dimensional matrix.")
 
         # Move variable to GPU.
-        X = torch.from_numpy(X_cpu).to(self.dev)
+        X = torch.from_numpy(X_cpu).to(self.device)
 
         # Calculate PCA. For getting stable results, subtract average before hand.
         m = torch.mean(X, dim = 0)
-        U, S, V = torch.pca_lowrank(X - m, self.n_components_, center=False, niter=self.n_iter)
+        _, S, V = torch.pca_lowrank(X - m, self.n_components_, center=False, niter=self.n_iter)
 
         # Store the PCA results as NumPy array on CPU.
         self.mean_ = m.cpu().numpy()
@@ -69,29 +92,15 @@ class LinearPCA:
 
         Args:
             X_cpu  (np.ndarray): Input matrix with shape (n_samples, n_features).
-            pargs  (tuple)     : Extra Positional arguments. This dictionaly will be unpacked and passed to `fit_transform` function of sklearn's PCA class.
-            kwargs (dict)      : Extra keyword arguments. This dictionaly will be unpacked and passed to `fit_transform` function of sklearn's PCA class.
+            pargs  (tuple)     : Extra Positional arguments. This dictionaly will be unpacked
+                                 and passed to `fit_transform` function of sklearn's PCA class.
+            kwargs (dict)      : Extra keyword arguments. This dictionaly will be unpacked
+                                 and passed to `fit_transform` function of sklearn's PCA class.
 
         Returns:
             (np.ndarray): Input matrix with shape (n_samples, n_components).
         """
         return self.fit(X_cpu, *pargs, **kwargs).transform(X_cpu)
-
-    def inverse_transform(self, Z_cpu):
-        """
-        Inverse of PCA transformation.
-
-        Args:
-            Z_cpu (np.ndarray): Output matrix with shape (n_samples, n_components).
-
-        Returns:
-            (np.ndarray): Input matrix with shape (n_samples, n_features) that is inversely computed.
-        """
-        Z = torch.from_numpy(Z_cpu).to(self.dev)
-        m = torch.from_numpy(self.mean_).to(self.dev)
-        W = torch.from_numpy(self.components_).to(self.dev)
-        X = torch.matmul(Z, W) + m
-        return X.cpu().numpy()
 
     def transform(self, X_cpu):
         """
@@ -103,11 +112,28 @@ class LinearPCA:
         Returns:
             (np.ndarray): Input matrix with shape (n_samples, n_components).
         """
-        X = torch.from_numpy(X_cpu).to(self.dev)
-        m = torch.from_numpy(self.mean_).to(self.dev)
-        W = torch.from_numpy(self.components_.T).to(self.dev)
+        X = torch.from_numpy(X_cpu).to(self.device)
+        m = torch.from_numpy(self.mean_).to(self.device)
+        W = torch.from_numpy(self.components_.T).to(self.device)
         Z = torch.matmul(X - m, W)
         return Z.cpu().numpy()
+
+    def inverse_transform(self, Z_cpu):
+        """
+        Inverse of PCA transformation.
+
+        Args:
+            Z_cpu (np.ndarray): Output matrix with shape (n_samples, n_components).
+
+        Returns:
+            (np.ndarray): Input matrix with shape (n_samples, n_features) that is
+                          inversely computed.
+        """
+        Z = torch.from_numpy(Z_cpu).to(self.device)
+        m = torch.from_numpy(self.mean_).to(self.device)
+        W = torch.from_numpy(self.components_).to(self.device)
+        X = torch.matmul(Z, W) + m
+        return X.cpu().numpy()
 
 
 class PCA(Base):
@@ -115,7 +141,9 @@ class PCA(Base):
     Principal Component Analysis with random matrix (RFF/ORF).
     This class designed to have similar interface to sklearn.decomposition.PCA.
     """
-    def __init__(self, rand_type, n_components=None, dim_kernel=128, std_kernel=0.1, W=None, b=None, **args):
+    def __init__(self, rand_type: str, n_components: int = None, dim_kernel: int = 128,
+                 std_kernel: float = 0.1, W: np.ndarray = None, b: np.ndarray = None,
+                 **args: dict):
         """
         Constractor. Save hyperparameters as member variables.
 
@@ -124,8 +152,9 @@ class PCA(Base):
             n_components (int)       : The number of components to be kept.
             dim_kernel   (int)       : Dimension of the random matrix.
             std_kernel   (float)     : Standard deviation of the random matrix.
-            W            (np.ndarray): Random matrix for the input `X`. If None then generated automatically.
-            args         (dict)      : Extra arguments. This dictionaly will be unpacked and passed to PCA class constructor of scikit-learn.
+            W            (np.ndarray): Random matrix for input (generated automatically if None).
+            args         (dict)      : Extra arguments. This dictionaly will be unpacked and passed
+                                       to PCA class constructor of scikit-learn.
         """
         super().__init__(rand_type, dim_kernel, std_kernel, W, b)
         self.pca = LinearPCA(n_components, **args)
@@ -136,8 +165,10 @@ class PCA(Base):
 
         Args:
             X      (np.ndarray): Input matrix with shape (n_samples, n_features).
-            pargs  (tuple)     : Extra Positional arguments. This dictionaly will be unpacked and passed to `fit` function of sklearn's PCA class.
-            kwargs (dict)      : Extra keyword arguments. This dictionaly will be unpacked and passed to `fit` function of sklearn's PCA class.
+            pargs  (tuple)     : Extra positional arguments. This dictionaly will be unpacked
+                                 and passed to `fit` function of sklearn's PCA class.
+            kwargs (dict)      : Extra keyword arguments. This dictionaly will be unpacked
+                                 and passed to `fit` function of sklearn's PCA class.
         """
         self.set_weight(X.shape[1])
         self.pca.fit(self.conv(X), *pargs, **kwargs)
@@ -149,8 +180,10 @@ class PCA(Base):
 
         Args:
             X      (np.ndarray): Input matrix with shape (n_samples, n_features).
-            pargs  (tuple)     : Extra Positional arguments. This dictionaly will be unpacked and passed to `fit_transform` function of sklearn's PCA class.
-            kwargs (dict)      : Extra keyword arguments. This dictionaly will be unpacked and passed to `fit_transform` function of sklearn's PCA class.
+            pargs  (tuple)     : Extra positional arguments. This dictionaly will be unpacked
+                                 and passed to `fit_transform` function of sklearn's PCA class.
+            kwargs (dict)      : Extra keyword arguments. This dictionaly will be unpacked
+                                 and passed to `fit_transform` function of sklearn's PCA class.
 
         Returns:
             (np.ndarray): Input matrix with shape (n_samples, n_components).
@@ -158,7 +191,7 @@ class PCA(Base):
         self.set_weight(X.shape[1])
         return self.pca.fit_transform(self.conv(X), *pargs, **kwargs)
 
-    def transform(self, X):
+    def transform(self, X, *pargs, **kwargs):
         """
         Apply PCA transform.
 
@@ -179,16 +212,18 @@ class PCA(Base):
             Z (np.ndarray): Output matrix with shape (n_samples, n_components).
 
         Returns:
-            (np.ndarray): Input matrix with shape (n_samples, n_features) that is inversely computed.
+            (np.ndarray): Input matrix with shape (n_samples, n_features) that is
+                          inversely computed.
         """
-        self.set_weight(X.shape[1])
-        U = self.pca.inverse_transform(Z).cpu().numpy()
-        return np.arccos((U - b) @ np.linalg.inv(self.W))
+        U = self.pca.inverse_transform(Z)
+        return np.arccos((U - self.b) @ np.linalg.pinv(self.W))
 
 
+####################################################################################################
 # The above functions/classes are not visible from users of this library, becasue the usage of
 # the function is a bit complicated. The following classes are simplified version of the above
 # classes. The following classes are visible from users.
+####################################################################################################
 
 
 class RFFPCA(PCA):
@@ -215,5 +250,4 @@ class QRFPCA(PCA):
         super().__init__("qrf", *pargs, **kwargs)
 
 
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

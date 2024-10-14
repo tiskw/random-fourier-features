@@ -2,74 +2,27 @@ Gaussian Process Classifier using Random Fourier Features for MNIST Dataset
 ====================================================================================================
 
 This directory provides an example of the Gaussian process classifier with random Fourier features
-for the MNIST dataset.
-
-The training script in this directory supports both CPU/GPU training.
-For the GPU training and inference, you need [PyTorch](https://pytorch.org/).
+for the MNIST dataset. The notebook in this directory supports both CPU/GPU training.
 
 
-Installation
+Training script
 ----------------------------------------------------------------------------------------------------
 
-See [this document](../../SETUP.md) for more details.
+The notebooks are easy to understand, but inconvenient for batch processing. This directory
+contains a Python script that trains and evaluates a RFFSVC model.
 
-### Docker image (recommended)
-
-```console
-docker pull tiskw/pytorch:latest
-cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
-docker run --rm -it --gpus=all -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash
-cd examples/gpc_for_mnist/
-```
-
-If you need GPU support, add the option `--gpus=all` to the above `docker run` command.
-
-### Install on your environment (easier, but pollute your development environment)
-
-```console
-pip3 install docopt numpy scipy scikit-learn  # Necessary packages
-pip3 install torch                            # Required only for GPU training/inference
+```shell
+python3 gpc_for_mnist.py --rtype rff --kdim 1024 --kstd 0.05 --estd 0.1
 ```
 
 
-Usage
+Results of Gaussian process classification with RFF
 ----------------------------------------------------------------------------------------------------
-
-### Dataset preparation
-
-You need to download and convert MNIST data before running the training code.
-Please run the following commands:
-
-```console
-cd ../../dataset/mnist
-python3 download_and_convert_mnist.py
-```
-
-The MNIST dataset will be automatically downloaded, converted to `.npy` file,
-and saved under the `dataset/mnist/` directory.
-
-### Training and inference
-
-After generating `.npy` files of MNIST, run the training script by either of the following commands:
-
-```console
-python3 train_gpc_for_mnist.py cpu  # training on CPU
-python3 train_gpc_for_mnist.py gpu  # training on GPU
-```
-
-The above command will show a test score, and generate `result.pickle` in which a trained model
-and command arguments are stored.
-
-Default hyperparameter settings are recommended parameters for environment test.
-However, to get a higher score, you need to change the parameters by command options.
-See `--help` for details.
-
-### Results of Gaussian process classification with RFF
 
 In the author's computing environment (CPU: Intel Core i5-9300H, RAM: 32GB, GPU: GeForce GTX1660Ti),
 the author has got the following results:
 
-| Method     | RFF dim | Device    | Training time (sec) | Inference time (us) | Score (%) | std_kernel | std_error |
+| Method     | RFF dim | Device    | Training time (sec) | Inference time (us) | Score (%) | std\_kernel | std\_error |
 |:----------:|:-------:|:---------:|:-------------------:|:-------------------:|:---------:|:----------:|:---------:|
 | Kernel SVC | -       | CPU       |  47.63 sec          | 1312.6 us           | 96.30 %   | -          | -         |
 | GPC w/ RFF | 1536    | CPU       |   3.76 sec          |   49.3 us           | 96.37 %   | 0.1        | 0.5       |
