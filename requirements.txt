@@ -1,6 +1,7 @@
 # Necessary packages
 numpy>=1.19.0
 scipy>=1.6.0
+pandas>=1.2.1
 scikit-learn>=0.24.0
 
 # Optional: Required for GPU training/inference
@@ -11,6 +12,4 @@ optuna>=2.3.0
 
 # Optional: Required for feature importance calculation
 shap>=0.37.0
-
-# Optional: Required only for the sample code
-docopt>=0.6.0
+matplotlib>=3.3.3

@@ -2,12 +2,17 @@
 Python module of regression with random matrix for CPU.
 """
 
-import sklearn
+# Declare published functions and variables.
+__all__ = ["RFFRegression", "ORFRegression", "QRFRegression"]
 
+# Import 3rd-party packages.
+import sklearn.linear_model
+
+# Import custom modules.
 from .rfflearn_cpu_common import Base
 
 
-class Regression(Base):
+class Regressor(Base):
     """
     Regression with random matrix (RFF/ORF).
     """
@@ -19,9 +24,10 @@ class Regression(Base):
             rand_type  (str)       : Type of random matrix ("rff", "orf", "qrf", etc).
             dim_kernel (int)       : Dimension of the random matrix.
             std_kernel (float)     : Standard deviation of the random matrix.
-            W          (np.ndarray): Random matrix for the input `X`. If None then generated automatically.
-            b          (np.ndarray): Random bias for the input `X`. If None then generated automatically.
-            args       (dict)      : Extra arguments. This arguments will be passed to the constructor of sklearn's LinearRegression model.
+            W          (np.ndarray): Random matrix for input `X` (generated automatically if None).
+            b          (np.ndarray): Random bias for input `X` (generated automatically if None).
+            args       (dict)      : Extra arguments. This arguments will be passed to
+                                     the constructor of sklearn's LinearRegression model.
         """
         super().__init__(rand_type, dim_kernel, std_kernel, W, b)
         self.reg = sklearn.linear_model.LinearRegression(**args)
@@ -33,7 +39,8 @@ class Regression(Base):
         Args:
             X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
             y    (np.ndarray): Output vector with shape (n_samples,).
-            args (dict)      : Extra arguments. This arguments will be passed to the sklearn's `fit` function.
+            args (dict)      : Extra arguments. This arguments will be passed to the sklearn's
+                               `fit` function.
 
         Returns:
             (rfflearn.cpu.Regression): Fitted estimator.
@@ -48,7 +55,8 @@ class Regression(Base):
 
         Args:
             X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
-            args (dict)      : Extra arguments. This arguments will be passed to the sklearn's `predict` function.
+            args (dict)      : Extra arguments. This arguments will be passed to the sklearn's
+                               `predict` function.
 
         Returns:
             (np.ndarray): Predicted vector.
@@ -63,7 +71,8 @@ class Regression(Base):
         Args:
             X    (np.ndarray): Input matrix with shape (n_samples, n_features_input).
             y    (np.ndarray): Output vector with shape (n_samples,).
-            args (dict)      : Extra arguments. This arguments will be passed to sklearn's `score` function.
+            args (dict)      : Extra arguments. This arguments will be passed to sklearn's
+                               `score` function.
 
         Returns:
             (float): R2 score of the prediction.
@@ -72,12 +81,14 @@ class Regression(Base):
         return self.reg.score(self.conv(X), y, **args)
 
 
+####################################################################################################
 # The above functions/classes are not visible from users of this library, becasue the usage of
 # the function is a bit complicated. The following classes are simplified version of the above
 # classes. The following classes are visible from users.
+####################################################################################################
 
 
-class RFFRegression(Regression):
+class RFFRegressor(Regressor):
     """
     Regression with RFF.
     """
@@ -85,7 +96,7 @@ class RFFRegression(Regression):
         super().__init__("rff", *pargs, **kwargs)
 
 
-class ORFRegression(Regression):
+class ORFRegressor(Regressor):
     """
     Regression with ORF.
     """
@@ -93,6 +104,12 @@ class ORFRegression(Regression):
         super().__init__("orf", *pargs, **kwargs)
 
 
-##################################################### SOURCE FINISH ####################################################
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
+class QRFRegressor(Regressor):
+    """
+    Regression with QRF.
+    """
+    def __init__(self, *pargs, **kwargs):
+        super().__init__("qrf", *pargs, **kwargs)
+
+
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

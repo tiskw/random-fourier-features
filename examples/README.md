@@ -1,4 +1,4 @@
-Example of RFFLearn module
+Example of rfflearn Module
 ====================================================================================================
 
 This directory contains the example code for the `rfflearn.cpu` and `rfflearn.gpu` module.
@@ -11,7 +11,7 @@ An example of regression with random Fourier features.
 See [README.md](./least_square_regression/README.md) for more details.
 
 <div align="center">
-  <img src="./least_square_regression/figure_least_square_regression.svg" width="640" alt="Regression results for function y = sin(x^2) with RFF" />
+  <img src="./least_square_regression/figures/figure_least_square_regression.svg" width="640" alt="Regression results for function y = sin(x^2) with RFF" />
 </div>
 
 
@@ -22,7 +22,7 @@ An example of Gaussian process regression with random Fourier features.
 See [README.md](./gpr_sparse_data/README.md) for more details.
 
 <div align="center">
-  <img src="./gpr_sparse_data/figure_rff_gpr_sparse_data.svg" width="640" alt="Regression results for function y = sin(x^2) with RFF" />
+  <img src="./gpr_sparse_data/figures/figure_rff_gpr_sparse_data.svg" width="640" alt="Regression results for function y = sin(x^2) with RFF" />
 </div>
 
 
@@ -55,7 +55,7 @@ An example of canonical correlation analysis with random Fourier features.
 See [README.md](./cca_for_artificial_data/README.md) for more details.
 
 <div align="center">
-  <img src="./cca_for_artificial_data/figure_cca_for_artificial_data.png" width="840" alt="CCA results for artificial dataset" />
+  <img src="./cca_for_artificial_data/figures/figure_cca_for_artificial_data.png" width="840" alt="CCA results for artificial dataset" />
 </div>
 
 
@@ -66,7 +66,7 @@ An example of principal component analysis for the swiss roll dataset with rando
 See [README.md](./pca_for_swissroll/README.md) for more details.
 
 <div align="center">
-  <img src="./pca_for_swissroll/figure_pca_for_swissroll.svg" width="640" alt="3D plot of input data (10,000 points of swiss roll)" />
+  <img src="./pca_for_swissroll/figures/figure_pca_for_swissroll.svg" width="640" alt="3D plot of input data (10,000 points of swiss roll)" />
 </div>
 
 
@@ -77,7 +77,7 @@ An example of automatic hyperparameter tuning functions that uses [Optuna](https
 as a backend. See [README.md](./optuna_for_california_housing/README.md) for more details.
 
 <div align="center">
-  <img src="./optuna_for_california_housing/hyper_parameter_search.png" width="500" alt="Animation of hyper parameter search behavior" />
+  <img src="./optuna_for_california_housing/figures/hyperparameter_search.png" width="500" alt="Animation of hyper parameter search behavior" />
 </div>
 
 
@@ -89,18 +89,7 @@ An example of the computation of feature importance that uses
 See [README.md](./feature_importances_for_california_housing/README.md) for more details.
 
 <div align="center">
-  <img src="./feature_importances_for_california_housing/figure_california_housing_shap_importance.png" width="400" alt="Permutation importances of Boston housing dataset" />
-  <img src="./feature_importances_for_california_housing/figure_california_housing_permutation_importance.png" width="400" alt="SHAP importances of Boston housing dataset" />
+  <img src="./feature_importances_for_california_housing/figures/figure_california_housing_shap_importance.png" width="450" alt="Permutation importances of Boston housing dataset" />
+  <img src="./feature_importances_for_california_housing/figures/figure_california_housing_permutation_importance.png" width="450" alt="SHAP importances of Boston housing dataset" />
 </div>
 
-
-Support vector classification with random Fourier features with batch learning
-----------------------------------------------------------------------------------------------------
-
-An example of support vector classification with batch learning for
-[MNIST](http://yann.lecun.com/exdb/mnist/) dataset with random Fourier features.
-See [README.md](./svc_for_mnist_batch/README.md) for more details.
-
-However, you do not need to pay much attention to this example because
-[non-batch learning approach](./svc_for_mnist/README.md)
-(i.e. usual SVC training using the entire dataset) now shows higher performance than the batch learning approach.

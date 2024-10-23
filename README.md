@@ -1,9 +1,20 @@
-Random Fourier Features
-====================================================================================================
-
 <div align="center">
   <img src="./figures/logo_long.svg" width="480" alt="rfflearn logo" />
 </div>
+
+<div align="center">
+  <img src="https://img.shields.io/badge/PYTHON-%3E%3D3.9-blue.svg?logo=python&logoColor=white">
+  &nbsp;
+  <img src="https://img.shields.io/badge/LICENSE-MIT-orange.svg">
+  &nbsp;
+  <img src="https://img.shields.io/badge/COVERAGE-97%25-green.svg">
+  &nbsp;
+  <img src="https://img.shields.io/badge/QUALITY-9.96/10.0-yellow.svg">
+</div>
+
+
+Random Fourier Features
+====================================================================================================
 
 This repository provides the Python module `rfflearn` which is a Python library of random Fourier
 features (hereinafter abbreviated as RFF) [1, 2] for kernel methods, like support vector
@@ -35,6 +46,34 @@ RFF can be applicable to many other machine learning algorithms than the above.
 The author will provide implementations of the other algorithms soon.
 
 **NOTE**: The author confirmed that the `rfflearn` module works on PyTorch 2.0! :tada:
+
+
+Installation
+----------------------------------------------------------------------------------------------------
+
+Please install from PyPI.
+
+```shell
+pip install rfflearn
+```
+
+If you need GPU support, Optuna support or SHAP support,
+you need to install the following packages.
+
+```shell
+# For GPU support.
+pip install torch
+
+# For Optuna support.
+pip install optuna
+
+# For SHAP support.
+pip install matplotlib shap
+```
+
+The author recommends using [venv](https://docs.python.org/3/library/venv.html) or
+[Docker](https://www.docker.com/) to avoid polluting your environment.
+
 
 Minimal example
 ----------------------------------------------------------------------------------------------------
@@ -109,24 +148,55 @@ the California housing dataset, and the followings are the visualization results
 `rfflearn.shap_feature_importance` and `rfflearn.permutation_feature_importance`.
 
 <div align="center">
-  <img src="./examples/feature_importances_for_california_housing/figure_california_housing_shap_importance.png" width="400" alt="Permutation importances of Boston housing dataset" />
-  <img src="./examples/feature_importances_for_california_housing/figure_california_housing_permutation_importance.png" width="400" alt="SHAP importances of Boston housing dataset" />
+  <img src="./examples/feature_importances_for_california_housing/figures/figure_california_housing_shap_importance.png" width="450" alt="Permutation importances of Boston housing dataset" />
+  <img src="./examples/feature_importances_for_california_housing/figures/figure_california_housing_permutation_importance.png" width="450" alt="SHAP importances of Boston housing dataset" />
 </div>
 
 
-Requirements and installation
+Quick Tutorial
 ----------------------------------------------------------------------------------------------------
 
-The author recommends using a docker image for building the environment for the `rfflearn`,
-however, of course, you can install the necessary packages on your environment directly.
-See [SETUP.md](./SETUP.md) for more details.
+At first, please clone the `random-fourier-features` repository from GitHub:
+
+```console
+git clone https://github.com/tiskw/random-fourier-features.git
+cd random-fourier-features
+```
+
+If you are using the docker image, enter into the docker container by the following command
+(not necessary to run thw following if you don't use docker):
+
+```console
+docker run --rm -it --gpus all -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash
+```
+
+Then, launch python3 and try the following minimal code that runs support vector classification
+with random Fourier features on an artificial tiny dataset.
+
+```python
+>>> import numpy as np                                  # Import Numpy
+>>> import rfflearn.cpu as rfflearn                     # Import our module
+>>> X = np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]])  # Define input data
+>>> y = np.array([1, 1, 2, 2])                          # Defile label data
+>>> svc = rfflearn.RFFSVC().fit(X, y)                   # Training
+>>> svc.score(X, y)                                     # Inference (on CPU)
+1.0
+>>> svc.predict(np.array([[-0.8, -1]]))
+array([1])
+```
+
+### Next Step
+
+Now you succeeded in installing the `rfflearn` module.
+The author's recommendation for the next step is to see the [examples directory](/examples)
+and try a code you are interested in.
 
 
 Notes
 ----------------------------------------------------------------------------------------------------
 
-- The name of this module is changed from `pyrff` to `rfflearn` on Oct 2020, because the package name
-  `pyrff` already exists in PyPI.
+- The name of this module is changed from `pyrff` to `rfflearn` on Oct 2020, because the package
+  name `pyrff` already exists in PyPI.
 - If the number of training data is huge, an error message like `RuntimeError: The task could not be
   sent to the workers as it is too large for 'send_bytes'` will be raised from the joblib library.
   The reason for this error is that the `sklearn.svm.LinearSVC` uses `joblib` as a multiprocessing
@@ -142,7 +212,8 @@ Notes
 License
 ----------------------------------------------------------------------------------------------------
 
-[MIT Licence](https://opensource.org/licenses/mit-license.php)
+This software is distributed under the [MIT Licence](https://opensource.org/licenses/mit-license.php).
+See [LICENSE](./LICENSE) for more information.
 
 
 Reference

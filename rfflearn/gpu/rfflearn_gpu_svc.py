@@ -2,9 +2,18 @@
 Python module of support vector classification with random matrix for CPU.
 """
 
+# Declare published functions and variables.
+__all__ = ["RFFSVC", "ORFSVC", "QRFSVC"]
+
+# Import standard libraries.
+import functools
+import os
+
+# Import 3rd-party packages.
 import numpy as np
 import torch
 
+# Import custom modules.
 from .rfflearn_gpu_common import Base
 
 
@@ -15,8 +24,10 @@ class SVC(Base):
     Notes:
         Number of data (= X_cpu.shape[0]) must be a multiple of batch size.
     """
-    def __init__(self, rand_type, svc=None, M_pre=None, dim_kernel=128, std_kernel=0.1,
-                 W=None, b=None, batch_size=200, dtype="float32"):
+    def __init__(self, rand_type: str, svc_cpu = None, M_pre: np.ndarray = None,
+                 dim_kernel: int = 128, std_kernel: float = 0.1, W: np.ndarray = None,
+                 b: np.ndarray = None, batch_size: int = 200, dtype: str = "float32",
+                 n_jobs: int = -1, **kwargs: dict):
         """
         Create parameters on CPU, then move the parameters to GPU.
         There are two ways to initialize these parameters:
@@ -29,111 +40,176 @@ class SVC(Base):
 
         Args:
             rand_type  (str)                : Type of random matrix ("rff", "orf", "qrf", etc).
-            svc        (rfflearn.cpu.RFFSVC): RFFSVC instance for initialization.
+            svc_cpu    (rfflearn.cpu.RFFSVC): RFFSVC instance for initialization.
             M_pre      (np.ndarray)         : Matrix to be merged to the random matrix `W`.
             dim_kernel (int)                : Dimension of the random matrix.
             std_kernel (float)              : Standard deviation of the random matrix.
-            W          (np.ndarray)         : Random matrix for the input `X`. If None then generated automatically.
-            b          (np.ndarray)         : Random bias for the input `X`. If None then generated automatically.
+            W          (np.ndarray)         : Random matrix (generated automatically if None).
+            b          (np.ndarray)         : Random bias (generated automatically if None).
             batch_size (int)                : Size of one batch.
             dtype      (str)                : Data type used in the training and inference.
+            n_jobs     (int)                : Number of CPUs to be used.
         """
+        super().__init__(rand_type, dim_kernel, std_kernel, W, b, **kwargs)
+
         # Save important variables.
-        self.dim_kernel  = dim_kernel
-        self.std         = std_kernel
-        self.batch_size  = batch_size
-        self.dtype       = dtype
-        self.initialized = False
-        self.W           = W
-        self.b           = b
+        self.batch_size = batch_size
+        self.dtype      = dtype
+        self.n_jobs     = n_jobs if (n_jobs > 0) else max(1, os.cpu_count() - 1)
 
         # Automatically detect device.
         # This module assumes that GPU is available, but works if not available.
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
-        # Inisialize variables.
-        if svc: self.init_from_RFFSVC_cpu(svc, M_pre)
-        else  : super().__init__(rand_type, dim_kernel, std_kernel, W, b)
+        # Inisialize CPU variables from the given SVC class.
+        if svc_cpu:
 
-    def init_from_scratch(self, dim_input, dim_kernel, dim_output, std):
-        """
-        Constractor: initialize parameters from scratch.
+            # Only RFFSVC support GPU inference.
+            if not (hasattr(svc_cpu, "W") and hasattr(svc_cpu, "svm")):
+                raise TypeError("rfflearn.gpu.SVC: Only rfflearn.cpu.SVC supported.")
 
-        Args:
-            dim_input  (int)  : Input dimension of SVC.
-            dim_kernel (int)  : Dimension of the random matrix.
-            dim_output (int)  : Output dimension of SVC.
-            std        (float): Standard deviation of the random matrix.
-        """
-        # Generate random matrix.
-        self.set_weight(dim_input)
+            # One-versus-one classifier is not supported now.
+            if svc_cpu.svm.get_params()["estimator__multi_class"] != "ovr":
+                raise TypeError("rfflearn.gpu.SVC: Sorry, current implementation support"
+                                " only One-versus-the-rest classifier.")
 
-        # Create parameters on CPU.
-        #   - W: Random matrix of Random Fourier Features. (shape = [dim_input,  dim_kernel]).
-        #   - A: Coefficients of Linear SVC.               (shape = [dim_kernel, dim_output]).
-        #   - b: Intercepts of Linear SVC.                 (shape = [1,          dim_output]).
-        self.W_cpu = self.W
-        self.b_cpu = self.b
-        self.A_cpu = 0.01 * np.random.randn(dim_kernel, dim_output)
-        self.k_cpu = 0.01 * np.random.randn(1,          dim_output)
+            # If OneVsRestClassifier does not support `coef_` and `intercept_`, manualy create them.
+            if not hasattr(svc_cpu.svm, "coef_"):
+                svc_cpu.svm.coef_ = np.array([e.coef_.flatten() for e in svc_cpu.svm.estimators_])
 
-        # Create GPU variables and build GPU model.
-        self.build()
+            # If OneVsRestClassifier does not support `coef_` and `intercept_`, manualy create them.
+            if not hasattr(svc_cpu.svm, "intercept_"):
+                svc_cpu.svm.intercept_ = np.array([e.intercept_  for e in svc_cpu.svm.estimators_])
 
-        # Mark as initialized.
-        self.initialized = True
+            # Copy parameters from rffsvc on CPU.
+            #   - W: Random matrix of Random Fourier Features.
+            #        If PCA applied, combine it to the random matrix for high throughput.
+            #   - A: Coefficients of Linear SVC.
+            #   - b: Intercepts of Linear SVC.
+            self.W_cpu = M_pre.dot(svc_cpu.W) if M_pre is not None else svc_cpu.W
+            self.b_cpu = svc_cpu.b
+            self.A_cpu = svc_cpu.svm.coef_.T
+            self.k_cpu = svc_cpu.svm.intercept_.T
 
-    def init_from_RFFSVC_cpu(self, svc_cpu, M_pre):
-        """
-        Copy parameters from the given rffsvc and create instance.
+        # Initialize CPU parameters from scratch.
+        else:
 
-        Args:
-            svc_svc (rfflearn.cpu.RFFSVC): RFFSVC instance for initialization.
-            M_pre   (np.ndarray)         : Matrix to be merged to the random matrix `W`.
-        """
-        # Only RFFSVC support GPU inference.
-        if not (hasattr(svc_cpu, "W") and hasattr(svc_cpu, "svm")):
-            raise TypeError("rfflearn.gpu.SVC: Only rfflearn.cpu.SVC supported.")
+            self.W_cpu = None
+            self.b_cpu = None
+            self.A_cpu = None
+            self.k_cpu = None
 
-        # TODO: One-versus-one classifier is not supported now.
-        if svc_cpu.svm.get_params()["estimator__multi_class"] != "ovr":
-            raise TypeError("rfflearn.gpu.SVC: Sorry, current implementation support only One-versus-the-rest classifier.")
+        # Initialize GPU parameters.
+        self.W_gpu  = None
+        self.b_gpu  = None
+        self.A_gpu  = None
+        self.k_gpu  = None
+        self.params = []
 
-        # If OneVsRestClassifier does not support `coef_` and `intercept_`, manualy create them.
-        if not (hasattr(svc_cpu.svm, "coef_") and hasattr(svc_cpu.svm, "intercept_")):
-            svc_cpu.svm.coef_      = np.array([estimator.coef_.flatten() for estimator in svc_cpu.svm.estimators_])
-            svc_cpu.svm.intercept_ = np.array([estimator.intercept_      for estimator in svc_cpu.svm.estimators_])
-
-        # Copy parameters from rffsvc on CPU.
-        #   - W: Random matrix of Random Fourier Features.
-        #        If PCA applied, combine it to the random matrix for high throughput.
-        #   - A: Coefficients of Linear SVC.
-        #   - b: Intercepts of Linear SVC.
-        self.W_cpu = M_pre.dot(svc_cpu.W) if M_pre is not None else svc_cpu.W
-        self.b_cpu = svc_cpu.b
-        self.A_cpu = svc_cpu.svm.coef_.T
-        self.k_cpu = svc_cpu.svm.intercept_.T
-
-        # Create GPU variables and build GPU model.
-        self.build()
-
-        # Mark as initialized.
-        self.initialized = True
-
-    def build(self):
+    def build(self, dim_input: int, dim_output: int):
         """
         Create GPU variables if all CPU variables are ready.
         """
-        # Run build procedure if and only if all variables is available.
-        if all(v is not None for v in [self.W_cpu, self.b_cpu, self.A_cpu, self.k_cpu]):
+        # Initialize CPU variables if and only if all variables is available.
+        if any(v is None for v in [self.W_cpu, self.b_cpu, self.A_cpu, self.k_cpu]):
+
+            # Generate random matrix.
+            self.set_weight(dim_input)
+
+            # Create parameters on CPU.
+            #   - W: Random matrix of Random Fourier Features. (shape = [dim_input,  dim_kernel])
+            #   - A: Coefficients of Linear SVC.               (shape = [dim_kernel, dim_output])
+            #   - b: Intercepts of Linear SVC.                 (shape = [1,          dim_output])
+            self.W_cpu = self.W
+            self.b_cpu = self.b
+            self.A_cpu = 0.01 * np.random.randn(self.kdim, dim_output)
+            self.k_cpu = 0.01 * np.random.randn(1,         dim_output)
+
+        if all(v is None for v in [self.W_gpu, self.b_gpu, self.A_gpu, self.k_gpu]):
 
             # Create GPU variables.
-            self.W_gpu = torch.tensor(self.W_cpu, dtype = torch.float32, device = self.device, requires_grad = False)
-            self.b_gpu = torch.tensor(self.b_cpu, dtype = torch.float32, device = self.device, requires_grad = False)
-            self.A_gpu = torch.tensor(self.A_cpu, dtype = torch.float32, device = self.device, requires_grad = True)
-            self.k_gpu = torch.tensor(self.k_cpu, dtype = torch.float32, device = self.device, requires_grad = True)
+            common_args = {"dtype": torch.float32, "device": self.device}
+            self.W_gpu = torch.tensor(self.W_cpu, requires_grad=False, **common_args)
+            self.b_gpu = torch.tensor(self.b_cpu, requires_grad=False, **common_args)
+            self.A_gpu = torch.tensor(self.A_cpu, requires_grad=True,  **common_args)
+            self.k_gpu = torch.tensor(self.k_cpu, requires_grad=True,  **common_args)
 
+            # Set all trainable variables to `self.param`.
             self.params = [self.A_gpu, self.k_gpu]
+
+    def fit(self, X_cpu: np.ndarray, y_cpu: np.ndarray, epoch_max: int = 300, opt: str = "sgd",
+            learning_rate: float = 1.0E-2, weight_decay: float = 10.0, quiet: bool = False):
+        """
+        Training of SVC.
+
+        Args:
+            X_cpu         (np.ndarray): Input matrix of shape (n_samples, n_features).
+            y_cpu         (np.ndarray): Output matrix of shape (n_samples, n_features).
+            epoch_max     (int)       : Maximum number of training epochs.
+            opt           (str)       : Optimizer name.
+            learning_rate (float)     : Lerning rate of the optimizer.
+            weight_decay  (float)     : Weight decay rate.
+            quiet         (bool)      : Suppress messages if True.
+
+        Returns:
+            (rfflearn.gpu.SVC): Myself.
+        """
+        def get_optimizer(opt_name, params, learning_rate, weight_decay):
+            """
+            Get optimizer.
+            """
+            optimizers = {
+                "sgd"    : functools.partial(torch.optim.SGD, weight_decay=weight_decay),
+                "rmsprop": functools.partial(torch.optim.RMSprop),
+                "adam"   : functools.partial(torch.optim.Adam),
+                "adamw"  : functools.partial(torch.optim.AdamW, weight_decay=weight_decay),
+            }
+
+            # Raise an error if the specified random type not found.
+            if opt_name not in optimizers:
+                raise RuntimeError(f"Optimizer name must be either of {optimizers.keys()}.")
+
+            return optimizers[opt_name](params, learning_rate)
+
+        # Get hyper parameters.
+        dim_input  = X_cpu.shape[1]
+        dim_output = np.max(y_cpu) + 1
+
+        # Create GPU variables and build GPU model.
+        self.build(dim_input, dim_output)
+
+        # Convert the label to +1/-1 format.
+        X_cpu = X_cpu.astype(self.dtype)
+        y_cpu = (2 * np.identity(dim_output)[y_cpu] - 1).astype(self.dtype)
+
+        # Get optimizer.
+        opt = get_optimizer(opt, self.params, learning_rate, weight_decay)
+
+        # Create dataset instance for training.
+        train_dataset = torch.utils.data.TensorDataset(torch.tensor(X_cpu), torch.tensor(y_cpu))
+
+        # Create dataloader instance for training.
+        loader_args  = {"batch_size": self.batch_size, "shuffle": True, "num_workers": self.n_jobs}
+        train_loader = torch.utils.data.DataLoader(train_dataset, **loader_args)
+
+        # Variable to store loss values in one epoch.
+        losses = []
+
+        for epoch in range(epoch_max):
+
+            # Train one epoch.
+            for Xs_batch, ys_batch in train_loader:
+                loss = self.fit_batch(Xs_batch.to(self.device), ys_batch.to(self.device), opt)
+                losses.append(loss)
+
+            # Print training log.
+            if not quiet and epoch % 10 == 0:
+                print(f"Epoch {epoch:>4}: Train loss = {np.mean(losses):.4e}")
+
+            # Clear loss values.
+            losses.clear()
+
+        return self
 
     def fit_batch(self, X_gpu, y_gpu, opt):
         """
@@ -156,63 +232,6 @@ class SVC(Base):
             opt.step()
 
         return float(v.cpu())
-
-    def fit(self, X_cpu, y_cpu, epoch_max=300, opt="sgd", learning_rate=1.0E-2, weight_decay=10.0, quiet=False):
-        """
-        Training of SVC.
-
-        Args:
-            X_cpu         (np.ndarray): Input matrix of shape (n_samples, n_features).
-            y_cpu         (np.ndarray): Output matrix of shape (n_samples, n_features).
-            epoch_max     (int)       : Maximum number of training epochs.
-            opt           (str)       : Optimizer name.
-            learning_rate (float)     : Lerning rate of the optimizer.
-            weight_decay  (float)     : Weight decay rate.
-            quiet         (bool)      : Suppress messages if True.
-
-        Returns:
-            (rfflearn.gpu.SVC): Myself.
-        """
-        # Get hyper parameters.
-        dim_input  = X_cpu.shape[1]
-        dim_output = np.max(y_cpu) + 1
-
-        # Convert the label to +1/-1 format.
-        X_cpu = X_cpu.astype(self.dtype)
-        y_cpu = (2 * np.identity(dim_output)[y_cpu] - 1).astype(self.dtype)
-
-        # Create random matrix of RFF and linear SVM parameters on GPU.
-        if not self.initialized:
-            self.init_from_scratch(dim_input, self.dim_kernel, dim_output, self.std)
-
-        # Get optimizer.
-        if   opt == "sgd"    : opt = torch.optim.SGD(self.params, learning_rate, weight_decay = weight_decay)
-        elif opt == "rmsprop": opt = torch.optim.RMSprop(self.params, learning_rate)
-        elif opt == "adam"   : opt = torch.optim.Adam(self.params, learning_rate)
-        elif opt == "adamw"  : opt = torch.optim.AdamW(self.params, learning_rate, weight_decay = weight_decay, amsgrad = True)
-
-        # Create dataset instance for training.
-        train_dataset = torch.utils.data.TensorDataset(torch.tensor(X_cpu), torch.tensor(y_cpu))
-        train_loader  = torch.utils.data.DataLoader(train_dataset, batch_size = self.batch_size, shuffle = True)
-
-        # Variable to store loss values in one epoch.
-        losses = []
-
-        for epoch in range(epoch_max):
-
-            # Train one epoch.
-            for step, (Xs_batch, ys_batch) in enumerate(train_loader):
-                loss = self.fit_batch(Xs_batch.to(self.device), ys_batch.to(self.device), opt)
-                losses.append(loss)
-
-            # Print training log.
-            if not quiet and epoch % 10 == 0:
-                print(f"Epoch {epoch:>4}: Train loss = {np.mean(losses):.4e}")
-
-            # Clear loss values.            
-            losses.clear()
-
-        return self
 
     def predict_proba_batch(self, X_cpu):
         """
@@ -238,16 +257,26 @@ class SVC(Base):
         Returns:
             (np.ndarray): Probability of prediction.
         """
+        # Get hyper parameters.
+        dim_input  = self.W_cpu.shape[0]
+        dim_output = self.W_cpu.shape[1]
+
+        # Create GPU variables and build GPU model.
+        self.build(dim_input, dim_output)
+
         # Calculate size and number of batch.
         bs = self.batch_size
         bn = X_cpu.shape[0] // bs
 
         # Batch number must be a multiple of batch size.
         if X_cpu.shape[0] % bs != 0:
-            raise ValueError("rfflearn.gpu.SVC: Number of input data must be a multiple of batch size")
+            raise ValueError("rfflearn.gpu.SVC: Number of input data must be"
+                             " a multiple of batch size")
 
         # Run prediction for each batch, concatenate them and return.
-        Xs = [self.predict_proba_batch(X_cpu[bs*n:bs*(n+1), :].astype(self.dtype)) for n in range(bn)]
+        Xs = [self.predict_proba_batch(X_cpu[bs*n:bs*(n+1), :].astype(self.dtype))
+              for n in range(bn)]
+
         return np.concatenate(Xs)
 
     def predict_log_proba(self, X_cpu, **args):
@@ -261,7 +290,7 @@ class SVC(Base):
         Returns:
             (np.ndarray): Log probability of prediction.
         """
-        return np.log(self.predict_proba(X_cpu))
+        return np.log(self.predict_proba(X_cpu, **args))
 
     def predict(self, X_cpu, **args):
         """
@@ -274,7 +303,7 @@ class SVC(Base):
         Returns:
             (np.ndarray): Predicted class labels.
         """
-        return np.argmax(self.predict_proba(X_cpu), 1)
+        return np.argmax(self.predict_proba(X_cpu, **args), 1)
 
     def score(self, X_cpu, y_cpu, **args):
         """
@@ -287,12 +316,14 @@ class SVC(Base):
         Returns:
             (np.ndarray): Accuracy of the prediction.
         """
-        return np.mean(y_cpu == self.predict(X_cpu))
+        return np.mean(y_cpu == self.predict(X_cpu, **args))
 
 
+####################################################################################################
 # The above functions/classes are not visible from users of this library, becasue the usage of
 # the function is a bit complicated. The following classes are simplified version of the above
 # classes. The following classes are visible from users.
+####################################################################################################
 
 
 class RFFSVC(SVC):
@@ -319,5 +350,4 @@ class QRFSVC(SVC):
         super().__init__("qrf", *pargs, **kwargs)
 
 
-# Author: Tetsuya Ishikawa <tiskw111@gmail.com>
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker

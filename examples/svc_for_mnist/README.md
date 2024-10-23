@@ -2,92 +2,18 @@ Support Vector Classifier using Random Fourier Features for MNIST dataset
 ====================================================================================================
 
 This directory provides an example of the support vector classifier with random Fourier features
-for the MNIST dataset.
-
-The training script in this directory supports both CPU/GPU training.
-For the GPU training and inference, you need [PyTorch](https://pytorch.org/).
+for the MNIST dataset. The notebook in this directory supports both CPU/GPU training.
 
 
-Installation
+Training script
 ----------------------------------------------------------------------------------------------------
 
-See [this document](../..SETUP.md) for more details.
+The notebooks are easy to understand, but inconvenient for batch processing. This directory
+contains a Python script that trains and evaluates a RFFSVC model.
 
-### Install on your environment (easier, but pollute your development environment)
-
-```console
-pip3 install docopt numpy scipy scikit-learn  # Necessary packages
-pip3 install torch                            # Required only for GPU training/inference
-pip3 install optuna                           # Required only for hyperparameter tuning
+```shell
+python3 svc_for_mnist.py --rtype rff --kdim 1024 --kstd 0.05
 ```
-
-### Docker image (recommended)
-
-```console
-docker pull tiskw/pytorch:latest
-cd PATH_TO_THE_ROOT_DIRECTORY_OF_THIS_REPO
-docker run --rm -it --gpus=all -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash
-cd examples/gpr_sparse_data/
-```
-
-If you don't need GPU support, the option `--gpus=all` is not necessary.
-
-
-Dataset preparation
-----------------------------------------------------------------------------------------------------
-
-You need to download and convert MNIST data before running the training code.
-Please run the following commands:
-
-```console
-cd ../../dataset/mnist
-python3 download_and_convert_mnist.py
-```
-
-The MNIST dataset will be automatically downloaded, converted to `.npy` file
-and saved under `dataset/mnist/` directory.
-
-
-Training
-----------------------------------------------------------------------------------------------------
-
-### Training (on CPU)
-
-After generating MNIST .npy files, run sample scripts by the following command:
-
-```console
-python3 train_rff_svc_for_mnist.py kernel           # Run kernel SVC training
-python3 train_rff_svc_for_mnist.py cpu --rtype rff  # Run RFFSVC training on CPU
-```
-
-Default hyperparameter settings are recommended values, however, you can change the parameters
-by the command options. The above command will generate `result.pickle` in which a trained model,
-PCA matrix, and command arguments are stored. See `train_rff_svc_for_mnist.py --help` for details.
-
-### Training on GPU
-
-This module contains a beta version of GPU training implementation.
-You can try the GPU training by the following command:
-
-```console
-$ python3 train_rff_svc_for_mnist.py gpu --rtype rff  # Run kernel SVC training on GPU
-```
-
-
-Inference
-----------------------------------------------------------------------------------------------------
-
-You can run inference by the following command:
-
-```console
-python3 valid_rff_svc_for_mnist.py cpu  # Inference on CPU using scikit-learn
-python3 valid_rff_svc_for_mnist.py gpu  # Inference on GPU using PyTorch
-```
-
-Note that run inference of GPU-trained model on CPU is not supported. Supported combinations are:
-- trained on CPU, inference on CPU,
-- trained on CPU, inference on GPU,
-- trained on GPU, inference on GPU.
 
 
 Results of support vector classification with RFF
@@ -133,14 +59,14 @@ As for inference using GPU, I've got the following result:
 </div>
 
 
-Bayesian parameter search using Optuna
+RFF vs. ORF vs. QRF
 ----------------------------------------------------------------------------------------------------
 
-You can automatically search the hyperparameters `dim_kernel` and `std_kernel` using Optuna
-by the following command:
+The following figure is the comparison of RFF, ORF, and QRF on the MNIST dataset.
+The author observed no significant difference in these methods, therefore,
+the author thinks users can choose whichever method they prefer.
 
-```console
-python3 train_rff_svc_for_mnist_optuna.py
-```
+<div align="center">
+  <img src="./figures/svc_rff_vs_orf_vs_qrf.svg" width="960" alt="SVC scores: RFF vs. ORF vs. QRF" />
+</div>
 
-Note that the above command may take a long time.
