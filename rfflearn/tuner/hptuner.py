@@ -13,6 +13,14 @@ import optuna
 SET_ARGS_OPT = {"callbacks", "catch", "gc_after_trial", "n_trials",
                 "show_progress_bar", "timeout"}
 
+# Define verbosity level.
+VERBOSITY_LEVELS = {0: optuna.logging.CRITICAL,
+                    1: optuna.logging.FATAL,
+                    2: optuna.logging.ERROR,
+                    3: optuna.logging.WARNING,
+                    4: optuna.logging.INFO,
+                    5: optuna.logging.DEBUG}
+
 
 def get_suggest_fn(dtype, trial):
     """
@@ -25,9 +33,28 @@ def get_suggest_fn(dtype, trial):
     return suggest_functions.get(dtype, None)
 
 
-def RFF_dim_std_tuner(train_set, valid_set, model_class, verbose=0, **kwargs):
+def callback(study, trial):
+    """
+    Callback function to save only the best model.
+    """
+    if study.best_trial.number == trial.number:
+        study.set_user_attr(key="best_model", value=trial.user_attrs["model"])
+
+
+def RFF_dim_std_tuner(model_class: type, train_set: tuple, valid_set: tuple,
+                      verbose: int = 0, **kwargs: dict) -> optuna.study.Study:
     """
     Hyper parameter tuner for RFFRegression, ORFRegression, RFFSVC and ORFSVC.
+
+    Args:
+        model_class (type) : Target class of hyperparameter tuning.
+        train_set   (tuple): A tuple of training data and label.
+        valid_set   (tuple): A tuple of validation data and label.
+        verbose     (int)  : Verbosity level (smaller is quieter).
+        kwargs      (dict) : Keyword arguments for `model_class` or `optuna.study.Study.optimize`.
+
+    Returns:
+        (optuna.study.Study): Optimized study instance.
     """
     # Define default arguments.
     args_par = {"dtype_dim_kernel": "int",
@@ -44,9 +71,15 @@ def RFF_dim_std_tuner(train_set, valid_set, model_class, verbose=0, **kwargs):
     args_opt = {key:val for key, val in kwargs.items() if key     in SET_ARGS_OPT}
     args_fit = {key:val for key, val in kwargs.items() if key not in SET_ARGS_OPT}
 
-    def objective(trial):
+    def objective(trial: optuna.trial.Trial) -> float:
         """
         The objective function for hyper parameter tuning.
+
+        Args:
+            trial (optuna.trial.Trial): An object contains info of a trial.
+
+        Returns:
+            (float): Score of the trial.
         """
         # Define optuna variable for dim_kernel.
         suggest_fn = get_suggest_fn(args_par["dtype_dim_kernel"], trial)
@@ -67,21 +100,8 @@ def RFF_dim_std_tuner(train_set, valid_set, model_class, verbose=0, **kwargs):
 
         return score
 
-    def callback(study, trial):
-        """
-        Callback function to save only the best model.
-        """
-        if study.best_trial.number == trial.number:
-            study.set_user_attr(key="best_model", value=trial.user_attrs["model"])
-
-    # Set verbosity.
-    verbosity_levels = {0: optuna.logging.CRITICAL,
-                        1: optuna.logging.FATAL,
-                        2: optuna.logging.ERROR,
-                        3: optuna.logging.WARNING,
-                        4: optuna.logging.INFO,
-                        5: optuna.logging.DEBUG}
-    optuna.logging.set_verbosity(verbosity_levels[verbose])
+    # Set verbosity level.
+    optuna.logging.set_verbosity(VERBOSITY_LEVELS[verbose])
 
     # Run parameter search.
     study = optuna.create_study(direction="maximize")
@@ -93,7 +113,8 @@ def RFF_dim_std_tuner(train_set, valid_set, model_class, verbose=0, **kwargs):
     return study
 
 
-def RFF_dim_std_err_tuner(train_set, valid_set, model_class, **kwargs):
+def RFF_dim_std_err_tuner(model_class: type, train_set: tuple, valid_set: tuple,
+                          verbose: int = 0, **kwargs: dict) -> optuna.study.Study:
     """
     Hyper parameter tuner for RFFGPR, ORFGPR, RFFGPC and ORFGPC.
     """
@@ -141,12 +162,8 @@ def RFF_dim_std_err_tuner(train_set, valid_set, model_class, **kwargs):
 
         return score
 
-    def callback(study, trial):
-        """
-        Callback function to save only the best model.
-        """
-        if study.best_trial.number == trial.number:
-            study.set_user_attr(key="best_model", value=trial.user_attrs["model"])
+    # Set verbosity level.
+    optuna.logging.set_verbosity(VERBOSITY_LEVELS[verbose])
 
     # Run parameter search.
     study = optuna.create_study(direction="maximize")

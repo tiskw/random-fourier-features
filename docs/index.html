@@ -37,17 +37,17 @@
 
     <main>
 
-      <!-- -->
+      <!-- Main sections -->
       <section class="container py-3">
         <h1 class="py-2 border-bottom">User's Manual</h1>
         <div class="row"><div class="col-12">
           <p>RFFLearn is a Python library of random Fourier features (hereinafter abbreviated as RFF) [1, 2] <!--
           -->for kernel methods, like support vector machine [3, 4] and Gaussian process model [5]. Features of this module are:</p>
           <ul>
-            <li><strong>User-friendly interfaces</strong>: Interfaces of the rfflearn module are quite close to the scikit-learn library,</li>
-            <li><strong>Example code first</strong>: This repository provides plenty of example code to demonstrate that RFF is useful for actual machine learning tasks,</li>
-            <li><strong>GPU support</strong>: Some classes in the rfflearn module provides both GPU training and inference for faster computation,</li>
-            <li><strong>Wrapper to the other library</strong>: Interface to optuna and SHAP are provided for easier hyper-parameter tuning and feature importance analysis.</li>
+            <li class="itemize"><strong>User-friendly interfaces</strong>: Interfaces of the rfflearn module are quite close to the scikit-learn library,</li>
+            <li class="itemize"><strong>Example code first</strong>: This repository provides plenty of example code to demonstrate that RFF is useful for actual machine learning tasks,</li>
+            <li class="itemize"><strong>GPU support</strong>: Some classes in the rfflearn module provides both GPU training and inference for faster computation,</li>
+            <li class="itemize"><strong>Wrapper to the other library</strong>: Interface to optuna and SHAP are provided for easier hyper-parameter tuning and feature importance analysis.</li>
           </ul>
         </div></div>
       </section>
@@ -56,7 +56,7 @@
         <h1 class="py-2 border-bottom">Tutorials</h1>
         <div class="row g-4 py-3 row-cols-1 row-cols-lg-3">
 
-          <!-- -->
+          <!-- Setting up -->
           <div class="feature col">
             <div class="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3 p-2">
               <i class="fa-solid fa-wrench"></i>
@@ -64,10 +64,10 @@
             <h2>Setting Up</h2>
             <p>Build development environment for RFFLearn. The author recommend to use Docker, but you can build on your environment <!--
             -->if you don't mind to pollute your environment.</p>
-            <p class="text-end px-2"><a href="./tutorials.html#setting_up">See more details >></a></p>
+            <p class="text-end px-2"><a href="./tutorials.html#setting_up">See more details <i class="fas fa-external-link"></i></a></p>
           </div>
 
-          <!-- -->
+          <!-- Quick start -->
           <div class="feature col">
             <div class="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3 p-2">
               <i class="fa-solid fa-flag-checkered"></i>
@@ -75,10 +75,10 @@
             <h2>Quick Start</h2>
             <p>Try RFFlearn from a tiny code (7 lines!). RFFLearn will be easily acceptable for many ML developers <!--
             -->because the usage of RFFLearn is quite close to Scikit-learn.</p>
-            <p class="text-end px-2"><a href="./tutorials.html#quick_start">See more details >></a></p>
+            <p class="text-end px-2"><a href="./tutorials.html#quick_start">See more details <i class="fas fa-external-link"></i></a></p>
           </div>
 
-          <!-- -->
+          <!-- Minimal examples -->
           <div class="feature col">
             <div class="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3 p-2">
               <i class="fa-solid fa-code"></i>
@@ -86,100 +86,100 @@
             <h2>Minimal Examples</h2>
             <p>Collection of code snippets for RFF-based models, hyperparameter tuners, and feature importance visualizers. <!--
             -->See the section below for more practical examples.</p>
-            <p class="text-end px-2"><a href="./tutorials.html#minimal_examples">See more details >></a></p>
+            <p class="text-end px-2"><a href="./tutorials.html#minimal_examples">See more details <i class="fas fa-external-link"></i></a></p>
           </div>
         </div>
       </section>
 
-      <!-- -->
+      <!-- Practical examples -->
       <section class="container py-3">
         <h1 class="py-2 border-bottom">Practical Examples</h1>
         <div class="row pt-3 g-3">
 
-            <!-- -->
+            <!-- Least square regression -->
             <div class="col-sm-4"><div class="card shadow-sm p-1 h-100">
               <img src="images/RFF_least_square_regression.webp" style="width:100%;height:auto;" alt="RFF_least_square_regression">
               <div class="card-body">
                 <p class="card-text text-body">Least square regression with random Fourier features</p>
                 <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/least_square_regression" class="btn btn-primary" target="blank_">
-                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link-alt"></i>
+                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link"></i>
                 </a></div>
               </div>
             </div></div>
 
-            <!-- -->
+            <!-- Gaussian process regression -->
             <div class="col-sm-4"><div class="card shadow-sm p-1 h-100">
               <img src="images/RFFGPR_sparse_data.webp" style="width:100%;height:auto;" alt="RFFGPR_sparse_data">
               <div class="card-body">
                 <p class="card-text text-body">Gaussian process regression with random Fourier features</p>
                 <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/gpr_sparse_data" class="btn btn-primary" target="blank_">
-                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link-alt"></i>
+                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link"></i>
                 </a></div>
               </div>
             </div></div>
 
-            <!-- -->
+            <!-- Support vector classifier -->
             <div class="col-sm-4"><div class="card shadow-sm p-1 h-100">
               <img src="images/RFFSVC_Inference_time_and_acc_on_MNIST.webp" style="width:100%;height:auto;" alt="RFFSVC_Inference_time_and_acc_on_MNIST">
               <div class="card-body">
                 <p class="card-text text-body">Support vector classifier with random Fourier features for the MNIST dataset</p>
                 <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/svc_for_mnist" class="btn btn-primary" target="blank_">
-                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link-alt"></i>
+                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link"></i>
                 </a></div>
               </div>
             </div></div>
 
-            <!-- -->
+            <!-- Gaussian process classifier -->
             <div class="col-sm-4"><div class="card shadow-sm p-1 h-100">
               <img src="images/RFFGPC_Inference_time_and_acc_on_MNIST.webp" style="width:100%;height:auto;" alt="RFFGPC_Inference_time_and_acc_on_MNIST">
               <div class="card-body">
                 <p class="card-text text-body">Gaussian process classifier with random Fourier features for the MNIST dataset</p>
                 <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/gpc_for_mnist" class="btn btn-primary" target="blank_">
-                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link-alt"></i>
+                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link"></i>
                 </a></div>
               </div>
             </div></div>
 
-            <!-- -->
+            <!-- Principal component analysis -->
             <div class="col-sm-4"><div class="card shadow-sm p-1 h-100">
               <img src="images/PCA_for_swissroll.webp" style="width:100%;height:auto;" alt="PCA_for_swissroll">
               <div class="card-body">
                 <p class="card-text text-body">Principal component analysis (PCA) with random Fourier features for Swiss roll dataset</p>
                 <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/pca_for_swissroll" class="btn btn-primary" target="blank_">
-                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link-alt"></i>
+                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link"></i>
                 </a></div>
               </div>
             </div></div>
 
-            <!-- -->
+            <!-- Canonical correlation analysis -->
             <div class="col-sm-4"><div class="card shadow-sm p-1 h-100">
               <img src="images/RFFCCA_for_artificial_data.webp" style="width:100%;height:auto;" alt="RFFCCA_for_artificial_data">
               <div class="card-body">
                 <p class="card-text text-body">Canonical correlation analysis (CCA) with random Fourier features</p>
                 <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/cca_for_artificial_data" class="btn btn-primary" target="blank_">
-                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link-alt"></i>
+                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link"></i>
                 </a></div>
               </div>
             </div></div>
 
-            <!-- -->
+            <!-- Automatic hyperparameter tuning -->
             <div class="col-sm-4"><div class="card shadow-sm p-1 h-100">
               <img src="images/Hyperparameter_search.webp" style="width:100%;height:auto;" alt="Hyperparameter_search">
               <div class="card-body">
                 <p class="card-text text-body">Automatic hyperparameter tuning for California housing dataset</p>
                 <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/optuna_for_california_housing" class="btn btn-primary" target="blank_">
-                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link-alt"></i>
+                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link"></i>
                 </a></div>
               </div>
             </div></div>
 
-            <!-- -->
+            <!-- Feature importance -->
             <div class="col-sm-4"><div class="card shadow-sm p-1 h-100">
               <img src="images/California_housing_permutation_importance.webp" style="width:100%;height:auto;" alt="California_housing_permutation_importance">
               <div class="card-body">
                 <p class="card-text text-body">Feature importance of RFF-based regressor for California housing dataset</p>
                 <div class="text-end"><a href="https://github.com/tiskw/random-fourier-features/tree/main/examples/feature_importances_for_california_housing" class="btn btn-primary" target="blank_">
-                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link-alt"></i>
+                  <i class="fab fa-github"></i>&nbsp; GitHub Repository &nbsp;<i class="fas fa-external-link"></i>
                 </a></div>
               </div>
             </div></div>
@@ -187,15 +187,15 @@
         </div>
       </section>
 
-      <!-- -->
+      <!-- API reference -->
       <section class="container py-3">
         <h1 class="py-2 border-bottom">API Reference</h1>
         <div class="row"><div class="col-12">
-          <p><a href="api_reference.html">See this page</a>.</p>
+          <p><a href="api_reference.html">See this page <i class="fas fa-external-link"></i></a></p>
         </div></div>
       </section>
 
-      <!-- -->
+      <!-- References -->
       <section class="container py-3">
         <h1 class="py-2 border-bottom">References</h1>
         <ul class="references py-2">

@@ -6,6 +6,7 @@ The __init__.py file for the 'rfflearn.cpu' module.
 import functools
 import importlib
 import pathlib
+import warnings
 import sys
 
 # Import RFF-related modules.
@@ -63,10 +64,11 @@ if importlib.util.find_spec("optuna") is not None:
     ]
 
 else:
-    sys.stderr.write("rfflearn.cpu: package 'optuna' not found. Skip loading tuner submodule.\n")
+    warnings.warn("rfflearn.cpu: package 'optuna' not found. Skip loading tuner submodule.",
+                  ImportWarning)
 
 # Import shap-related modules if `shap` is available.
-if importlib.util.find_spec("shap") is not None:
+if (importlib.util.find_spec("matplotlib") is not None) and (importlib.util.find_spec("shap") is not None):
 
     # Import explainer module.
     explainer = importlib.import_module("explainer")
@@ -81,6 +83,7 @@ if importlib.util.find_spec("shap") is not None:
     __all__ += names
 
 else:
-    sys.stderr.write("rfflearn.cpu: package 'shap' not found. SKip loading explainer submodule.\n")
+    warnings.warn("rfflearn.cpu: package 'shap' not found. SKip loading explainer submodule.",
+                  ImportWarning)
 
 # vim: expandtab tabstop=4 shiftwidth=4 fdm=marker
