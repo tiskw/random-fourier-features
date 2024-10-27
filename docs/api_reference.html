@@ -20,8 +20,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" media="print" onload="this.media='all'">
 
     <!-- Load Highlight JS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/atelier-forest-light.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/stackoverflow-light.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js"></script>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="./css/bootstrap.min.css">
@@ -41,16 +41,16 @@
 
     <main>
 
-      <!-- -->
+      <!-- Main sections -->
       <section class="container py-3">
         <h1 class="py-2 border-bottom" id="setting_up">API Reference</h1>
         <p>The RFFLearn library consists of the several sub modules. <!--
         -->Click the module name to see the details of each module.</p>
 
         <div class="row align-items-center justify-content-center"><div class="col-8"><table class="table table-hover">
-          <thead><tr>
-            <th scope="col">Sub module name</th>
-            <th scope="col">Description</th>
+          <thead class="head"><tr class="head">
+            <th class="head" scope="col">Sub module name</th>
+            <th class="head" scope="col">Description</th>
           </tr></thead>
           <tbody><tr>
             <td><a href="#rfflearn_cpu">rfflearn.cpu</a></td>
@@ -58,27 +58,24 @@
           </tr><tr>
             <td><a href="#rfflearn_gpu">rfflearn.gpu</a></td>
             <td>Regressors and classifiers of random Fourier features on GPU.</td>
-          </tr><tr>
-            <td><a href="#rfflearn_explainer">rfflearn.explainer</a></td>
-            <td>Classes and functions to get model explanation for RFF-based models.</td>
-          </tr><tr>
-            <td><a href="#rfflearn_tuner">rfflearn.tuner</a></td>
-            <td>Classes and functions for automatic hyperparameter tuning.</td>
           </tr></tbody>
         </table></div></div>
       </section>
 
       <section class="container py-3">
         <h2 class="py-2" id="rfflearn_cpu">rfflearn.cpu</h2>
-        <p>Sub module for machine learning algorithm of random Fourier feature runnable on CPU. <!--
-        -->This sub module contains machine learning algorithm (e.g. regressors, classifiers) which is designed to be run on CPU. <!--
-        -->Interfaces of classes and functions in this module have quite close interfaces with scikit-learn library. <!--
-        -->Most (but not all) of the classes uses scikit-learn as a back end.</p>
+        <p>This sub-module is a module for machine learning algorithms of random Fourier feature runnable on CPU. <!--
+        -->This sub-module contains machine learning algorithms (e.g. regressors, classifiers) that are designed <!--
+        -->to be run on CPU. The interfaces of classes and functions in this module are quite close to <!--
+        -->the scikit-learn library. Most (but not all) of the classes use the scikit-learn as a backend.</p>
+        <p>This sub-module contains three types of classes and functions: (1) ML models such as support vector machines <!--
+        -->with random Fourier features, (2) hyperparameter tuners that are wrapper functions of Optuna, and (3) ML model <!--
+        -->explainers that are wrapper functions of explainer functions in scikit-learn and SHAP.</p>
 
-        <div class="row align-items-center justify-content-center"><div class="col-8"><table class="table table-hover">
-          <thead><tr>
-            <th scope="col">Class name</th>
-            <th scope="col">Description</th>
+        <div class="row align-items-center justify-content-center"><div class="col-8"><table class="table table-hover mt-2">
+          <thead><tr class="heading">
+            <th class="head" scope="col">ML class</th>
+            <th class="head" scope="col">Description</th>
           </tr></thead>
           <tbody><tr>
             <td><a href="./api_reference_RFFCCA.html">rfflearn.cpu.RFFCCA</a></td>
@@ -102,20 +99,84 @@
             <td><a href="./api_reference_RFFSVR.html">rfflearn.cpu.RFFSVR</a></td>
             <td>Support vector regression with random Fourier features.</td>
           </tr><tr>
-            <td><a href="./api_reference_RFFBatchSVC.html">rfflearn.cpu.RFFBatchSVC</a></td>
-            <td>Batch learning version of <code>rfflearn.cpu.RFFSVC</code>.</td>
-          </tr><tr>
             <td><a href="#">rfflearn.cpu.ORF*</a></td>
             <td>ORF (orthogonal random features) version of estimators. For example, <code>rfflearn.cpu.ORFSVC</code> <!--
             -->is a support vector classifier with ORF. The arguments of constructor and member functions are the same as RFF version, <!--
             -->so please see the document of <code>rfflearn.cpu.RFF*</code> for the details of the usage of each class.</td>
           </tr><tr>
             <td><a href="#">rfflearn.cpu.QRF*</a></td>
-            <td>QRF (quasi random features) version of estimators. For example, <code>rfflearn.cpu.QRFSVC</code> <!--
+            <td>QRF (quasi-random features) version of estimators. For example, <code>rfflearn.cpu.QRFSVC</code> <!--
             -->is a support vector classifier with QRF. The arguments of constructor and member functions are the same as RFF version, <!--
             -->so please see the document of <code>rfflearn.cpu.RFF*</code> for the details of the usage of each class.</td>
           </tr></tbody>
         </table></div></div>
+
+        <div class="row align-items-center justify-content-center"><div class="col-8"><table class="table table-hover mt-3">
+          <thead><tr class="heading">
+            <th class="head" scope="col">Explainer function</th>
+            <th class="head" scope="col">Description</th>
+          </tr></thead>
+          <tbody><tr>
+            <td><a href="./api_reference_explainers.html#permutation_feature_importance">rfflearn.cpu.permutation_feature_importance</a></td>
+            <td>Calculate permutation importance, and set the feature importance <!--
+            -->(mean of permutation importance for each trial) as <code>model.feature_importances_</code>.</td>
+          </tr><tr>
+            <td><a href="./api_reference_explainers.html#permutation_plot">rfflearn.cpu.permutation_plot</a></td>
+            <td>Visualize permutation importance as a box diagram.</td>
+          </tr><tr>
+            <td><a href="./api_reference_explainers.html#shap_feature_importance">rfflearn.cpu.shap_feature_importance</a></td>
+            <td>Calculate SHAP values using shap library, and set the feature importance <!--
+            -->(absolute of SHAP values) as <code>model.feature_importances_</code>.</td>
+          </tr><tr>
+            <td><a href="./api_reference_explainers.html#shap_plot">rfflearn.cpu.shap_plot</a></td>
+            <td>Create a bar plot of SHAP values.</td>
+          </tr></tbody>
+        </table></div></div>
+
+        <div class="row align-items-center justify-content-center"><div class="col-8"><table class="table table-hover mt-3">
+          <thead><tr class="heading">
+            <th class="head" scope="col">Tuner function</th>
+            <th class="head" scope="col">Description</th>
+          </tr></thead>
+          <tbody><tr>
+            <td><a href="./api_reference_tuners.html">rfflearn.cpu.RFFRegressor_tuner</a></td>
+            <td>Hyperparameter tuner for <code>RFFRegressor</code> models.</td>
+          </tr><tr>
+            <td><a href="./api_reference_tuners.html">rfflearn.cpu.ORFRegressor_tuner</a></td>
+            <td>Hyperparameter tuner for <code>OFFRegressor</code> models.</td>
+          </tr><tr>
+            <td><a href="./api_reference_tuners.html">rfflearn.cpu.QRFRegressor_tuner</a></td>
+            <td>Hyperparameter tuner for <code>QFFRegressor</code> models.</td>
+          </tr><tr>
+            <td><a href="./api_reference_tuners.html">rfflearn.cpu.RFFSVC_tuner</a></td>
+            <td>Hyperparameter tuner for <code>RFFSVC</code> models.</td>
+          </tr><tr>
+            <td><a href="./api_reference_tuners.html">rfflearn.cpu.ORFSVC_tuner</a></td>
+            <td>Hyperparameter tuner for <code>ORFSVC</code> models.</td>
+          </tr><tr>
+            <td><a href="./api_reference_tuners.html">rfflearn.cpu.QRFSVC_tuner</a></td>
+            <td>Hyperparameter tuner for <code>QRFSVC</code> models.</td>
+          </tr><tr>
+            <td><a href="./api_reference_tuners.html">rfflearn.cpu.RFFGPC_tuner</a></td>
+            <td>Hyperparameter tuner for <code>RFFGPC</code> models.</td>
+          </tr><tr>
+            <td><a href="./api_reference_tuners.html">rfflearn.cpu.ORFGPC_tuner</a></td>
+            <td>Hyperparameter tuner for <code>ORFGPC</code> models.</td>
+          </tr><tr>
+            <td><a href="./api_reference_tuners.html">rfflearn.cpu.QRFGPC_tuner</a></td>
+            <td>Hyperparameter tuner for <code>QRFGPC</code> models.</td>
+          </tr><tr>
+            <td><a href="./api_reference_tuners.html">rfflearn.cpu.RFFGPR_tuner</a></td>
+            <td>Hyperparameter tuner for <code>RFFGPR</code> models.</td>
+          </tr><tr>
+            <td><a href="./api_reference_tuners.html">rfflearn.cpu.ORFGPR_tuner</a></td>
+            <td>Hyperparameter tuner for <code>ORFGPR</code> models.</td>
+          </tr><tr>
+            <td><a href="./api_reference_tuners.html">rfflearn.cpu.QRFGPR_tuner</a></td>
+            <td>Hyperparameter tuner for <code>QRFGPR</code> models.</td>
+          </tr></tbody>
+        </table></div></div>
+
       </section>
 
       <section class="container py-3">
@@ -123,16 +184,6 @@
         <p>Sub module for regressors and classifiers of random Fourier feature runnable on GPU. <!--
         -->This module is designed to have the same interface as <code>rfflearn.cpu</code>. <!--
         -->See the <a href="#rfflearn_cpu">API reference of rfflearn.cpu</a> for the details of this module.</p>
-      </section>
-
-      <section class="container py-3">
-        <h2 class="py-2" id="rfflearn_explainer">rfflearn.explainer</h2>
-        <p>TBD</p>
-      </section>
-
-      <section class="container py-3">
-        <h2 class="py-2" id="rfflearn_tuner">rfflearn.tuner</h2>
-        <p>TBD</p>
       </section>
 
     </main>

@@ -20,8 +20,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" media="print" onload="this.media='all'">
 
     <!-- Load Highlight JS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/atelier-forest-light.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/stackoverflow-light.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js"></script>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="./css/bootstrap.min.css">
@@ -41,7 +41,7 @@
 
     <main>
 
-      <!-- -->
+      <!-- Main sections -->
       <section class="container py-3">
         <h1 class="py-2 border-bottom">rfflearn.cpu.RFFGPR</h1>
         <p>Gaussian Process Regression with random Fourier features.</p>
@@ -49,31 +49,31 @@
         <p><strong>Parameters:</strong></p>
         <div class="row pb-3 g-3">
           <div class="col-lg-3"><div class="card shadow-sm h-100">
-            <pre><code class="python">dim_kernel: int, default=128</code></pre>
+            <pre><code class="python">dim_kernel: int  (default=128)</code></pre>
             <p class="mx-2">Dimension of the random matrix.</p>
           </div></div>
           <div class="col-lg-3"><div class="card shadow-sm h-100">
-            <pre><code class="python">std_kernel: float, default=0.1</code></pre>
+            <pre><code class="python">std_kernel: float  (default=0.1)</code></pre>
             <p class="mx-2">Standard deviation of the random matrix.</p>
           </div></div>
           <div class="col-lg-3"><div class="card shadow-sm h-100">
-            <pre><code class="python">std_error: float, default=0.1</code></pre>
+            <pre><code class="python">std_error: float  (default=0.1)</code></pre>
             <p class="mx-2">Standard deviation of the measurement error.</p>
           </div></div>
           <div class="col-lg-3"><div class="card shadow-sm h-100">
-            <pre><code class="python">W: np.ndarray, default=None</code></pre>
+            <pre><code class="python">W: np.ndarray  (default=None)</code></pre>
             <p class="mx-2">Random matrix for the input X. If None then generated automatically.</p>
           </div></div>
           <div class="col-lg-3"><div class="card shadow-sm h-100">
-            <pre><code class="python">b: np.ndarray, default=None</code></pre>
+            <pre><code class="python">b: np.ndarray  (default=None)</code></pre>
             <p class="mx-2">Random bias for the input X. If None then generated automatically.</p>
           </div></div>
           <div class="col-lg-3"><div class="card shadow-sm h-100">
-            <pre><code class="python">a: np.ndarray, default=None</code></pre>
+            <pre><code class="python">a: np.ndarray  (default=None)</code></pre>
             <p class="mx-2">Cache of the matrix a. If None then generated automatically.</p>
           </div></div>
           <div class="col-lg-3"><div class="card shadow-sm h-100">
-            <pre><code class="python">S: np.ndarray, default=None</code></pre>
+            <pre><code class="python">S: np.ndarray  (default=None)</code></pre>
             <p class="mx-2">Cache of the matrix S. If None then generated automatically. </p>
           </div></div>
         </div>
@@ -130,11 +130,11 @@
             <p class="mx-2">Output matrix with shape (n_samples, n_features_output).</p>
           </div></div>
           <div class="col-lg-3"><div class="card shadow-sm h-100">
-            <pre><code class="python">args: dict</code></pre>
+            <pre><code class="python">args: dict  (default={})</code></pre>
             <p class="mx-2">Extra arguments. However, this arguments will be ignored. This argument exists only for keeping the same interface with scikit-learn.</p>
           </div></div>
         </div>
-        <p><strong>Returnd:</strong></p>
+        <p><strong>Returns:</strong></p>
         <div class="row pb-4 g-3">
           <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">rfflearn.cpu.RFFGPR</code></pre>
@@ -151,15 +151,15 @@
             <p class="mx-2">Input matrix with shape (n_samples, n_features_input).</p>
           </div></div>
           <div class="col-lg-3"><div class="card shadow-sm h-100">
-            <pre><code class="python">return_std: bool, default=False</code></pre>
+            <pre><code class="python">return_std: bool  (default=False)</code></pre>
             <p class="mx-2">Returns standard deviation of the prediction if True.</p>
           </div></div>
           <div class="col-lg-3"><div class="card shadow-sm h-100">
-            <pre><code class="python">return_cov: bool, default=False</code></pre>
+            <pre><code class="python">return_cov: bool  (default=False)</code></pre>
             <p class="mx-2">Returns covariance of the prediction if True.</p>
           </div></div>
         </div>
-        <p><strong>Returnd:</strong></p>
+        <p><strong>Returns:</strong></p>
         <div class="row pb-4 g-3">
           <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">np.ndarray, or tuple</code></pre>
@@ -176,7 +176,7 @@
             <p class="mx-2">Matrix F (= self.conv(X).T).</p>
           </div></div>
         </div>
-        <p><strong>Returnd:</strong></p>
+        <p><strong>Returns:</strong></p>
         <div class="row pb-4">
           <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">np.ndarray</code></pre>
@@ -193,7 +193,7 @@
             <p class="mx-2">Matrix F (= self.conv(X).T).</p>
           </div></div>
         </div>
-        <p><strong>Returnd:</strong></p>
+        <p><strong>Returns:</strong></p>
         <div class="row pb-4">
           <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">np.ndarray</code></pre>
@@ -214,11 +214,11 @@
             <p class="mx-2">True output matrix with shape (n_samples, n_features_output).</p>
           </div></div>
           <div class="col-lg-3"><div class="card shadow-sm h-100">
-            <pre><code class="python">args: dict</code></pre>
+            <pre><code class="python">args: dict  (default={})</code></pre>
             <p class="mx-2">Extra arguments. However, this arguments will be ignored.</p>
           </div></div>
         </div>
-        <p><strong>Returnd:</strong></p>
+        <p><strong>Returns:</strong></p>
         <div class="row pb-1">
           <div class="col-lg-3"><div class="card shadow-sm h-100">
             <pre><code class="python">float</code></pre>

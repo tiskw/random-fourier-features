@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="User's manual for RFFLearn, a library for random Fourier feature based ML models">
+    <meta name="keywords" content="random Fourier features,rff,fast machine learning,Tetsuya Ishikawa">
+    <meta name="robots" content="index,follow">
+    <meta name="author" content="Tetsuya Ishikawa, tiskw111@gmail.com">
+    <link rel="icon" href="./images/logo_short.svg">
+
+    <title>RFFLearn: User's Manual - API Reference - Explainer functions</title>
+
+    <!-- Load FontAwesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.2/css/all.css" media="print" onload="this.media='all'">
+
+    <!-- Load Google's webfont -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" onload="this.media='all'">
+
+    <!-- Load Highlight JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/stackoverflow-light.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js"></script>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+
+    <!-- Custom styles for this page -->
+    <link rel="stylesheet" href="./css/style.css">
+  </head>
+
+  <body>
+
+    <!-- Header -->
+    <header>
+      <div class="container mx-auto"><div class="row">
+        <p class="text-center"><img src="./images/logo_long.svg" style="width:100%;max-width:640px;height:auto;" alt="rfflearn_logo"></p>
+      </div></div>
+    </header>
+
+    <main>
+
+      <!-- Section: permutation_feature_importance -->
+      <section class="container py-3">
+        <h1 id="permutation_feature_importance" class="py-2 border-bottom">rfflearn.cpu.permutation_feature_importance</h1>
+        <p>Calculate permutation importance, and set the feature importance <!--
+        -->(mean of permutation importance for each trial) as <code>model.feature_importances_</code>.</p>
+        <pre><code class="python">def rfflearn.cpu.permutation_feature_importance(model, Xs, ys, **kwargs):</code></pre>
+        <p><strong>Parameters:</strong></p>
+        <div class="row pb-3 g-3">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">model: object</code></pre>
+            <p class="mx-2">An estimator that has already been fitted.</p>
+          </div></div>
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">Xs: np.ndarray</code></pre>
+            <p class="mx-2">Input data of shape (n_samples, n_features), on which permutation importance will be computed.</p>
+          </div></div>
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">ys: np.ndarray</code></pre>
+            <p class="mx-2">Input label of shape (n_samples,) or (n_samples, n_classes). Specify None for unsupervised model.</p>
+          </div></div>
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">kwargs: dict  (default={})</code></pre>
+            <p class="mx-2">Additional keyword arguments for <code>sklearn.inspection.permutation_importance</code>.</p>
+          </div></div>
+        </div>
+        <p><strong>Returns:</strong></p>
+        <div class="row pb-3 g-3">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">np.ndarray</code></pre>
+            <p class="mx-2">Raw permutation importance scores of shape (n_features, n_repeats).</p>
+          </div></div>
+        </div>
+        <p><strong>Notes:</strong></p>
+        <ul>
+          <li class="itemize">This function add an attribute <code>feature_importances_</code> to the <code>model</code> instance.</li>
+        </ul>
+      </section>
+
+      <!-- Section: permutation_plot -->
+      <section class="container py-3">
+        <h1 id="permutation_plot" class="py-2 border-bottom">rfflearn.cpu.permutation_plot</h1>
+        <p>Visualize permutation importance as a box diagram.</p>
+        <pre><code class="python">def rfflearn.cpu.permutation_plot(permutation_importances, feature_names, show=True):</code></pre>
+        <p><strong>Parameters:</strong></p>
+        <div class="row pb-3 g-3">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">permutation_importances: np.ndarray</code></pre>
+            <p class="mx-2">Raw scores of shape (num_features, num_repeats).</p>
+          </div></div>
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">feature_names: list</code></pre>
+            <p class="mx-2">List of feature names.</p>
+          </div></div>
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">show: bool</code></pre>
+            <p class="mx-2">Shows plot if True.</p>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- Section: shap_feature_importance -->
+      <section class="container py-3">
+        <h1 id="shap_feature_importance" class="py-2 border-bottom">rfflearn.cpu.shap_feature_importance</h1>
+        <p> </p>
+        <pre><code class="python">def rfflearn.cpu.shap_feature_importance(model, Xs):</code></pre>
+        <p><strong>Parameters:</strong></p>
+        <div class="row pb-3 g-3">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">model: object</code></pre>
+            <p class="mx-2">An estimator that has already been fitted.</p>
+          </div></div>
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">Xs: np.ndarray</code></pre>
+            <p class="mx-2">Input data of shape (n_samples, n_features), on which permutation importance will be computed.</p>
+          </div></div>
+        </div>
+        <p><strong>Returns:</strong></p>
+        <div class="row pb-3 g-3">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">np.ndarray</code></pre>
+            <p class="mx-2">SHAP values of shape (n_samples, n_features).</p>
+          </div></div>
+        </div>
+        <p><strong>Notes:</strong></p>
+        <ul>
+          <li class="itemize">This function add an attribute <code>feature_importances_</code> to the <code>model</code> instance.</li>
+        </ul>
+      </section>
+
+      <!-- Section: shap_plot -->
+      <section class="container py-3">
+        <h1 id="shap_plot" class="py-2 border-bottom">rfflearn.cpu.shap_plot</h1>
+        <p>Calculate SHAP values using shap library, and set the feature importance <!--
+        -->(absolute of SHAP values) as <code>model.feature_importances_</code>.</p>
+        <pre><code class="python">def rfflearn.cpu.shap_plot(*pargs, **kwargs):</code></pre>
+        <p><strong>Parameters:</strong></p>
+        <div class="row pb-3 g-3">
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">pargs: tuple  (default: ())</code></pre>
+            <p class="mx-2">Positional arguments for <code>shap.summary_plot</code>.</p>
+          </div></div>
+          <div class="col-lg-3"><div class="card shadow-sm h-100">
+            <pre><code class="python">kwargs: dict  (default: {})</code></pre>
+            <p class="mx-2">Keyword arguments for <code>shap.summary_plot</code>.</p>
+          </div></div>
+        </div>
+        <p><strong>Notes:</strong></p>
+        <ul>
+          <li class="itemize">This function is just an alias of the <code>shap.summary_plot function</code> <!--
+          -->because the <code>shap.summary_plot</code> is implemented very well!!</li>
+        </ul>
+      </section>
+
+      <section class="container py-3">
+        <h2 class="py-2">Minimal Example</h2>
+        <pre><code class="python">>>> import numpy as np                                        # Import Numpy
+>>> import rfflearn.cpu as rfflearn                           # Import rfflearn
+>>> X = np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]])        # Define input data
+>>> y = np.array([1, 1, 2, 2])                                # Definr label data
+>>> model = rfflearn.RFFSVC().fit(X, y)                       # Training a model
+>>> Is = rfflearn.permutation_feature_importance(model, X, y) # Compute permutation importance
+>>> model.feature_importances_                                # Confirm feature importance
+array([0.25, 0.3 ])
+>>> permutation_plot(Is, ["x1", "x2"], show=True)             # Plot importance and show</code></pre>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3">
+      <div class="container text-center">
+        <p>Copyright (C) 2017-<span id="thisYear"></span> Tetsuya Ishikawa</p>
+      </div>
+    </footer>
+
+    <!-- Load javascripts -->
+    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="./js/jquery-3.7.1.min.js"></script>
+    <script src="./js/script.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+  </body>
+</html>
+
+<!--
+vim: expandtab shiftwidth=2 tabstop=2
+-->

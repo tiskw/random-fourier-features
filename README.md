@@ -26,7 +26,7 @@ machine [3, 4] and Gaussian process model [5]. Features of this module are:
   demonstrate that RFF is useful for actual machine learning tasks,
 - **GPU support**: Some classes in the `rfflearn` module provides both GPU training and inference
   for faster computation,
-- **Wrapper to the other library**: Interface to [optuna](https://optuna.org/) and
+- **Wrapper to the other library**: Interface to [Optuna](https://optuna.org/) and
   [SHAP](https://github.com/slundberg/shap) are provided for easier hyperparameter tuning and
   feature importance analysis.
 

@@ -21,8 +21,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
 
     <!-- Load Highlight JS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/atelier-forest-light.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/stackoverflow-light.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js"></script>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="./css/bootstrap.min.css">
@@ -47,31 +47,32 @@
         <h1 class="py-2 border-bottom" id="setting_up">Setting Up</h1>
 
         <div class="row"><div class="col-12">
-          <h2 class="py-2">Using Docker (recommended)</h2>
-          <p>If you don't like to pollute your development environment, it is a good idea to run everything <!--
-          -->inside a Docker container. The rfflearn and it's sample code are executable on this docker image. <!--
-          -->Please run the following command to install the docker image:</p>
-          <pre><code class="bash">docker pull tiskw/pytorch:latest</code></pre>
-          <p>The following command is the typical usage of the docker image:</p>
-          <pre><code class="bash">cd PATH_TO_THE_WORKING_DIRECTORY
-docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash</code></pre>
-          <p>If you need GPU support, add --gpus all option to the above docker run command above. <!--
-          -->Also if the version of your docker is lower than 19, use <code class="bash">--runtime=nvidia</code> <!--
-          -->instead of <code class="bash">--gpus</code> all.</p>
+          <h2 class="py-2">Installation</h2>
+          <p>You can install  RFFLearn from PyPI:</p>
+          <pre><code class="bash">pip install rfflearn</code></pre>
+          <p>The author recommends using <!--
+          --><a href="https://docs.python.org/3/library/venv.html">venv</a> or <a href="https://www.docker.com/">Docker</a> <!--
+          -->to avoid polluting your environment.</p>
         </div></div>
 
         <div class="row"><div class="col-12">
-          <h2 class="py-2">Installing on your environment (easier, but pollute your environment)</h2>
-          <p>The rfflearn module requires NumPy, SciPy, Scikit-learn, and PyTorch if you need GPU support, and optuna <!--
-          -->if you need hyper parameter tuning function. Also, the sample code contained in the module requires docopt. <!--
-          -->If you don't have them, please run the following to install them (you may need root permission)</p>
-          <pre><code class="bash">pip3 install numpy scipy scikit-learn  # Necessary packages
-pip3 install torch                     # Required for GPU inference
-pip3 install optuna                    # Required for hyper parameter tuning
-pip3 install shap                      # Required for feature importance
-pip3 install docopt                    # Required for sample code</code></pre>
-          <p>Author recommend to install the latest version of these above packages because later version tend to be stable <!--
-          -->and show better performance. See requirements.txt if you need detail information of the package versions.</p>
+          <h2 class="py-2">Optional requirements</h2>
+          <p>The above installation command installs only the minimum dependencies. More precisely, it enables <!--
+          -->training and inference on the CPU, and does not enable other supplementary features, such as GPU <!--
+          -->support, <a href="https://optuna.org/">Optuna</a> support, and <a href="https://shap.readthedocs.io/en/latest/">SHAP</a> <!--
+          -->support. To enable these supplemental functions, you need to install additional packages:</p>
+          <pre><code class="bash"> # For GPU support.
+pip install torch
+
+# For Optuna support.
+pip install optuna
+
+# For SHAP support.
+pip install matplotlib shap</code></pre>
+          <p>The author recommends installing the latest version of these above packages because later version tend to be <!--
+          -->stable and shows better performance. See <!--
+          --><a href="https://github.com/tiskw/random-fourier-features/blob/main/requirements.txt">requirements.txt</a> <!--
+          -->if you need detail information of the package versions.</p>
         </div></div>
       </section>
 
@@ -80,12 +81,17 @@ pip3 install docopt                    # Required for sample code</code></pre>
 
         <div class="row"><div class="col-12">
           <h2 class="py-2">Tiny code example</h2>
-          <p>At first, please clone the random-fourier-features repository from GitHub:</p>
-          <pre><code class="bash">git clone https://github.com/tiskw/random-fourier-features.git
-cd random-fourier-features</code></pre>
-          <p>If you are using the docker image, enter into the docker container:</p>
-          <pre><code class="bash">docker run --rm -it -v `pwd`:/work -w /work -u `id -u`:`id -g` tiskw/pytorch:latest bash</code></pre>
-          <p>Launch python3 and try the following minimal code for support vector classification with random Fourier features:</p>
+          <p>At first, please install RFFLearn. Here we will use venv:</p>
+          <pre><code class="bash"># Create new environment.
+python3 -m venv venv
+
+# Activate the environment.
+source venv/bin/activate
+
+# Install RFFLearn into the environment.
+python3 -m pip install rfflearn</code></pre>
+          <p>Then, launch <code>python3</code> and try the following minimal code that trains support vector classification <!--
+          -->with random Fourier features:</p>
           <pre><code class="python">>>> import numpy as np                                  # Import Numpy
 >>> import rfflearn.cpu as rfflearn                     # Import our module
 >>> X = np.array([[-1, -1], [-2, -1], [1, 1], [2, 1]])  # Define input data
@@ -99,26 +105,22 @@ array([1])</code></pre>
 
         <div class="row"><div class="col-12">
           <h2 class="py-2">More practical example</h2>
-          <p>Open a text file using your favorite text editor with the name sample.py, and type the following:</p>
+          <p>Open a text file using your favorite text editor with the name <code>sample.py</code>, and type the following code:</p>
           <pre><code class="python">import numpy as np
 import rfflearn.cpu as rfflearn
 
-def main():
-    # Define training data and labels.
-    N = 1000
-    x = np.linspace(0, 2 * np.pi, N)
-    y = np.sin(x) + 0.1 * np.random.randn(N)
+# Define training data and labels.
+N = 1000
+x = np.linspace(0, 2 * np.pi, N)
+y = np.sin(x) + 0.1 * np.random.randn(N)
 
-    # Create model instance and train it.
-    svr = rfflearn.RFFSVR().fit(x.reshape((N, 1)), y)
+# Create model instance and train it.
+svr = rfflearn.RFFSVR().fit(x.reshape((N, 1)), y)
 
-    # Print score.
-    print("R2 score =", svr.score(x.reshape((N, 1)), y))
-
-if __name__ == "__main__":
-    main()</code></pre>
-          <p>Then, place the sample.py to the same directory as the rfflearn directory (i.e. root directory of the random-fourier-features repository), <!--
-          -->and run the following command inside the docker container:</p>
+# Print score.
+print("R2 score =", svr.score(x.reshape((N, 1)), y))</code></pre>
+          <p>Then, place the sample.py to the same directory as the rfflearn directory (i.e. root directory of <!--
+          -->the random-fourier-features repository), and run the following command inside the docker container:</p>
           <pre><code class="bash">python3 sample.py</code></pre>
           <p>Now you've got a minimal example code of the rfflearn. You can customize the sample code as you like. Enjoy comfortable ML life!</p>
         </div></div>
