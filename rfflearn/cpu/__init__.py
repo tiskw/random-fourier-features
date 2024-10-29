@@ -68,7 +68,7 @@ else:
                   ImportWarning)
 
 # Import shap-related modules if `shap` is available.
-if (importlib.util.find_spec("matplotlib") is not None) and (importlib.util.find_spec("shap") is not None):
+if all(importlib.util.find_spec(name) is not None for name in ["matplotlib", "shap"]):
 
     # Import explainer module.
     explainer = importlib.import_module("explainer")
