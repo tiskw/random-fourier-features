@@ -3,7 +3,7 @@ Python module of regression with random matrix for CPU.
 """
 
 # Declare published functions and variables.
-__all__ = ["RFFRegression", "ORFRegression", "QRFRegression"]
+__all__ = ["RFFRegressor", "ORFRegressor", "QRFRegressor"]
 
 # Import 3rd-party packages.
 import sklearn.linear_model

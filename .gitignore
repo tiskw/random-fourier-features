@@ -9,3 +9,6 @@ __pycache__
 
 # Ignore virtual environment.
 venv
+
+# Ignore coverage files.
+.coverage

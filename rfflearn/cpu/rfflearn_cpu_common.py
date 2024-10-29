@@ -84,7 +84,8 @@ def get_qrf_matrix(dim_in: int, dim_out: int, std: float) -> np.ndarray:
         return np.array([zs1, zs2])
 
     # Generate sobol sequence engine and throw away the first several values.
-    sampler = scipy.stats.qmc.Sobol(dim_in, scramble=True, seed=np.random.randint(0, np.iinfo(np.int32).max))
+    int32_max = np.iinfo(np.int32).max
+    sampler = scipy.stats.qmc.Sobol(dim_in, scramble=True, seed=np.random.randint(0, int32_max))
     sampler.fast_forward(QUASI_MC_SKIP)
 
     # Generate uniform random matrix.
